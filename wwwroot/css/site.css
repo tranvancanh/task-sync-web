@@ -1,0 +1,197 @@
+:root {
+    --maincolor: #DC143C;
+    --mainlightcolor: #FACED7;
+    --subcolor: #14DBB3;
+    --sublightcolor: #CDFAF1;
+    --fontcolor: #252F3B;
+    --font-family-sans-serif: "BIZ UDPGothic", Meiryo UI, sans-serif;
+}
+
+html {
+    font-size: 14px;
+    color: var(--fontcolor);
+    font-family: var(--font-family-sans-serif) !important;
+}
+
+body {
+    font-family: var(--font-family-sans-serif) !important;
+}
+
+.text-danger-custom {
+    color: var(--maincolor);
+    font-weight: 800;
+}
+
+.text-success-custom {
+    color: var(--subcolor);
+    font-weight: 800;
+}
+
+/*↓navbar custom*/
+.navbar-dark {
+    background-color: var(--maincolor) !important;
+}
+
+.navbar-brand{
+    color:aliceblue!important;
+}
+/*↑navbar custom*/
+
+/*↓dropdown-menu custom*/
+.dropdown-menu {
+    --bs-dropdown-min-width: 20rem!important;
+}
+/*↑dropdown-menu custom*/
+
+/*↓ページャーデザイン上書き*/
+.page-no-label {
+    font-size: 12px;
+}
+
+.page-item.active > .page-link {
+    font-weight: bold;
+    background-color: var(--mainlightcolor);
+    border-color: var(--bs-pagination-border-color);
+}
+
+.page-link {
+    color: var(--fontcolor) !important;
+}
+
+    .page-link:hover {
+        font-weight: bold!important;
+    }
+/*↑ページャーデザイン上書き*/
+
+/*↓table共通 ヘッダー&2列固定*/
+/*参考：https://design-remarks.com/convenient-table-layout/ */
+table .sticky_table {
+    display: block;
+    overflow: scroll;
+    /*width: 100%;*/
+    height: 550px;
+    /*border-collapse: collapse;*/
+    border-collapse: separate; /*スクロールするとボーダーが消える対応*/
+    border-spacing: 0; /*スクロールするとボーダーが消える対応*/
+    padding-left: 0; /*スクロールすると、padding分はみ出るため0にしとく*/
+    padding-top: 0; /*スクロールすると、padding分はみ出るため0にしとく*/
+}
+
+.sticky_table th,
+.sticky_table td {
+    min-width: 100px;
+    max-width: 200px;
+    padding: 5px;
+    background: #ffffff;
+    font-size: 13px;
+    border: solid 1px rgba(248, 249, 252, 1);
+    color: #000000 !important;
+}
+
+.sticky_table .edit-icon-btn {
+    color: #000000 !important;
+    padding: 0px 5px 0px 5px;
+}
+
+.sticky_table td {
+    color: #000000 !important;
+}
+
+    .sticky_table td .form-control {
+        font-size: 12px !important;
+    }
+
+.sticky_table th {
+    font-weight: 600 !important;
+    border: solid 1px rgba(248, 249, 252, 1);
+    background-color: var(--mainlightcolor);
+    text-align:center
+}
+
+.sticky_table .table-icon-edit {
+    min-width: auto !important;
+}
+
+.sticky_table td.table-icon-edit {
+    cursor: pointer;
+}
+
+    .sticky_table td.table-icon-edit:hover {
+        opacity: 0.5;
+    }
+
+@media screen and (min-width: 1200px) {
+    .sticky_table th {
+        white-space: normal;
+    }
+}
+
+.sticky_table tbody th {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+.sticky_table thead {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+
+    .sticky_table thead th.blank {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        left: 0;
+        z-index: 3;
+    }
+
+/*↑table共通 ヘッダー固定*/
+
+/*↓table update animation*/
+.table-update-row {
+    animation: blinking 0.6s 4 ease-in-out alternate;
+}
+
+@keyframes blinking {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        background-color: var(--subcolor);
+    }
+}
+/*↑table update animation*/
+
+/*↓table-hover*/
+.table-hover-evant tr:hover td {
+    background-color: var(--sublightcolor)!important;
+}
+
+th.table-border-less, td.table-border-less {
+    border: none !important;
+    background-color: #fff !important;
+    min-width: auto !important;
+}
+
+.table-hover-evant tr:hover tr.table-border-less, .table-hover-evant tr:hover td.table-border-less {
+    background-color: #fff !important;
+}
+/*↑table-hover*/
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
