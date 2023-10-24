@@ -65,38 +65,38 @@ namespace task_sync_web.Controllers
             }
         }
 
-        /// <summary>
-        /// Excel出力
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult ExcelOutput(MAdministratorViewModel viewModel)
-        {
-            SessionReset();
+        ///// <summary>
+        ///// Excel出力
+        ///// </summary>
+        ///// <param name="viewModel"></param>
+        ///// <returns></returns>
+        //[HttpGet]
+        //public IActionResult ExcelOutput(MAdministratorViewModel viewModel)
+        //{
+        //    SessionReset();
 
-            try
-            {
-                var administratorList = GetList(viewModel.SearchKeyWord ?? "");
+        //    try
+        //    {
+        //        var administratorList = GetList(viewModel.SearchKeyWord ?? "");
 
-                var memoryStream = ExcelCreate(viewModel.ExcelHeaderList, administratorList);
+        //        var memoryStream = ExcelCreate(viewModel.ExcelHeaderList, administratorList);
 
-                // ファイル名
-                var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
-                return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+        //        // ファイル名
+        //        var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
+        //        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
 
-            }
-            catch (CustomExtention ex)
-            {
-                ViewData["ErrorMessage"] = ex.Message;
-                return View("Index", viewModel);
-            }
-            catch (Exception ex)
-            {
-                ViewData["ErrorMessage"] = ErrorMessages.EW500;
-                return View("Index", viewModel);
-            }
-        }
+        //    }
+        //    catch (CustomExtention ex)
+        //    {
+        //        ViewData["ErrorMessage"] = ex.Message;
+        //        return View("Index", viewModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewData["ErrorMessage"] = ErrorMessages.EW500;
+        //        return View("Index", viewModel);
+        //    }
+        //}
 
         /// <summary>
         /// ページング
