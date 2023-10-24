@@ -10,9 +10,9 @@ using X.PagedList;
 
 namespace task_sync_web.Controllers
 {
-    public class AdministratorController : Controller
+    public class MAdministratorController : Controller
     {
-        private readonly ILogger<AdministratorController> _logger;
+        private readonly ILogger<MAdministratorController> _logger;
 
         /// <summary>
         /// 1ページに表示する行数の設定
@@ -24,7 +24,7 @@ namespace task_sync_web.Controllers
         /// </summary>
         private const string SESSIONKEY_SearchKeyWord = "SearchKeyWord";
 
-        public AdministratorController(ILogger<AdministratorController> logger)
+        public MAdministratorController(ILogger<MAdministratorController> logger)
         {
             _logger = logger;
         }
@@ -35,7 +35,7 @@ namespace task_sync_web.Controllers
         /// <param name="SearchKeyWord"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Index(M_AdministratorViewModel administratorViewModel, bool IsExcelOutput)
+        public IActionResult Index(MAdministratorViewModel administratorViewModel, bool IsExcelOutput)
         {
             SessionReset();
 
@@ -70,7 +70,7 @@ namespace task_sync_web.Controllers
         [HttpGet]
         public IActionResult PageChange(int pageNumber = 1)
         {
-            var viewModel = new M_AdministratorViewModel();
+            var viewModel = new MAdministratorViewModel();
 
             try
             {
@@ -99,16 +99,16 @@ namespace task_sync_web.Controllers
 
         }
 
-        private List<M_AdministratorViewModel> GetList(string SearchKeyWord)
+        private List<MAdministratorViewModel> GetList(string SearchKeyWord)
         {
-            var administratorViewModels = new List<M_AdministratorViewModel>();
+            var administratorViewModels = new List<MAdministratorViewModel>();
 
             try
             {
                 // DBからデータ一覧取得
                 var db = Utils.GetQueryFactory("tasksync_0_test");
 
-                var administratorList = db.queryFactory.Query("M_Administrator").Get<M_AdministratorViewModel>().ToList();
+                var administratorList = db.queryFactory.Query("MAdministrator").Get<MAdministratorViewModel>().ToList();
                 if (administratorList.Count == 0)
                 {
                     throw new CustomExtention(ErrorMessages.EW101);
@@ -153,7 +153,7 @@ namespace task_sync_web.Controllers
 
         private string SessionGet()
         {
-            var SearchKeyWord = (HttpContext.Session.GetString(SESSIONKEY_SearchKeyWord) ?? "").Trim();
+            var SearchKeyWord = HttpContext.Session.GetString(SESSIONKEY_SearchKeyWord) ?? "";
             return SearchKeyWord;
 
         }

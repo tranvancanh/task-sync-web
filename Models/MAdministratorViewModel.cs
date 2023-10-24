@@ -3,7 +3,7 @@ using X.PagedList;
 
 namespace task_sync_web.Models
 {
-    public class M_AdministratorViewModel : BaseViewModel
+    public class MAdministratorViewModel : BaseViewModel
     {
         public string? SearchKeyWord { get; set; }
 
@@ -19,7 +19,7 @@ namespace task_sync_web.Models
         [Display(Name = "ä«óùé“ñºÇ©Ç»")]
         public string AdministratorNameKana { get; set; }
 
-        public IPagedList<M_AdministratorViewModel> AdministratorViewModels { get; set; }
+        public IPagedList<MAdministratorViewModel> AdministratorViewModels { get; set; }
 
     }
 }
