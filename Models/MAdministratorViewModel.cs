@@ -5,21 +5,22 @@ namespace task_sync_web.Models
 {
     public class MAdministratorViewModel : BaseViewModel
     {
+        /// <summary>
+        /// セッションキーの設定
+        /// </summary>
+        public const string Session_SearchKeyWord = "SearchKeyWord";
+
+        [Display(Name = "検索キーワード")]
+        [StringLength(50, ErrorMessageResourceName = "EW002", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string? SearchKeyWord { get; set; }
 
-        public int AdministratorId { get; set; }
+        public IPagedList<MAdministratorModel> AdministratorModels { get; set; }
 
-        [Display(Name = "管理者ログインID")]
-        public string AdministratorLoginId { get; set; }
-
-        [Display(Name = "管理者名")]
-        [Required(ErrorMessageResourceName = "EW001", ErrorMessageResourceType = typeof(ErrorMessages))]
-        public string AdministratorName { get; set; }
-
-        [Display(Name = "管理者名かな")]
-        public string AdministratorNameKana { get; set; }
-
-        public IPagedList<MAdministratorViewModel> AdministratorViewModels { get; set; }
-
+        public MAdministratorViewModel()
+        {
+            DisplayName = "管理者マスター";
+            PageViewModel.PageRowCount = 50;
+            ExcelHeaderList = new List<string> { "管理者ログインID", "管理者名" , "管理者名かな" , "利用停止フラグ" };
+        }
     }
 }
