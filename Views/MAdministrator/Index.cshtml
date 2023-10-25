@@ -5,79 +5,112 @@
 @model MAdministratorViewModel
 @{
     ViewData["Title"] = @Model.DisplayName;
+    var pagedList = Model.AdministratorModels;
 }
 
-<div class="p-3">
-    <h4>@ViewData["Title"]</h4>
-    <div class="container-fluid p-2">
-        <div class="row">
-            <div class="col">
-                <form class="form-inline" asp-controller="MAdministrator" enctype="multipart/form-data" method="get">
-                    <div class="row">
-                        <div class="form-group col-auto">
-                            <!--ExcelTest-->
-                            <button class="btn btn-secondary btn-custom" name="isExcelOutput" value="true" type="submit"><i class="fas fa-download fa-fw"></i>Excel出力</button>
-                        </div>
-                        <div class="form-group col-auto">
-                            <div class="input-group">
-                                <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                                <button class="btn btn-secondary btn-custom" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
+<!-- Custom styles for this template-->
+<link href="~/css/sb-admin-2.css" rel="stylesheet">
+<link href="~/css/site.css" rel="stylesheet">
+<link href="~/css/stock.css" rel="stylesheet">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<style>
+
+    .form-control {
+        border: 1px solid #a99f9f !important;
+    }
+
+</style>
+
+<!--autocomplete↓-->
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+<!--autocomplete↑-->
+<!--datepicker↓-->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+<!--datepicker↑-->
+
+<div class="h4 mb-3 text-gray-800">
+    @{
+        ViewData["Title1"] = @Model.DisplayName;
+    }
+</div>
+<div class="card shadow m-4">
+    <div class="card-header text-gray-800">
+        <h4>@Model.DisplayName</h4>
     </div>
-        <div class="row">
-            <div class="col-auto">
-                <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
-                <span class="text-success-custom">@ViewData["Message"] </span>
-            </div>
-        </div>
-        <div class="row pt-2">
-            @if (@Model.AdministratorModels != null && @Model.AdministratorModels.Count > 0)
-            {
-                <div class="col-12">
-                    <table class="sticky_table table-hover-evant">
-                        <thead>
-                            <tr>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in @Model.AdministratorModels)
-                            {
-                                <tr>
-                                    <td>@Html.DisplayFor(model => item.AdministratorLoginId)</td>
-                                    <td>@Html.DisplayFor(model => item.AdministratorName)</td>
-                                    <td>@Html.DisplayFor(model => item.AdministratorNameKana)</td>
-                                    <td class="text-center">@Html.DisplayFor(model => item.IsNotUse)</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <div class="col-12 pt-1">
-                        <span class="page-no-label">
-                            @(Model.PageViewModel.PageRowCount == 0 ? 0 : @Model.PageViewModel.PageRowStartNumber) - @Model.PageViewModel.PageRowEndNumber 件 / @Model.PageViewModel.PageRowCount 件中
-                        </span>
-                        @Html.PagedListPager((IPagedList)Model.AdministratorModels, pageNumber => Url.Action("PageChange", new { pageNumber }),
-                            new PagedListRenderOptions
-                            {
-                            LiElementClasses = new string[] { "page-item" },
-                            PageClasses = new string[] { "page-link" },
-                            MaximumPageNumbersToDisplay = 10, //表示するページャーの数
-                            DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded, //「次へ」の非表示設定
-                            DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded, //「前へ」の非表示設定
-                            DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded, //「最初へ」の非表示設定
-                            DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded, //「最後へ」の表示設定
-                            }
-                        )
+    <div class="card-body">
+        <form class="form-inline" asp-controller="MAdministrator" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <div class="form-group col-auto">
+                    <!--ExcelTest-->
+                    <button class="btn btn-secondary" asp-action="ExcelOutput" value="true" type="submit"><i class="fas fa-download fa-fw"></i>Excel出力</button>
+                </div>
+                <div class="form-group col-auto">
+                    <div class="input-group">
+                        <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                        <button class="btn btn-secondary" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
+            </div>
+        </form>
+
+
+        <div class="table-list-area mt-2">
+            <table id="d-delivery-table" class="table sticky_table">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
+                        <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
+                        <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
+                        <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
+                    </tr>
+                </thead>
+
+                @if (Model != null && Model.AdministratorModels != null & Model.AdministratorModels.Count > 0)
+                {
+                    <tbody>
+                        @foreach (var item in Model.AdministratorModels)
+                        {
+                            <tr>
+                                <td class="text-right">@Html.DisplayFor(model => item.AdministratorLoginId)</td>
+                                <td class="text-left">@Html.DisplayFor(model => item.AdministratorName)</td>
+                                <td class="text-left">@Html.DisplayFor(model => item.AdministratorNameKana)</td>
+                                <td class="text-center">@Html.DisplayFor(model => item.IsNotUse)</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                }
+                else
+                {
+
+                }
+            </table>
+
+            @if (pagedList != null)
+            {
+                <div class="col-12 pt-1">
+                    <span class="page-no-label">
+                        @pagedList.FirstItemOnPage - @pagedList.LastItemOnPage 件 / @pagedList.TotalItemCount 件中
+                    </span>
+                    @Html.PagedListPager((IPagedList)Model.AdministratorModels, pageNumber => Url.Action("Index", new {searchKeyWord = Model.SearchKeyWord, pageNumber = pageNumber }),
+                new PagedListRenderOptions
+                {
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" },
+                MaximumPageNumbersToDisplay = 10, //表示するページャーの数
+                DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded, //「次へ」の非表示設定
+                DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded, //「前へ」の非表示設定
+                DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded, //「最初へ」の非表示設定
+                DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded, //「最後へ」の表示設定
+                })
+                </div>
             }
+
         </div>
+
     </div>
 </div>

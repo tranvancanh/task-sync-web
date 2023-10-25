@@ -12,7 +12,7 @@ namespace task_sync_web.Models
 
         [Display(Name = "検索キーワード")]
         [StringLength(50, ErrorMessageResourceName = "EW002", ErrorMessageResourceType = typeof(ErrorMessages))]
-        public string? SearchKeyWord { get; set; }
+        public string SearchKeyWord { get; set; }
 
         public IPagedList<MAdministratorModel> AdministratorModels { get; set; }
 
