@@ -46,17 +46,16 @@
             <div class="row">
                 <div class="form-group col-auto">
                     <!--ExcelTest-->
-                    <button class="btn btn-secondary" asp-action="ExcelOutput" value="true" type="submit"><i class="fas fa-download fa-fw"></i>Excel出力</button>
+                    <button class="btn btn-secondary form-control" asp-action="ExcelOutput" value="true" type="submit"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</button>
                 </div>
                 <div class="form-group col-auto">
                     <div class="input-group">
-                        <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                        <button class="btn btn-secondary" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                        <input class="form-control mr-2" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                        <button class="btn btn-secondary form-control col-xl-3" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
             </div>
         </form>
-
 
         <div class="table-list-area mt-2">
             <table id="d-delivery-table" class="table sticky_table">
@@ -86,7 +85,11 @@
                 }
                 else
                 {
-
+                    <tr>
+                        <td>
+                            <label class="text-danger">条件に一致するデータがありません。</label>
+                        </td>
+                    </tr>
                 }
             </table>
 
