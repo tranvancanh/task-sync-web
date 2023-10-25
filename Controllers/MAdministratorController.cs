@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using SpreadsheetLight;
 using SqlKata.Execution;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Diagnostics;
 using task_sync_web.Commons;
@@ -14,16 +16,6 @@ namespace task_sync_web.Controllers
     {
         private readonly ILogger<MAdministratorController> _logger;
 
-        /// <summary>
-        /// 1ページに表示する行数の設定
-        /// </summary>
-        private const int pageRowCount = 50;
-
-        /// <summary>
-        /// 検索条件セッションキーの設定
-        /// </summary>
-        private const string SESSIONKEY_SearchKeyWord = "SearchKeyWord";
-
         public MAdministratorController(ILogger<MAdministratorController> logger)
         {
             _logger = logger;
@@ -32,35 +24,79 @@ namespace task_sync_web.Controllers
         /// <summary>
         /// 初期一覧表示orキーワード検索
         /// </summary>
-        /// <param name="SearchKeyWord"></param>
+        /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Index(MAdministratorViewModel administratorViewModel, bool IsExcelOutput)
+        public IActionResult Index(MAdministratorViewModel viewModel, bool isExcelOutput)
         {
             SessionReset();
 
             try
             {
-                var administratorList = GetList(administratorViewModel.SearchKeyWord ?? "");
+                var administratorList = GetList(viewModel.SearchKeyWord ?? "");
 
-                // ページング関連のデータセット
-                int pageNumber = 1; // 初期表示は１ページ目
-                administratorViewModel.PageViewModel = Utils.SetPaging(pageNumber, pageRowCount, administratorList.Count);
-                administratorViewModel.AdministratorViewModels = administratorList.ToPagedList(pageNumber, pageRowCount);
+                if (!isExcelOutput)
+                {
+                    // ページング関連のデータセット
+                    int pageNumber = 1; // 初期表示は１ページ目
+                    viewModel.PageViewModel = Utils.SetPaging(pageNumber, viewModel.PageViewModel.PageRowCount, administratorList.Count);
+                    viewModel.AdministratorModels = administratorList.ToPagedList(pageNumber, viewModel.PageViewModel.PageRowCount);
+                }
+                else
+                {
+                    var memoryStream = ExcelCreate(viewModel.ExcelHeaderList, administratorList);
 
-                return View(administratorViewModel);
+                    // ファイル名
+                    var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
+                    return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+                }
+
+                return View(viewModel);
             }
             catch (CustomExtention ex)
             {
                 ViewData["ErrorMessage"] = ex.Message;
-                return View(administratorViewModel);
+                return View(viewModel);
             }
             catch (Exception ex)
             {
                 ViewData["ErrorMessage"] = ErrorMessages.EW500;
-                return View(administratorViewModel);
+                return View(viewModel);
             }
         }
+
+        ///// <summary>
+        ///// Excel出力
+        ///// </summary>
+        ///// <param name="viewModel"></param>
+        ///// <returns></returns>
+        //[HttpGet]
+        //public IActionResult ExcelOutput(MAdministratorViewModel viewModel)
+        //{
+        //    SessionReset();
+
+        //    try
+        //    {
+        //        var administratorList = GetList(viewModel.SearchKeyWord ?? "");
+
+        //        var memoryStream = ExcelCreate(viewModel.ExcelHeaderList, administratorList);
+
+        //        // ファイル名
+        //        var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
+        //        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+
+        //    }
+        //    catch (CustomExtention ex)
+        //    {
+        //        ViewData["ErrorMessage"] = ex.Message;
+        //        return View("Index", viewModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewData["ErrorMessage"] = ErrorMessages.EW500;
+        //        return View("Index", viewModel);
+        //    }
+        //}
 
         /// <summary>
         /// ページング
@@ -81,8 +117,8 @@ namespace task_sync_web.Controllers
                 var administratorList = GetList(SearchKeyWord);
 
                 // ページング関連のデータセット
-                viewModel.PageViewModel = Utils.SetPaging(pageNumber, pageRowCount, administratorList.Count);
-                viewModel.AdministratorViewModels = administratorList.ToPagedList(pageNumber, pageRowCount);
+                viewModel.PageViewModel = Utils.SetPaging(pageNumber, viewModel.PageViewModel.PageRowCount, administratorList.Count);
+                viewModel.AdministratorModels = administratorList.ToPagedList(pageNumber, viewModel.PageViewModel.PageRowCount);
 
                 return View("Index", viewModel);
             }
@@ -99,16 +135,65 @@ namespace task_sync_web.Controllers
 
         }
 
-        private List<MAdministratorViewModel> GetList(string SearchKeyWord)
+        public MemoryStream ExcelCreate(List<string> headerList, List<MAdministratorModel> administratorList)
         {
-            var administratorViewModels = new List<MAdministratorViewModel>();
+            try
+            {
+                MemoryStream ms = new MemoryStream();
+                using (SLDocument sl = new SLDocument())
+                {
+                    SLStyle keyStyle = sl.CreateStyle();
+
+                    // 太字
+                    keyStyle.SetFontBold(true);
+
+                    // 1行目：ヘッダーをセット
+                    for (int i = 1; i < (headerList.Count + 1); ++i)
+                    {
+                        sl.SetCellStyle(1, i, keyStyle);
+                        sl.SetCellValue(1, i, headerList[i - 1]);
+                    }
+
+                    // 2行目～：値をセット
+                    var data = administratorList;
+                    if (data != null && data.Count() > 0)
+                    {
+                        for (int col = 2; col < (data.Count() + 2); ++col)
+                        {
+                            int row = 0;
+                            int _col = col - 2;
+                            sl.SetCellValue(col, ++row, data[_col].AdministratorLoginId);
+                            sl.SetCellValue(col, ++row, data[_col].AdministratorName);
+                            sl.SetCellValue(col, ++row, data[_col].AdministratorNameKana);
+                            sl.SetCellValue(col, ++row, data[_col].IsNotUse);
+                        }
+                    }
+
+                    sl.SaveAs(ms);
+                }
+
+                ms.Position = 0;
+
+                return ms;
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        private List<MAdministratorModel> GetList(string SearchKeyWord)
+        {
+            var administratorViewModels = new List<MAdministratorModel>();
 
             try
             {
                 // DBからデータ一覧取得
                 var db = Utils.GetQueryFactory("tasksync_0_test");
 
-                var administratorList = db.queryFactory.Query("MAdministrator").Get<MAdministratorViewModel>().ToList();
+                var administratorList = db.queryFactory.Query("MAdministrator").Get<MAdministratorModel>().ToList();
                 if (administratorList.Count == 0)
                 {
                     throw new CustomExtention(ErrorMessages.EW101);
@@ -148,18 +233,18 @@ namespace task_sync_web.Controllers
 
         private void SessionSet(string SearchKeyWord)
         {
-            HttpContext.Session.SetString(SESSIONKEY_SearchKeyWord, SearchKeyWord);
+            HttpContext.Session.SetString(MAdministratorViewModel.Session_SearchKeyWord, SearchKeyWord);
         }
 
         private string SessionGet()
         {
-            var SearchKeyWord = HttpContext.Session.GetString(SESSIONKEY_SearchKeyWord) ?? "";
+            var SearchKeyWord = HttpContext.Session.GetString(MAdministratorViewModel.Session_SearchKeyWord) ?? "";
             return SearchKeyWord;
 
         }
         private void SessionReset()
         {
-            HttpContext.Session.Remove(SESSIONKEY_SearchKeyWord);
+            HttpContext.Session.Remove(MAdministratorViewModel.Session_SearchKeyWord);
         }
     }
 }

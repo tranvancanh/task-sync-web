@@ -4,20 +4,26 @@
 
 @model MAdministratorViewModel
 @{
-    ViewData["Title"] = "管理者マスター";
+    ViewData["Title"] = @Model.DisplayName;
 }
 
 <div class="p-3">
     <h4>@ViewData["Title"]</h4>
     <div class="container-fluid p-2">
         <div class="row">
-            <div class="col-auto">
-                <form asp-action="Index" method="get">
-                    <!--ExcelTest-->
-                    <button class="btn btn-secondary" name="isExcelOutput" value="true" type="submit"><i class="fas fa-download fa-fw"></i>Excel出力</button>
-                    <div class="input-group">
-                        <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                        <button class="btn btn-secondary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+            <div class="col">
+                <form class="form-inline" asp-controller="MAdministrator" enctype="multipart/form-data" method="get">
+                    <div class="row">
+                        <div class="form-group col-auto">
+                            <!--ExcelTest-->
+                            <button class="btn btn-secondary btn-custom" name="isExcelOutput" value="true" type="submit"><i class="fas fa-download fa-fw"></i>Excel出力</button>
+                        </div>
+                        <div class="form-group col-auto">
+                            <div class="input-group">
+                                <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                                <button class="btn btn-secondary btn-custom" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -28,34 +34,36 @@
                 <span class="text-success-custom">@ViewData["Message"] </span>
             </div>
         </div>
-        <div class="row pt-1">
-            @if (@Model.AdministratorViewModels != null && @Model.AdministratorViewModels.Count > 0)
+        <div class="row pt-2">
+            @if (@Model.AdministratorModels != null && @Model.AdministratorModels.Count > 0)
             {
                 <div class="col-12">
                     <table class="sticky_table table-hover-evant">
                         <thead>
                             <tr>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorViewModels[0].AdministratorLoginId)</th>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorViewModels[0].AdministratorName)</th>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorViewModels[0].AdministratorNameKana)</th>
+                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
+                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
+                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
+                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in @Model.AdministratorViewModels)
+                            @foreach (var item in @Model.AdministratorModels)
                             {
                                 <tr>
                                     <td>@Html.DisplayFor(model => item.AdministratorLoginId)</td>
                                     <td>@Html.DisplayFor(model => item.AdministratorName)</td>
                                     <td>@Html.DisplayFor(model => item.AdministratorNameKana)</td>
+                                    <td class="text-center">@Html.DisplayFor(model => item.IsNotUse)</td>
                                 </tr>
                             }
                         </tbody>
                     </table>
-                    <div class="col-12">
+                    <div class="col-12 pt-1">
                         <span class="page-no-label">
                             @(Model.PageViewModel.PageRowCount == 0 ? 0 : @Model.PageViewModel.PageRowStartNumber) - @Model.PageViewModel.PageRowEndNumber 件 / @Model.PageViewModel.PageRowCount 件中
                         </span>
-                        @Html.PagedListPager((IPagedList)Model.AdministratorViewModels, pageNumber => Url.Action("PageChange", new { pageNumber }),
+                        @Html.PagedListPager((IPagedList)Model.AdministratorModels, pageNumber => Url.Action("PageChange", new { pageNumber }),
                             new PagedListRenderOptions
                             {
                             LiElementClasses = new string[] { "page-item" },
