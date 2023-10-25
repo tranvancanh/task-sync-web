@@ -176,4 +176,28 @@
   <data name="EW900" xml:space="preserve">
     <value>予期せぬエラーが発生しました。</value>
   </data>
+  <data name="W10001" xml:space="preserve">
+    <value>更新が完了しました。</value>
+  </data>
+  <data name="W10002" xml:space="preserve">
+    <value>更新に失敗しました。</value>
+  </data>
+  <data name="W3-1-2-1001" xml:space="preserve">
+    <value>パスワードを入力してください</value>
+  </data>
+  <data name="W3-1-2-10011" xml:space="preserve">
+    <value />
+  </data>
+  <data name="W3-1-2-1002" xml:space="preserve">
+    <value>パスワードの長さは10文字を超えてはいけません。</value>
+  </data>
+  <data name="W3-1-2-1003" xml:space="preserve">
+    <value>パスワードが一致していません。</value>
+  </data>
+  <data name="W3-1-2-1004" xml:space="preserve">
+    <value>ユーザーIDが存在していません。</value>
+  </data>
+  <data name="W3-1-2-1005" xml:space="preserve">
+    <value>現在のパスワードが間違いました。</value>
+  </data>
 </root>

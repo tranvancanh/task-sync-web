@@ -9,6 +9,7 @@
 <!-- Custom styles for this template-->
 <link href="~/css/sb-admin-2.css" rel="stylesheet">
 <link href="~/css/site.css" rel="stylesheet">
+<link href="~/css/stock.css" rel="stylesheet">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <style>
@@ -27,6 +28,10 @@
         top: 10px;
         position: relative;
         z-index: 3;
+    }
+
+    .form-control {
+        border: 1px solid #a99f9f !important;
     }
 
 </style>
@@ -86,8 +91,8 @@
             }
         </div>
 
-        <form id="changePasswordForm" method="post" class="my-4" enctype="multipart/form-data" name="form" onsubmit="return false;">
-            <div class="form-group row">
+        <form id="changePasswordForm" method="post" class="my-4" asp-controller="PasswordChange" enctype="multipart/form-data" onsubmit="return true;">
+            <div class="form-group row" style="display:none;">
                 <div class="col-xl-2">
                     <label class="col-xl-12 col-form-label">
                         @Html.DisplayNameFor(Model => Model.CurrentUserCode)
@@ -95,7 +100,7 @@
                 </div>
                 <div class="col-xl-3">
                     <div class="input-group mr-xl-2 cw-250">
-                        <input type="text" asp-for="CurrentUserCode" class="form-control rounded mr-3" readonly>
+                        <input type="text" asp-for="@Model.CurrentUserCode" class="form-control rounded mr-3" readonly>
                     </div>
                 </div>
             </div>
@@ -107,7 +112,7 @@
                 </div>
                 <div class="col-xl-3">
                     <div class="input-group mr-xl-2 cw-250" id="show_hide_currentpass">
-                        <input type="password" asp-for="CurrentPass" class="form-control rounded" placeholder="現在のパスワード" minlength="4" maxlength="10" autocomplete="new-password" />
+                        <input type="password" asp-for="@Model.CurrentPass" class="form-control rounded" placeholder="現在のパスワード" maxlength="10" autocomplete="new-password" />
                         <a href="">
                             <i class="fas fa-eye-slash" id="eye-change-pass"></i>
                         </a>
@@ -124,7 +129,7 @@
 
                 <div class="col-xl-3">
                     <div class="input-group mr-xl-2 cw-250" id="show_hide_newpass">
-                        <input type="password" asp-for="NewPass" class="form-control rounded" placeholder="新しいパスワード" minlength="4" maxlength="10" />
+                        <input type="password" asp-for="@Model.NewPass" class="form-control rounded" placeholder="新しいパスワード" maxlength="10" />
                         <a href="">
                             <i class="fas fa-eye-slash" id="eye-change-pass"></i>
                         </a>
@@ -140,7 +145,7 @@
                 </div>
                 <div class="col-xl-3">
                     <div class="input-group mr-xl-2 cw-250" id="show_hide_confirmpass">
-                        <input type="password" asp-for="ConfirmPass" class="form-control rounded" placeholder="再度、新しいパスワード" minlength="4" maxlength="10" />
+                        <input type="password" asp-for="@Model.ConfirmPass" class="form-control rounded" placeholder="再度、新しいパスワード" maxlength="10" />
                         <a href="">
                             <i class="fas fa-eye-slash" id="eye-change-pass"></i>
                         </a>
@@ -152,7 +157,7 @@
                 <div class="col-xl-3"></div>
                 <div class="col-xl-2">
                     <button name="submitButton" value="更新" class="btn btn-secondary button-area"
-                            type="submit">
+                            type="submit" asp-action="Index">
                         <span class="icon text-white-50">
                             <i class="fas fa-check"></i>
                         </span>

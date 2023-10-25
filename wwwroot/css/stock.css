@@ -1,0 +1,887 @@
+﻿
+/*入出庫関連画面*/
+/*発注データ取込画面*/
+/*作業リスト発行画面*/
+
+/*icon etc.    https://icon-rainbow.com/　*/
+/*icon_roading https://www.pixelimage.jp/blog/2012/04/loading_icon.html */
+
+/*@import url('file:///C:\Users\t_mitsuya\source\repos\tozan-co-ltd\stock-management-system\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css');
+@import url('file:///C:\Users\t_mitsuya\source\repos\tozan-co-ltd\stock-management-system\wwwroot\lib\bootstrap\dist\css\bootstrap.css');*/
+.page-change-area input-label-area {
+    text-align: right;
+    max-width: 1200px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+
+.page-change-area a {
+    /*padding: 5px 5px 5px 5px;*/
+    /*margin-top: 3px;*/
+    color: rgba(65,105,222, 1);
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    /*margin-top: 7px;*/
+}
+
+.page-change-area .icon-pagelink {
+    /*background-image: url("../image/icon_link.png");
+    /*background-size: 16px;*/
+    /*background-size: cover 20px;
+    background-position-x: center;
+    background-position-y: center;
+    background-repeat: no-repeat;*/
+    /*width: 13px;
+    height: 13px;*/
+    /*display: inline-block;*/
+}
+
+/*.page-change-area .icon-pagelink:before {
+    content: '';
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    background-image: url("../image/icon_link.png");
+    background-size: contain;
+    vertical-align: middle;
+}*/
+
+.page-change-area .icon-pagelink-create:before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-image: url("../image/icon_create.png");
+    background-size: contain;
+    /*vertical-align: middle;*/
+    margin-right: 5px;
+}
+
+.page-change-area .icon-pagelink-back:before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-image: url("../image/icon_back.png");
+    background-size: contain;
+    /*vertical-align: middle;*/
+    margin-right: 5px;
+}
+
+.page-change-area a:hover {
+    opacity: 0.5;
+}
+
+/*h2.display-title {
+    padding: .25em 0 .5em .75em;
+    border-left: 6px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    width: 500px
+}*/
+/*h2.display-title {
+    position: relative;
+    padding: 0 .4em .1em;
+}
+h2.display-title::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  content: '';
+  width: 10%;
+  height: 10px;
+  background-color: #b6f0fc;
+}*/
+/*.search-form-area form {*/
+.search-form-area form, .create-form-area .form-head, .import-form-area form {
+    position: relative;
+    background-color: #f5f5f5;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
+    max-width: 600px;
+    margin-top: 10px;
+    padding: 1px 10px 10px 10px;
+    /*background-color: #f5f5f5;*/
+}
+
+.search-form-area .input-area {
+    display: inline-block;
+}
+
+.search-form-area .button-area {
+    display: inline-block;
+    position: absolute;
+    top: 20px;
+}
+
+.valid-area {
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom:5px;
+    height: 15px;
+    font-weight: bold;
+}
+
+.head-box {
+    max-width: 600px;
+    margin-top: 10px;
+    background-color: #f5f5f5;
+}
+
+.serch-tab {
+    /*background-image: url("../image/icon_updown.png");
+    background-position-x: right;
+    background-position-y: center;
+    background-repeat: no-repeat;*/
+    cursor: pointer;
+    text-align: right;
+    max-width: 600px;
+    height: 15px;
+    margin-bottom: 5px;
+    padding-right: 5px;
+    /*border-radius: 8px;*/
+    background-color: #f5f5f5;
+    font-size: 12px;
+    /*box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);*/
+}
+
+.serch-tab span:hover {
+    /*background-color: #e0e1e2;
+    padding: 3px 0px 3px 0px;*/
+    opacity: 0.5 ;
+    /*background: radial-gradient(#e0e1e2, #e0e1e2);*/
+}
+
+.tab-close {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
+}
+
+.serch-tab:hover {
+    /*box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);*/
+}
+
+.create-form-area {
+    padding-right: 10px;
+}
+
+/*.create-form-area .form-head {
+    width: 500px;*/
+    /*display: inline-block;*/
+/*}*/
+
+.create-form-area .form-detail {
+    padding-top: 10px;
+    max-width: 1200px;
+}
+
+.issue-create-area .page-change-area {
+    max-width: 900px;
+}
+
+.issue-create-area .create-form-area .form-detail {
+    padding-top: 10px;
+    max-width: 900px;
+}
+
+input[type=text], input[type=date], input[type=email], select {
+    border: 1px solid #f5f5f5;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.create-form-area input[type=text], .create-form-area input[type=date], .create-form-area select {
+    width: 95%;
+}
+
+.list-area {
+    max-width: 1200px;
+}
+
+.list-area  {
+    text-align: right;
+}
+
+.list-area .button-area .button-area-center {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.input-label-area {
+    display: flex;
+    height: 40px;
+}
+
+.input-print-label-area {
+    display: flex;
+}
+
+th {
+    text-align:center;
+}
+
+.update-box input, .update-box label, .update-box select {
+    display: inline-block flex;
+    max-width: 85%;
+    min-width: 80%;
+}
+
+.update-box label.input-row-no {
+    min-width: 50%!important;
+}
+
+/*.update-box .update-btn {
+    display: inline-block;
+}*/
+
+/*button, [type=button], [type=submit] {
+    border: 1px solid;
+    border-color: lightslategray;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    padding: 2px 6px 2px 6px;
+}*/
+
+button, [type=button], [type=submit] {
+    border: 1px solid;
+    border-color: #f5fffa;
+    border-radius: 4px;
+    color: #ffffff;
+    background-color: rgba(119,136,153, 1);
+    padding: 2px 6px 2px 6px;
+}
+
+/*button:hover, [type=button]:hover, [type=submit]:hover {
+    background-color: #f5fffa;
+}*/
+
+button:hover, [type=button]:hover, [type=submit]:hover {
+    opacity: 0.5;
+}
+
+button:disabled, [type=button]:disabled, [type=submit]:disabled, select:disabled {
+    cursor: url("../image/icon_not.png"), auto;
+    opacity: 0.2;
+}
+
+button:focus, [type=button]:focus, [type=submit]:focus {
+    /*background-color: #e0ffff;*/
+    outline: none;
+}
+
+.page-change-area button {
+    width: 75px;
+    height: 30px;
+    margin-right:10px;
+}
+
+.search-btn, .create-btn, .update-btn {
+    width: 45px;
+    height: 30px;
+}
+
+.update-btn {
+    margin-top: 3px;
+}
+
+.update-all-btn {
+    width: 130px;
+    height: 30px;
+}
+
+.func-btn-area {
+    text-align: left;
+    padding-bottom: 10px;
+}
+
+.func-btn-area .row-add-btn {
+    width: 4.2em;
+    height: 2em;
+    border: 1px solid;
+    font-size: 0.9em;
+    background-color: #0094ff;
+    /*border-color: rgba(65,105,222, 1);*/
+}
+
+.func-btn-area .row-add-btn:hover {
+    opacity: 0.5;
+    border: 1px solid;
+}
+
+/*.func-btn-area .no-set-check-area {
+    padding-right: 10px;
+    display: inline-block;
+}*/
+
+/*.func-btn-area .no-set-check {
+    padding-top: 10px;
+}*/
+
+.loading-btn {
+    background-image: url("../image/icon_roading.gif");
+    background-size: 15px;
+    background-color: rgba(119,136,153, 0.5);
+    background-position-x: center;
+    background-position-y: center;
+    background-repeat: no-repeat;
+}
+
+.mark-updated {
+    background-image: url("../image/icon_check.png");
+    background-size: 12px;
+    background-repeat: no-repeat;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+}
+
+/*.icon-reset {
+    background-image: url("../image/icon_reset.png");
+    background-size: 10px;
+    background-position-y: center;
+    background-repeat: no-repeat;
+    position: center;
+    padding: 5px 5px 5px 5px;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+}*/
+
+.icon-check {
+    color: orange;
+    padding: 1px 1px 1px 1px;
+    text-shadow: 1px 1px 4px #fa70ab;
+    display: inline-block;
+    cursor: default;
+}
+
+/*.input-print-label-area input[type=text], .input-print-label-area select {
+    display: block;
+}*/
+
+.search-form-area input[type=text], .search-form-area select {
+    padding: 6px;
+    max-width: 12.5em;
+    height: 2.5em;
+}
+
+/*.search-form-area input[type=date] {
+    padding: 6px;
+    width: 200px;
+    height: 34px;
+}*/
+
+.search-form-area .name-label {
+    margin-left: 10px;
+    padding: 5px;
+    max-width: 250px;
+    height: 2.5em;
+}
+
+.create-form-area .form-head input[type=text] {
+    padding: 6px;
+    max-width: 12.5em;
+    height: 2.5em;
+}
+
+/*.create-form-area .form-head input[type=date] {
+    padding: 6px;
+    width: 200px;
+    height: 34px;
+}*/
+
+.create-form-area .form-head .name-label {
+    margin-left: 10px;
+    padding: 5px;
+    max-width: 250px;
+    height: 2.5em;
+}
+
+.create-form-area .form-head #Input_DenpyoNo {
+    display: inline-block;
+    margin-right: 30px;
+}
+
+.create-form-area .form-head #Input_BunnoKaisu {
+    width: 50px;
+    height: 35px;
+    display: inline-block;
+}
+
+.list-area input[type=text] {
+    padding: 5px 5px 5px 5px;
+    margin-top: 3px;
+    height: 33px;
+}
+
+.list-area select {
+    padding: 5px 5px 5px 5px;
+    margin-top: 3px;
+    height: 33px;
+}
+
+input[type=text]:focus, input[type=date]:focus, input[type=email]:focus, select:focus {
+    border: 1px solid #ffa500;
+    outline: 0;
+}
+
+.list-area label {
+    padding: 10px 0px 5px 0px;
+}
+
+.ui-autocomplete {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000 !important;
+}
+
+table {
+    table-layout: fixed;
+    max-width:900px;
+}
+
+tr th {
+    font-family: 'Yu Gothic';
+    padding: 5px 5px 5px 5px;
+}
+
+#PartialList tr .col-no ~ th {
+    cursor: ns-resize;
+}
+
+/*.display-title {
+    font-family: 'Yu Gothic';
+}*/
+
+th span.sort-asc:before {
+    content: '';
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background-image: url("../image/icon_sortup.png");
+    background-size: contain;
+    vertical-align: middle;
+}
+
+th span.sort-desc:before {
+    content: '';
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background-image: url("../image/icon_sortdown.png");
+    background-size: contain;
+    vertical-align: middle;
+}
+
+.col-no {
+    width: 50px;
+}
+
+#PartialList .col-no {
+    padding-left: 20px !important;
+}
+
+.create-form-area .col-no span:hover,
+.create-form-area .input-row-no span:hover {
+    width: 30px;
+    cursor: pointer;
+    opacity: 0.1;
+    border-radius: 30px;
+    padding: 3px 10px;
+}
+
+/*.col-lineNo {
+    width: 70px;
+}*/
+
+/*.col-bunnoKaisu {
+    width: 60px;
+}*/
+
+/*.list-area .LineNo input[type=text] {
+    /*width: 70%;*/
+    /*text-align: center;
+}*/
+
+/*.list-area .BunnoKaisu input[type=text] {
+    /*width: 70%;*/
+    /*text-align: center;
+}*/
+
+.col-denpyoNo {
+    width: 110px;
+}
+
+.col-buhinNo {
+    width: 200px;
+}
+
+.col-buhinName {
+    width: 190px;
+    /*min-width: 90px;*/
+}
+
+.col-receiptSuryo {
+    width: 105px;
+}
+
+.col-issueSuryo {
+    width: 100px;
+}
+
+.list-area .IssueSuryo input[type=text] {
+    width: 80%;
+    /*text-align: center;*/
+}
+
+.col-ikisaki1, .col-ikisaki2 {
+    width: 100px;
+}
+
+.col-torokudate {
+    width:110px;
+}
+
+.col-btn {
+    width: 45px;
+}
+
+/*tbody .LineNo {
+    text-align: center;
+}*/
+
+tbody .BunnoKaisu {
+    text-align: center;
+}
+
+@media (max-width: 1024px) {
+    .col-no {
+        width: 40px;
+    }
+
+    /*.col-lineNo {
+        width: 70px;
+    }*/
+
+    .col-bunnoKaisu {
+        width: 50px;
+    }
+
+    .col-denpyoNo {
+        width: 100px;
+    }
+
+    .col-buhinNo {
+        width: 175px;
+    }
+
+    .col-buhinName {
+        min-width: 80px;
+    }
+
+    .col-receiptSuryo {
+        width: 90px;
+    }
+
+    .col-issueSuryo {
+        width: 90px;
+    }
+
+    .col-torokudate {
+        width: 75px;
+    }
+
+    .col-btn {
+        width: 35px;
+    }
+}
+
+.list-area td {
+    text-align: center;
+    position: center;
+    padding: 3px 3px 3px 3px;
+}
+
+.list-area td.BuhinName{
+    text-align: left;
+}
+
+.list-area td.input[type=bottun] {
+    margin-top: 3px;
+}
+
+
+/*発注データ取込↓ start-----------------------------------------*/
+
+.file-input-area {
+    padding: 20px 10px 10px 10px;
+}
+
+/*.import-form-area .button-area {
+    text-align: right;
+}*/
+
+.file-button-area {
+    text-align: right;
+}
+
+#import-res {
+    padding: 1.2em 1.1em 1.1em 1.1em;
+    min-height: 90px;
+}
+
+#import-res.res-error {
+    color: red;
+    font-weight: bold;
+}
+
+/*.input-label-area input[type=text] {
+    padding: 6px;
+    width: 200px;
+    height: 34px;
+}*/
+
+.input-label-area button {
+    background-color: #0094ff;
+    height: 80%;
+}
+
+.input-label-area button img {
+    width: 1.1em;
+    height: auto;
+}
+
+.statu-box {
+    position: relative;
+    margin: 2em 0;
+    padding: 0.5em 1em;
+    border: solid 3px #68b8f2;
+    border-radius: 8px;
+    max-width: 500px;
+}
+
+.statu-box .box-title {
+    position: absolute;
+    display: inline-block;
+    top: -13px;
+    left: 10px;
+    padding: 0 9px;
+    line-height: 1;
+    font-size: 19px;
+    background: #ECEFF1;
+    color: #68b8f2;
+    font-weight: bold;
+}
+
+.statu-box p {
+    margin: 0;
+    /*min-height: 90px;*/
+    /*padding: 10px;*/
+}
+
+.log-path {
+    max-width: 500px;
+    font-size: 90%;
+    position: relative;
+}
+
+.log-path input[type=text]{
+    width: 70%;
+    height: 80%;
+}
+
+.log-path span {
+    padding: 3px;
+}
+
+/*発注データ取込↑ end-----------------------------------------*/
+
+/*作業リスト発行↓ start---------------------------------------*/
+
+.pickinglist-input-area {
+    padding: 20px 10px 10px 10px;
+}
+
+#pickinglist-search-form {
+    max-width: 500px;
+}
+
+#pickinglist-search-form > form{
+    margin-bottom: 10px;
+}
+
+.item-name {
+    min-width: 6.5em;
+    padding: 5px;
+    letter-spacing: 0.4em;
+    color: #FFFFFF;
+    font-size: 1.1em;
+    background-color: #999999;
+}
+
+.nami {
+    padding: 6px 7px 5px 10px;
+    color: #555555;
+    font-size: 1.1em;
+}
+
+#Input_Bin {
+    max-width: 50px;
+}
+
+/*#Input_Ikisaki1 {
+    max-width: 100px;
+}*/
+
+#pickinglist-search-form #Input_ShiziNoki_s, #pickinglist-search-form #Input_ShiziNoki_e {
+    width: 8em;
+}
+
+#pickinglist-search-form #Input_CustomersCode, #pickinglist-search-form #Input_SuppliersCode {
+    width: 8em;
+}
+
+#pickinglist-search-form #Input_Ikisaki1 {
+    width: 8em;
+}
+
+/*a.pickinglist {
+    padding: 5px;
+    color: #708090;
+    text-decoration: none;
+    font-weight: bold;
+    display: block;
+}*/
+/*a.pickinglist:hover {
+    opacity: 0.5;
+}*/
+
+table.pickinglist-table {
+    margin-top: 30px;
+    border-spacing: 0;
+    border-collapse: collapse;
+    border-bottom: 1px solid #aaa;
+    color: #555;
+    width: 65em;
+    padding-right: 5px;
+}
+
+.pickinglist-table th {
+    border-top: 1px solid #aaa;
+    background-color: #f5f5f5;
+    padding: 10px 6px 10px 6px;
+}
+
+.pickinglist-table th.pl-no-h, .pickinglist-table th.pl-bin-h, .pickinglist-table th.pl-ikisaki1-h {
+    width: 3.5em;
+}
+
+.pickinglist-table th.pl-shizinoki-h {
+    width: 8em;
+}
+
+.pickinglist-table th.pl-customers-name-h, .pickinglist-table th.pl-suppliers-name-h {
+    width: 18em;
+}
+
+
+.pickinglist-table td {
+    border-top: 1px solid #aaa;
+    padding: 10px 6px 10px 6px;
+    text-align: center;
+}
+
+.pickinglist-table tbody tr:hover {
+    cursor: pointer;
+    background-color: #f5fffa;
+}
+
+/*作業リスト発行↑ end-----------------------------------------*/
+
+/*ユーザー登録↓ start-----------------------------------------*/
+
+#userregist-request-form input[type=email] {
+    padding: 6px;
+    width: 20em;
+    height: 2.5em;
+}
+
+.userregist-request-input-area {
+    padding: 20px 10px 10px 10px;
+}
+
+#userregist-request-form {
+    max-width: 500px;
+}
+
+#userregist-request-form > form {
+    margin-bottom: 10px;
+}
+
+/*ユーザ
+    ー登録↑ end-------------------------------------------*/
+/*入出庫確認↓-------------------------------------------------*/
+
+#Deliverying-Serch-Form-area {
+    position: relative;
+    background-color: #f5f5f5;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
+    max-width: 700px;
+    margin-top: 10px;
+    padding: 1px 10px 10px 10px;
+}
+.DeliveryInfotable {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: #f5f5f5;
+    margin-top: 10px;
+}
+
+    .DeliveryInfotable th {
+        padding: 10px 0;
+        text-align: center;
+        background-color: #999999;
+        color: #FFFFFF;
+    }
+.DeliveryInfotable td {
+        padding: 10px 0;
+        text-align: center;
+}
+.DeliveryInfotable tr:nth-child(odd) {
+        background-color: #d0caca
+}
+.sbox1 {
+    max-width: 130px;
+    height: 35px;
+    border-radius: 2px;
+    outline: 0;
+    margin-bottom: 0px;
+    background: #ffffff;
+}
+
+
+.radioArea input[type="checkbox"] {
+    width: 12pt; /* 大きさ：横 */
+    height: 12pt; /* 大きさ：縦 */
+    vertical-align: central; /* 並び位置   */
+}
+    /* --- チェックボックス直後のlabel --- */
+    .radioArea input[type="checkbox"] + label {
+        padding: 0 4px; /* labelの余白 */
+        font-size: 15px; /* labelの文字サイズ */
+        border-radius: 5px; /* labelの角丸 */
+        background: #ffffff; /* lebelの背景 */
+        cursor: pointer; /* カーソル設定 */
+        transition: .2s; /* なめらか変化 */
+    }
+    /* --- 選択されたチェックボックス直後のlabel --- */
+    .radioArea input[type="checkbox"]:checked + label {
+        background: #99FFFF; /* lebelの背景 */
+    }
+    /* --- チェックボックス直後のlabelにマウスが乗った --- */
+    .radioArea input[type="checkbox"] + label:hover {
+        background: #CCFFFF; /* lebelの背景 */
+    }
+/*入出庫確認↑ end---------------------------------------*/
