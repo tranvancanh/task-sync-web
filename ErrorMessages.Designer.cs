@@ -214,20 +214,20 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to システムエラー.
+        /// </summary>
+        public static string W10003 {
+            get {
+                return ResourceManager.GetString("W10003", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to パスワードを入力してください.
         /// </summary>
         public static string W3_1_2_1001 {
             get {
                 return ResourceManager.GetString("W3-1-2-1001", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string W3_1_2_10011 {
-            get {
-                return ResourceManager.GetString("W3-1-2-10011", resourceCulture);
             }
         }
         
