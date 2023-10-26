@@ -32,15 +32,19 @@ body {
 .btn-custom {
     background-color: #ffffff !important;
     color: var(--fontcolor) !important;
-    border: 1px solid #ffffff !important;
+    border: 1px solid var(--othercolor) !important;
 }
     .btn-custom:hover {
         background-color: var(--sublightcolor) !important;
     }
 
-    .form-control {
-        border: 1px solid #ffffff !important;
-    }
+.form-control {
+    border: 1px solid var(--othercolor) !important;
+}
+
+.card-header {
+    background-color: whitesmoke !important;
+}
 
 /*Å´navbar custom*/
 .navbar-dark {
@@ -113,14 +117,10 @@ table .sticky_table {
     color: #000000 !important;
 }
 
-    .sticky_table td .form-control {
-        font-size: 12px !important;
-    }
-
 .sticky_table th {
     font-weight: 600 !important;
     border: solid 1px rgba(248, 249, 252, 1);
-    background-color: var(--othercolor);
+    background-color: var(--othercolor)!important;
     text-align:center
 }
 

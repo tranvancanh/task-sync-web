@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace task_sync_web.Models
+﻿namespace task_sync_web.Models
 {
     public class BaseViewModel
     {
@@ -14,6 +9,6 @@ namespace task_sync_web.Models
 
         public List<string> ExcelHeaderList { get; set; }= new List<string>();
 
-        public PageViewModel PageViewModel { get; set; } = new PageViewModel();
+        public int PageRowCount { get; set; }
     }
 }
