@@ -117,79 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EW001" xml:space="preserve">
-    <value>{0}は必須です。</value>
-    <comment>INPUT</comment>
+  <data name="SW001" xml:space="preserve">
+    <value>登録が完了しました。</value>
+    <comment>INSERT</comment>
   </data>
-  <data name="EW002" xml:space="preserve">
-    <value>{0}は{1}文字以内で入力してください。</value>
-    <comment>INPUT</comment>
-  </data>
-  <data name="EW003" xml:space="preserve">
-    <value>{0}は{2}～{1}文字の間で入力してください。</value>
-    <comment>INPUT</comment>
-  </data>
-  <data name="EW004" xml:space="preserve">
-    <value>{0}は{1}～{2}の間で入力してください。</value>
-    <comment>INPUT</comment>
-  </data>
-  <data name="EW005" xml:space="preserve">
-    <value>日付の形式が正しくありません。yyyy/mm/ddで入力してください。</value>
-    <comment>INPUT</comment>
-  </data>
-  <data name="EW006" xml:space="preserve">
-    <value>開始日は終了日より前でなければいけません。</value>
-    <comment>INPUT</comment>
-  </data>
-  <data name="EW007" xml:space="preserve">
-    <value>時間の形式が正しくありません。hh:mmで入力してください。</value>
-    <comment>INPUT</comment>
-  </data>
-  <data name="EW008" xml:space="preserve">
-    <value>時間の形式が正しくありません。hh:mm:ssで入力してください。</value>
-    <comment>INPUT</comment>
-  </data>
-  <data name="EW1001" xml:space="preserve">
-    <value>ログインIDまたはパスワードが違います。</value>
-    <comment>ログイン画面</comment>
-  </data>
-  <data name="EW101" xml:space="preserve">
-    <value>対象データが存在しません。</value>
-    <comment>SELECT</comment>
-  </data>
-  <data name="EW102" xml:space="preserve">
-    <value>検索対象データが存在しません。</value>
-    <comment>SELECT</comment>
-  </data>
-  <data name="EW1101" xml:space="preserve">
-    <value>現在のパスワードが違います。</value>
-    <comment>パスワード変更画面</comment>
-  </data>
-  <data name="EW1102" xml:space="preserve">
-    <value>新しいパスワードと新しいパスワード(確認用)が一致しません。</value>
-    <comment>パスワード変更画面</comment>
-  </data>
-  <data name="EW1103" xml:space="preserve">
-    <value>現在のパスワードと新しいパスワードが同じです。</value>
-    <comment>パスワード変更画面</comment>
-  </data>
-  <data name="EW301" xml:space="preserve">
-    <value>{0}が存在しません。</value>
+  <data name="SW002" xml:space="preserve">
+    <value>更新が完了しました。</value>
     <comment>UPDATE</comment>
-  </data>
-  <data name="EW500" xml:space="preserve">
-    <value>データの取得に失敗しました。</value>
-    <comment>SERVER</comment>
-  </data>
-  <data name="EW501" xml:space="preserve">
-    <value>データの登録に失敗しました。</value>
-    <comment>SERVER</comment>
-  </data>
-  <data name="EW502" xml:space="preserve">
-    <value>データの更新に失敗しました。</value>
-    <comment>SERVER</comment>
-  </data>
-  <data name="EW900" xml:space="preserve">
-    <value>予期せぬエラーが発生しました。</value>
   </data>
 </root>

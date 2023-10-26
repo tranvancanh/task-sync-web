@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 
-namespace tec_shipping_management_web.Commons
+namespace task_sync_web.Commons
 {
     /// <summary>
     /// ハッシュ化に関する関数
@@ -25,7 +25,6 @@ namespace tec_shipping_management_web.Commons
             }
             return listSalt.ToArray();
         }
-
 
         /// <summary>
         /// 平⽂パスワードをハッシュ化されたパスワードに変換
@@ -51,7 +50,6 @@ namespace tec_shipping_management_web.Commons
             return hashedPassword;
         }
 
-
         /// <summary>
         /// ランダムなソルト取得
         /// </summary>
@@ -63,7 +61,6 @@ namespace tec_shipping_management_web.Commons
             rng.GetBytes(byteSalt);
             return byteSalt;
         }
-
 
         /// <summary>
         /// byte列を16進数⽂字列に変換

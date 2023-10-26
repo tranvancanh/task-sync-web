@@ -1,21 +1,15 @@
 ﻿@using System.Security.Claims
 @using Microsoft.AspNetCore.Authorization
-@model task_sync_web.Models.ChangePasswordViewModel
 
+@model task_sync_web.Models.PasswordChangeViewModel
 @{
-    ViewData["Title"] = "パスワード変更";
+    ViewData["Title"] = @Model.DisplayName;
 }
 
-
 <style>
-
-    a, a:hover {
-        color: #333
+    .changePassword a, .changePassword a:hover {
+        color: var(--fontcolor) !important;
     }
-
-     .cw-250 {
-        width: 80%;
-    } 
 
      #eye-change-pass {
         float: right;
@@ -23,191 +17,135 @@
         top: 10px;
         position: relative;
         z-index: 3;
-    } 
-
-
-    .input-group > .form-control:focus,
-    .input-group > .custom-select:focus,
-    .input-group > .custom-file .custom-file-input:focus ~ .custom-file-label {
-        z-index: 3;
-    }
-
-
-
+     }
 </style>
 
-
-<!--jquery-1.12.4↓-->
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<!--jquery-1.12.4↑-->
-
-
 <div class="card shadow m-4 changePassword inner">
-    <div class="card-header text-gray-800">
-        <h4>パスワード変更</h4>
+    <div class="card-header">
+        <h3 class="pt-2">@Model.DisplayName</h3>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="card border-left-custom">
-                    <div class="card-body py-2 font-weight-bold">
-                        パスワードは1～10文字の半角英数字(小文字)が使用できます。
-                    </div>
+        <div class="row p-2">
+            <div class="col-auto">
+                <div class="bd-callout">
+                    パスワードは8～12文字の半角英数字(小文字)が使用できます。
                 </div>
             </div>
         </div>
 
-        <div class="valid-area">
-            @{
-                var errMess = ViewData["Error"] as List<string>;
-                if (errMess != null)
-                {
-                    <ul>
-                        @foreach(var err in errMess)
-                        {
-                            <li class="text-danger">@err</li>
-                        }
-                    </ul>
-                }
-
-                var messages = ViewData["Success"] as string;
-                if (messages != null)
-                {
-                    <ul>
-                        <li class="text-success">@messages</li>
-                    </ul>
-                }
-            }
+        <div class="col-auto ps-3">
+            <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
+            <span class="text-success-custom">@ViewData["SuccessMessage"] </span>
         </div>
 
-        <form id="changePasswordForm" method="post" class="my-4" asp-controller="PasswordChange" enctype="multipart/form-data" onsubmit="return true;">
-            <div class="form-group row" style="display:none;">
-                <div class="col-xl-2">
-                    <label class="col-xl-12 col-form-label">
-                        @Html.DisplayNameFor(Model => Model.CurrentUserCode)
+        <form id="changePasswordForm" method="post" class="p-3" asp-controller="PasswordChange" enctype="multipart/form-data" onsubmit="return true;">
+            
+            <div class="form-group row my-3">
+                <div class="col-xl-3 col-form-label">
+                    <label>
+                        @Html.DisplayNameFor(Model => Model.CurrentPassword)
                     </label>
                 </div>
                 <div class="col-xl-3">
-                    <div class="input-group mr-xl-2 cw-250">
-                        <input type="text" asp-for="@Model.CurrentUserCode" class="form-control rounded mr-3" readonly>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row mb-1">
-                <div class="col-xl-2">
-                    <label for="inputPassword" class="col-xl-12 col-form-label">
-                        @Html.DisplayNameFor(Model => Model.CurrentPass)
-                    </label>
-                </div>
-                <div class="col-xl-3">
-                    <div class="input-group mr-xl-2 cw-250" id="show_hide_currentpass">
-                        <input type="password" asp-for="@Model.CurrentPass" class="form-control rounded" placeholder="現在のパスワード" />
+                    <div class="input-group" id="show_hide_currentpass">
+                        <input type="password" asp-for="@Model.CurrentPassword" class="form-control" />
                         <a href="">
-                            <i class="fas fa-eye-slash" id="eye-change-pass"></i>
+                            <i class="fas fa-eye-slash fa-fw" id="eye-change-pass"></i>
                         </a>
                     </div>
+                    <span asp-validation-for="CurrentPassword" class="text-danger-custom"></span>
                 </div>
             </div>
 
-            <div class="form-group row mb-1">
-                <div class="col-xl-2">
-                    <label for="inputPassword" class="col-xl-12 col-form-label">
-                        @Html.DisplayNameFor(Model => Model.NewPass)
-                    </label>
-                </div>
-
-                <div class="col-xl-3">
-                    <div class="input-group mr-xl-2 cw-250" id="show_hide_newpass">
-                        <input type="password" asp-for="@Model.NewPass" class="form-control rounded" placeholder="新しいパスワード" maxlength="10" />
-                        <a href="">
-                            <i class="fas fa-eye-slash" id="eye-change-pass"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row mb-1">
-                <div class="col-xl-2">
-                    <label for="inputPassword" class="col-xl-12 col-form-label">
-                        @Html.DisplayNameFor(Model => Model.ConfirmPass)
+            <div class="form-group row my-3">
+                <div class="col-xl-3 col-form-label">
+                    <label>
+                        @Html.DisplayNameFor(Model => Model.NewPassword)
                     </label>
                 </div>
                 <div class="col-xl-3">
-                    <div class="input-group mr-xl-2 cw-250" id="show_hide_confirmpass">
-                        <input type="password" asp-for="@Model.ConfirmPass" class="form-control rounded" placeholder="再度、新しいパスワード" maxlength="10" />
+                    <div class="input-group" id="show_hide_newpass">
+                        <input type="password" asp-for="@Model.NewPassword" class="form-control" />
                         <a href="">
-                            <i class="fas fa-eye-slash" id="eye-change-pass"></i>
+                            <i class="fas fa-eye-slash fa-fw" id="eye-change-pass"></i>
                         </a>
                     </div>
+                    <span asp-validation-for="NewPassword" class="text-danger-custom"></span>
                 </div>
             </div>
 
-            <div class="form-group row mb-1">
-                <div class="col-xl-2"></div>
-                <div class="col-xl-2">
-                        <button name="submitButton" value="更新" class="btn btn-secondary btn-custom"
-                                type="submit" asp-action="Index">
-                            <i class="fas fa-check"></i>
-                            <span class="text">更新</span>
-                        </button>
+            <div class="form-group row my-3">
+                <div class="col-xl-3 col-form-label">
+                    <label>
+                        @Html.DisplayNameFor(Model => Model.ConfirmNewPassword)
+                    </label>
+                </div>
+                <div class="col-xl-3">
+                    <div class="input-group" id="show_hide_confirmpass">
+                        <input type="password" asp-for="@Model.ConfirmNewPassword" class="form-control" />
+                        <a href="">
+                            <i class="fas fa-eye-slash fa-fw" id="eye-change-pass"></i>
+                        </a>
+                    </div>
+                    <span asp-validation-for="ConfirmNewPassword" class="text-danger-custom"></span>
                 </div>
             </div>
+
+            <div class="text-right col-xl-6 mt-5">
+                <button name="submitButton" class="btn btn-secondary btn-custom" type="submit" asp-action="Index">
+                    <span class="p-2">
+                        <i class="fas fa-check fa-fw"></i> 更新
+                    </span>
+                </button>
+            </div>
+            
         </form>
 
-        @*
-        // else
-        // {
-        //     <p class="text-danger">E2010 アクセス権限がありません。</p>
-        // }
-        *@
     </div>
 </div>
 
+@section scripts{
+    <script>
+        $(document).ready(function () {
 
-<script type="text/javascript">
+            $("#show_hide_currentpass a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_currentpass input').attr("type") == "text") {
+                    $('#show_hide_currentpass input').attr('type', 'password');
+                    $('#show_hide_currentpass i').addClass("fa-eye-slash");
+                    $('#show_hide_currentpass i').removeClass("fa-eye");
+                } else if ($('#show_hide_currentpass input').attr("type") == "password") {
+                    $('#show_hide_currentpass input').attr('type', 'text');
+                    $('#show_hide_currentpass i').removeClass("fa-eye-slash");
+                    $('#show_hide_currentpass i').addClass("fa-eye");
+                }
+            });
 
-    $("#show_hide_currentpass a").on('click', function (event) {
-        event.preventDefault();
-        if ($('#show_hide_currentpass input').attr("type") == "text") {
-            $('#show_hide_currentpass input').attr('type', 'password');
-            $('#show_hide_currentpass i').addClass("fa-eye-slash");
-            $('#show_hide_currentpass i').removeClass("fa-eye");
-        } else if ($('#show_hide_currentpass input').attr("type") == "password") {
-            $('#show_hide_currentpass input').attr('type', 'text');
-            $('#show_hide_currentpass i').removeClass("fa-eye-slash");
-            $('#show_hide_currentpass i').addClass("fa-eye");
-        }
-    });
+            $("#show_hide_newpass a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_newpass input').attr("type") == "text") {
+                    $('#show_hide_newpass input').attr('type', 'password');
+                    $('#show_hide_newpass i').addClass("fa-eye-slash");
+                    $('#show_hide_newpass i').removeClass("fa-eye");
+                } else if ($('#show_hide_newpass input').attr("type") == "password") {
+                    $('#show_hide_newpass input').attr('type', 'text');
+                    $('#show_hide_newpass i').removeClass("fa-eye-slash");
+                    $('#show_hide_newpass i').addClass("fa-eye");
+                }
+            });
 
-    $("#show_hide_newpass a").on('click', function (event) {
-        event.preventDefault();
-        if ($('#show_hide_newpass input').attr("type") == "text") {
-            $('#show_hide_newpass input').attr('type', 'password');
-            $('#show_hide_newpass i').addClass("fa-eye-slash");
-            $('#show_hide_newpass i').removeClass("fa-eye");
-        } else if ($('#show_hide_newpass input').attr("type") == "password") {
-            $('#show_hide_newpass input').attr('type', 'text');
-            $('#show_hide_newpass i').removeClass("fa-eye-slash");
-            $('#show_hide_newpass i').addClass("fa-eye");
-        }
-    });
-
-    $("#show_hide_confirmpass a").on('click', function (event) {
-        event.preventDefault();
-        if ($('#show_hide_confirmpass input').attr("type") == "text") {
-            $('#show_hide_confirmpass input').attr('type', 'password');
-            $('#show_hide_confirmpass i').addClass("fa-eye-slash");
-            $('#show_hide_confirmpass i').removeClass("fa-eye");
-        } else if ($('#show_hide_confirmpass input').attr("type") == "password") {
-            $('#show_hide_confirmpass input').attr('type', 'text');
-            $('#show_hide_confirmpass i').removeClass("fa-eye-slash");
-            $('#show_hide_confirmpass i').addClass("fa-eye");
-        }
-    });
-
-    $(document).ready(function () {
-        console.log('running');
-        // $('input[type=password]').val('');
-    });
-
-</script>
+            $("#show_hide_confirmpass a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_confirmpass input').attr("type") == "text") {
+                    $('#show_hide_confirmpass input').attr('type', 'password');
+                    $('#show_hide_confirmpass i').addClass("fa-eye-slash");
+                    $('#show_hide_confirmpass i').removeClass("fa-eye");
+                } else if ($('#show_hide_confirmpass input').attr("type") == "password") {
+                    $('#show_hide_confirmpass input').attr('type', 'text');
+                    $('#show_hide_confirmpass i').removeClass("fa-eye-slash");
+                    $('#show_hide_confirmpass i').addClass("fa-eye");
+                }
+            });
+        });
+    </script>
+}

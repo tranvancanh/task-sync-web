@@ -35,18 +35,43 @@ body {
     font-weight: 800;
 }
 
-.btn-custom {
-    font-weight: 800!important;
+.btn-search {
+    border: none !important;
+    border-bottom: 2px solid var(--fontcolor) !important;
+    border-radius: 0px !important;
     background-color: #ffffff !important;
     color: var(--fontcolor) !important;
-    border: 1px solid var(--bs-border-color-translucent) !important;
 }
-    .btn-custom:hover {
+
+.btn-custom {
+    font-weight: 800 !important;
+    background-color: var(--othercolor) !important;
+    color: var(--fontcolor) !important;
+    border: 0px solid var(--fontcolor) !important;
+    border-radius: 100vh !important;
+    height: 2.8rem;
+}
+    .btn-custom:hover, .btn-search:hover {
         background-color: var(--sublightcolor) !important;
     }
 
 .form-control {
-    border: 1px solid var(--bs-border-color-translucent) !important;
+    border: none!important;
+    border-bottom: 2px solid var(--fontcolor) !important;
+    border-radius: 0px !important;
+}
+
+.form-control:focus {
+    background-color: var(--othercolor) !important;
+}
+
+    .form-control:focus, .datatable-input:focus {
+        color: var(--mainlightcolor);
+        box-shadow: 0 0 0 0 transparent!important;
+    }
+
+.text-right {
+    text-align: right !important;
 }
 
 .card {
@@ -55,12 +80,21 @@ body {
 }
 
 .card-header {
-    background-color: whitesmoke !important;
-    border-color:transparent!important;
+    background-color: var(--othercolor) !important;
+}
+
+.bd-callout {
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #eee;
+    border-left-width: .25rem;
+    border-radius: .25rem;
+    border-left-color: var(--subcolor);
 }
 
 /*↓navbar custom*/
-.navbar-dark {
+    .navbar-dark {
     background-color: var(--maincolor) !important;
 }
 
@@ -73,6 +107,9 @@ body {
 .dropdown-menu {
     --bs-dropdown-min-width: 20rem!important;
 }
+    .dropdown-menu a:focus {
+        background-color: var(--maincolor) !important;
+    }
 /*↑dropdown-menu custom*/
 
 /*↓ページャーデザイン上書き*/
