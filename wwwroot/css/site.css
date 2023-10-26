@@ -65,7 +65,7 @@ body {
     background-color: var(--othercolor) !important;
 }
 
-    .form-control:focus, .btn:focus, a:focus {
+    .form-control:focus, .btn:focus, a.page-link:focus {
         box-shadow: 0 0 0 5px var(--mainlightcolor) !important;
     }
 
