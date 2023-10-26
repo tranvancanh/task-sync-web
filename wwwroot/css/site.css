@@ -4,12 +4,11 @@
     --subcolor: #14DBB3;
     --sublightcolor: #CDFAF1;
     --fontcolor: #252F3B;
-    --othercolor: #E6EAEF;
+    --othercolor: whitesmoke;
     --font-family-sans-serif: "BIZ UDPGothic", Meiryo UI, sans-serif;
 }
 
 html {
-    font-size: 14px;
     color: var(--fontcolor);
     font-family: var(--font-family-sans-serif) !important;
 }
@@ -17,6 +16,13 @@ html {
 body {
     font-family: var(--font-family-sans-serif) !important;
     background-color:whitesmoke!important;
+}
+
+/*画面が小さい時は、文字の大きさを小さくする*/
+@media screen and (max-width: 1200px) {
+    html {
+        font-size: 80%!important;
+    }
 }
 
 .text-danger-custom {
@@ -30,20 +36,27 @@ body {
 }
 
 .btn-custom {
+    font-weight: 800!important;
     background-color: #ffffff !important;
     color: var(--fontcolor) !important;
-    border: 1px solid var(--othercolor) !important;
+    border: 1px solid var(--bs-border-color-translucent) !important;
 }
     .btn-custom:hover {
         background-color: var(--sublightcolor) !important;
     }
 
 .form-control {
-    border: 1px solid var(--othercolor) !important;
+    border: 1px solid var(--bs-border-color-translucent) !important;
+}
+
+.card {
+    border-color: var(--bs-border-color-translucent) !important;
+    min-width: 300px !important;
 }
 
 .card-header {
     background-color: whitesmoke !important;
+    border-color:transparent!important;
 }
 
 /*↓navbar custom*/
@@ -64,33 +77,31 @@ body {
 
 /*↓ページャーデザイン上書き*/
 .page-no-label {
-    font-size: 11px!important;
 }
 
 .page-item.active > .page-link {
     font-weight: 800;
-    background-color: var(--othercolor);
-    border-color: var(--bs-pagination-border-color);
+    background-color: var(--othercolor) !important;
+    border-color: var(--bs-border-color-translucent) !important;
 }
 
 .page-link {
     color: var(--fontcolor) !important;
-    font-size: 11px !important;
+    border-color: var(--bs-border-color-translucent) !important;
 }
 
     .page-link:hover {
-        font-weight: bold!important;
+        font-weight: bold !important;
+        background-color: var(--othercolor)!important;
     }
 /*↑ページャーデザイン上書き*/
 
 /*↓table共通 ヘッダー&2列固定*/
 /*参考：https://design-remarks.com/convenient-table-layout/ */
 table .sticky_table {
-    display: block;
-    overflow: scroll;
-    /*width: 100%;*/
+    display: block !important;
+    overflow: scroll !important;
     height: 550px;
-    /*border-collapse: collapse;*/
     border-collapse: separate; /*スクロールするとボーダーが消える対応*/
     border-spacing: 0; /*スクロールするとボーダーが消える対応*/
     padding-left: 0; /*スクロールすると、padding分はみ出るため0にしとく*/
@@ -99,12 +110,11 @@ table .sticky_table {
 
 .sticky_table th,
 .sticky_table td {
-    min-width: 100px;
+    min-width: 120px;
     max-width: 200px;
     padding: 5px;
     background: #ffffff;
-    font-size: 13px;
-    border: solid 1px rgba(248, 249, 252, 1);
+    /*border: solid 1px var(--othercolor);*/
     color: #000000 !important;
 }
 
@@ -115,31 +125,14 @@ table .sticky_table {
 
 .sticky_table td {
     color: #000000 !important;
+    border-bottom: solid 1px var(--fontcolor) !important;
 }
 
 .sticky_table th {
     font-weight: 600 !important;
-    border: solid 1px rgba(248, 249, 252, 1);
-    background-color: var(--othercolor)!important;
-    text-align:center
-}
-
-.sticky_table .table-icon-edit {
-    min-width: auto !important;
-}
-
-.sticky_table td.table-icon-edit {
-    cursor: pointer;
-}
-
-    .sticky_table td.table-icon-edit:hover {
-        opacity: 0.5;
-    }
-
-@media screen and (min-width: 1200px) {
-    .sticky_table th {
-        white-space: normal;
-    }
+    background-color: var(--othercolor) !important;
+    text-align: center;
+    border-bottom: solid 2px var(--fontcolor) !important;
 }
 
 .sticky_table tbody th {
@@ -162,6 +155,12 @@ table .sticky_table {
         left: 0;
         z-index: 3;
     }
+
+@media screen and (min-width: 1200px) {
+    .sticky_table th {
+        white-space: normal;
+    }
+}
 
 /*↑table共通 ヘッダー固定*/
 
