@@ -3,15 +3,15 @@ using SqlKata.Execution;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace task_sync_web.Commons.MssSqlKata
+namespace task_sync_web.Commons.DbSqlKata
 {
-    public class MssSqlKata : QueryFactory, IDisposable
+    public class DbSqlKata : QueryFactory, IDisposable
     {
         private static readonly string connectionString = new GetConnectString("tasksync_0_test").ConnectionString;
 
         private IDbTransaction _transaction = null;
 
-        public MssSqlKata() 
+        public DbSqlKata() 
         {
             var connection = new SqlConnection(connectionString);
             var compiler = new SqlServerCompiler();
