@@ -4,7 +4,7 @@ using SqlKata.Execution;
 using System.Data;
 using System.Diagnostics;
 using task_sync_web.Commons;
-using task_sync_web.Commons.MssSqlKata;
+using task_sync_web.Commons.DbSqlKata;
 using task_sync_web.Models;
 using task_sync_web.Models.Commons;
 using X.PagedList;
@@ -23,78 +23,104 @@ namespace task_sync_web.Controllers
         /// <summary>
         /// 初期一覧表示orキーワード検索
         /// </summary>
-        /// <param name="searchKeyWord"></param>
+        /// <param name="viewModel"></param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index(string searchKeyWord, int? pageNumber)
+        public IActionResult Index(MAdministratorViewModel viewModel, int? pageNumber)
         {
-            var viewModel = new MAdministratorViewModel() { SearchKeyWord = searchKeyWord };
-            var listUser = await GetListMAdministrator(searchKeyWord);
+            try
+            {
+                var listUser = GetListMAdministrator(viewModel.SearchKeyWord);
 
-            // page the list
-            var listPaged = listUser.ToPagedList(pageNumber ?? 1, viewModel.PageViewModel.PageRowCount);
-            viewModel.AdministratorModels = listPaged;
+                // page the list
+                var administratorModels = listUser.ToPagedList(pageNumber ?? 1, viewModel.PageRowCount);
+                viewModel.AdministratorModels = administratorModels;
 
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Index(string searchKeyWord)
-        {
-            int? pageNumber = null;
-            var viewModel = new MAdministratorViewModel() { SearchKeyWord = searchKeyWord };
-            var listUser = await GetListMAdministrator(searchKeyWord);
-
-            // page the list
-            var listPaged = listUser.ToPagedList(pageNumber ?? 1, viewModel.PageViewModel.PageRowCount);
-            viewModel.AdministratorModels = listPaged;
-
-            return View(viewModel);
+                return View(viewModel);
+            }
+            catch (CustomExtention ex)
+            {
+                ViewData["ErrorMessage"] = ex.Message;
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                return View(viewModel);
+            }
         }
 
         /// <summary>
         /// Excel出力
         /// </summary>
-        /// <param name="searchKeyWord"></param>
+        /// <param name="viewModel"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> ExcelOutput(string searchKeyWord) 
+        [HttpGet]
+        public IActionResult ExcelOutput(MAdministratorViewModel viewModel)
         {
-            var viewModel = new MAdministratorViewModel() { SearchKeyWord = searchKeyWord };
-            var listUser = await GetListMAdministrator(searchKeyWord);
-            var memoryStream = this.ExcelCreate(viewModel.ExcelHeaderList, listUser);
-            await Task.CompletedTask;
-            // ファイル名
-            var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
-            return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+            try
+            {
+                var administratorModels = GetListMAdministrator(viewModel.SearchKeyWord);
+                var memoryStream = this.ExcelCreate(viewModel.ExcelHeaderList, administratorModels);
+
+                // ファイル名
+                var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
+                return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+            }
+            catch (CustomExtention ex)
+            {
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("Index", viewModel);
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                return View("Index", viewModel);
+            }
         }
 
         /// <summary>
         /// データリストを取得
         /// </summary>
-        /// <param name="keySearch"></param>
+        /// <param name="searchKey"></param>
         /// <returns></returns>
-        private async Task<List<MAdministratorModel>> GetListMAdministrator(string keySearch)
+        private List<MAdministratorModel> GetListMAdministrator(string searchKey)
         {
-            var userModel = new List<MAdministratorModel>();
-            using (var db = new MssSqlKata())
+            try
             {
-                if (string.IsNullOrWhiteSpace(keySearch))
+                var administratorModels = new List<MAdministratorModel>();
+                using (var db = new DbSqlKata())
                 {
-                    userModel = (await db.Query("MAdministrator")
-                                        .GetAsync<MAdministratorModel>()).ToList();
+                    searchKey = (searchKey ?? "").Trim();
+
+                    // DBからデータ一覧を取得
+                    var administratorList = db.Query("MAdministrator").Get<MAdministratorModel>().ToList();
+                    if (administratorList.Count == 0)
+                    {
+                        throw new CustomExtention(ErrorMessages.EW101);
+                    }
+
+                    if (administratorList.Count > 0 && searchKey.Length > 0)
+                    {
+                        // 検索キーワードが存在する場合
+                        administratorModels = administratorList.Where(x => x.AdministratorLoginId.Contains(searchKey) || x.AdministratorName.Contains(searchKey) || x.AdministratorNameKana.Contains(searchKey)).ToList();
+                        if (administratorModels.Count == 0)
+                        {
+                            throw new CustomExtention(ErrorMessages.EW102);
+                        }
+                    }
+                    else
+                    {
+                        administratorModels = administratorList;
+                    }
                 }
-                else
-                {
-                    userModel = (await db.Query("MAdministrator")
-                                        .WhereLike("AdministratorLoginId", $"%{keySearch}%")
-                                        .OrWhereLike("AdministratorName", $"%{keySearch}%")
-                                        .OrWhereLike("AdministratorNameKana", $"%{keySearch}%")
-                                        .GetAsync<MAdministratorModel>()).ToList();
-                }
+                return administratorModels;
             }
-            return userModel;
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public MemoryStream ExcelCreate(List<string> headerList, List<MAdministratorModel> administratorList)
@@ -148,67 +174,10 @@ namespace task_sync_web.Controllers
 
         }
 
-        private List<MAdministratorModel> GetList(string SearchKeyWord)
-        {
-            var administratorViewModels = new List<MAdministratorModel>();
-
-            try
-            {
-                // DBからデータ一覧取得
-                var db = Utils.GetQueryFactory("tasksync_0_test");
-
-                var administratorList = db.queryFactory.Query("MAdministrator").Get<MAdministratorModel>().ToList();
-                if (administratorList.Count == 0)
-                {
-                    throw new CustomExtention(ErrorMessages.EW101);
-                }
-                
-                SearchKeyWord = SearchKeyWord.Trim();
-                if (administratorList.Count > 0 && SearchKeyWord.Length > 0)
-                {
-                    // キーワード検索
-                    administratorViewModels = administratorList.Where(x => x.AdministratorLoginId.Contains(SearchKeyWord) || x.AdministratorName.Contains(SearchKeyWord) || x.AdministratorNameKana.Contains(SearchKeyWord)).ToList();
-                    if (administratorViewModels.Count == 0)
-                    {
-                        throw new CustomExtention(ErrorMessages.EW102);
-                    }
-
-                    // キーワードをセッションにセット
-                    SessionSet(SearchKeyWord);
-                }
-                else
-                {
-                    administratorViewModels = administratorList;
-                }
-
-                return administratorViewModels;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        private void SessionSet(string SearchKeyWord)
-        {
-            HttpContext.Session.SetString(MAdministratorViewModel.Session_SearchKeyWord, SearchKeyWord);
-        }
-
-        private string SessionGet()
-        {
-            var SearchKeyWord = HttpContext.Session.GetString(MAdministratorViewModel.Session_SearchKeyWord) ?? "";
-            return SearchKeyWord;
-
-        }
-        private void SessionReset()
-        {
-            HttpContext.Session.Remove(MAdministratorViewModel.Session_SearchKeyWord);
         }
     }
 }

@@ -9,6 +9,6 @@
 
         public List<string> ExcelHeaderList { get; set; }= new List<string>();
 
-        public PageViewModel PageViewModel { get; set; } = new PageViewModel();
+        public int PageRowCount { get; set; }
     }
 }

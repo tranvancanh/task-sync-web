@@ -13,32 +13,32 @@ namespace task_sync_web.Commons
 
     public static class Utils
     {
-        public static (QueryFactory queryFactory, SqlServerCompiler compiler, SqlConnection connection) GetQueryFactory(string databeseName)
-        {
-            var connectionString = new GetConnectString(databeseName).ConnectionString;
-            // Setup the connection and compiler
-            var connection = new SqlConnection(connectionString);
-            var compiler = new SqlServerCompiler();
-            var db = new QueryFactory(connection, compiler);
+        //public static (QueryFactory queryFactory, SqlServerCompiler compiler, SqlConnection connection) GetQueryFactory(string databeseName)
+        //{
+        //    var connectionString = new GetConnectString(databeseName).ConnectionString;
+        //    // Setup the connection and compiler
+        //    var connection = new SqlConnection(connectionString);
+        //    var compiler = new SqlServerCompiler();
+        //    var db = new QueryFactory(connection, compiler);
 
-            return (db, compiler, connection);
-        }
+        //    return (db, compiler, connection);
+        //}
 
-        public static PageViewModel SetPaging(int pageNumber, int pageRowCount, int dataAllCount)
-        {
-            var pageViewModel = new PageViewModel();
-            var endNo = pageNumber * pageRowCount;
-            var startNo = endNo - (pageRowCount - 1);
-            if (endNo > dataAllCount)
-            {
-                endNo = dataAllCount;
-            }
-            pageViewModel.PageRowStartNumber = startNo;
-            pageViewModel.PageRowEndNumber = endNo;
-            pageViewModel.PageRowCount = dataAllCount;
+        //public static PageViewModel SetPaging(int pageNumber, int pageRowCount, int dataAllCount)
+        //{
+        //    var pageViewModel = new PageViewModel();
+        //    var endNo = pageNumber * pageRowCount;
+        //    var startNo = endNo - (pageRowCount - 1);
+        //    if (endNo > dataAllCount)
+        //    {
+        //        endNo = dataAllCount;
+        //    }
+        //    pageViewModel.PageRowStartNumber = startNo;
+        //    pageViewModel.PageRowEndNumber = endNo;
+        //    pageViewModel.PageRowCount = dataAllCount;
 
-            return pageViewModel;
-        }
+        //    return pageViewModel;
+        //}
     }
 
 }
