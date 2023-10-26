@@ -232,7 +232,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to パスワードの長さは10文字を超えてはいけません。.
+        ///   Looks up a localized string similar to パスワードは1～10文字を入力してください。.
         /// </summary>
         public static string W3_1_2_1002 {
             get {

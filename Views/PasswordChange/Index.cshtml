@@ -59,11 +59,14 @@
 
         <div class="valid-area">
             @{
-                var errMess = ViewData["Error"] as string;
+                var errMess = ViewData["Error"] as List<string>;
                 if (errMess != null)
                 {
                     <ul>
-                        <li class="text-danger">@errMess</li>
+                        @foreach(var err in errMess)
+                        {
+                            <li class="text-danger">@err</li>
+                        }
                     </ul>
                 }
 
@@ -98,7 +101,7 @@
                 </div>
                 <div class="col-xl-3">
                     <div class="input-group mr-xl-2 cw-250" id="show_hide_currentpass">
-                        <input type="password" asp-for="@Model.CurrentPass" class="form-control rounded" placeholder="現在のパスワード" maxlength="10" autocomplete="new-password" />
+                        <input type="password" asp-for="@Model.CurrentPass" class="form-control rounded" placeholder="現在のパスワード" />
                         <a href="">
                             <i class="fas fa-eye-slash" id="eye-change-pass"></i>
                         </a>

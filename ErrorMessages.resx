@@ -189,7 +189,7 @@
     <value>パスワードを入力してください</value>
   </data>
   <data name="W3-1-2-1002" xml:space="preserve">
-    <value>パスワードの長さは10文字を超えてはいけません。</value>
+    <value>パスワードは1～10文字を入力してください。</value>
   </data>
   <data name="W3-1-2-1003" xml:space="preserve">
     <value>パスワードが一致していません。</value>
