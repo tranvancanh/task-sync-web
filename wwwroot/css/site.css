@@ -65,9 +65,8 @@ body {
     background-color: var(--othercolor) !important;
 }
 
-    .form-control:focus, .datatable-input:focus {
-        color: var(--mainlightcolor);
-        box-shadow: 0 0 0 0 transparent!important;
+    .form-control:focus, .btn:focus, a:focus {
+        box-shadow: 0 0 0 5px var(--mainlightcolor) !important;
     }
 
 .text-right {
