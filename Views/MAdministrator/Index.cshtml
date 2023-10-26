@@ -19,17 +19,17 @@
     </div>
     <div class="card-body">
         <div class="p-2">
-            <form class="form-inline" asp-controller="MAdministrator" enctype="multipart/form-data" method="get">
+            <form class="form-inline ms-1" asp-controller="MAdministrator" enctype="multipart/form-data" method="get">
                 <div class="row">
-                    <div class="form-group col-auto p-1">
+                    <div class="form-group col-auto p-2">
                         <div class="input-group">
                             <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                            <button class="btn btn-secondary btn-custom border-start-0" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            <button class="btn btn-secondary btn-search" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
-                    <div class="form-group col-auto p-1">
+                    <div class="form-group col-auto p-2">
                         <!--ExcelTest-->
-                        <button class="btn btn-secondary btn-custom" asp-action="ExcelOutput" value="true" type="submit"><i class="fas fa-download fa-fw"></i> Excel出力</button>
+                        <button class="btn btn-secondary btn-custom" asp-action="ExcelOutput" ype="submit"><span class="p-2"><i class="fas fa-download fa-fw"></i> Excel出力</span></button>
                     </div>
                 </div>
             </form>
@@ -38,33 +38,33 @@
                 <span class="text-success-custom">@ViewData["Message"] </span>
             </div>
             <div style="overflow-x: scroll;">
-                    <table class="table sticky_table table-hover-evant mt-3">
-                        <thead>
-                            <tr>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
-                                <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
-                            </tr>
-                        </thead>
+                <table class="table sticky_table table-hover-evant mt-3">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
+                            <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
+                            <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
+                            <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
+                        </tr>
+                    </thead>
 
-                        @if (Model != null && Model.AdministratorModels != null && Model.AdministratorModels.Count > 0)
-                        {
-                            <tbody>
-                                @foreach (var item in Model.AdministratorModels)
-                                {
-                                    <tr>
-                                        <td class="text-right">@Html.DisplayFor(model => item.AdministratorLoginId)</td>
-                                        <td class="text-left">@Html.DisplayFor(model => item.AdministratorName)</td>
-                                        <td class="text-left">@Html.DisplayFor(model => item.AdministratorNameKana)</td>
-                                        <td class="text-center">@Html.DisplayFor(model => item.IsNotUse)</td>
-                                    </tr>
+                    @if (Model != null && Model.AdministratorModels != null && Model.AdministratorModels.Count > 0)
+                    {
+                        <tbody>
+                            @foreach (var item in Model.AdministratorModels)
+                            {
+                                <tr>
+                                    <td class="">@Html.DisplayFor(model => item.AdministratorLoginId)</td>
+                                    <td class="">@Html.DisplayFor(model => item.AdministratorName)</td>
+                                    <td class="">@Html.DisplayFor(model => item.AdministratorNameKana)</td>
+                                    <td class="text-center">@Html.DisplayFor(model => item.IsNotUse)</td>
+                                </tr>
 
-                                }
-                            </tbody>
-                        }
+                            }
+                        </tbody>
+                    }
 
-                    </table>
+                </table>
             </div>
 
             @if (pagedList != null)
@@ -86,7 +86,7 @@
                 })
                 </div>
             }
-            </div>
+        </div>
 
     </div>
 </div>
