@@ -189,6 +189,10 @@
     <value>データの更新に失敗しました。</value>
     <comment>SERVER</comment>
   </data>
+  <data name="EW503" xml:space="preserve">
+    <value>データの更新が完了しました。</value>
+    <comment>SERVER</comment>
+  </data>
   <data name="EW900" xml:space="preserve">
     <value>予期せぬエラーが発生しました。</value>
   </data>

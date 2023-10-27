@@ -10,8 +10,8 @@
 
 <style>
     .modal__container{
-        width: 400px; /* // モーダルの幅を設定  */
-        height: 350px; /* // モーダルの高さを設定 */
+        width: 450px; /* // モーダルの幅を設定  */
+        height: 400px; /* // モーダルの高さを設定 */
     }
 
     .readonlyclass:focus{
@@ -40,13 +40,11 @@
                     </div>
                 </div>
             </form>
-            <div class="col-auto">
-                <div class="col-auto">
-                    <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
-                    <span class="text-success-custom">@ViewData["Message"] </span>
-                </div>
+            <div class="col-auto my-2">
+                <span class="text-success-custom">@ViewData["MessageSuccess"]</span>
+                <span class="text-success-custom">@ViewData["MessageError"] </span>
             </div>
-            <table class="sticky_table table-hover-evant mt-2">
+            <table class="table sticky_table table-hover-evant mt-3">
                 <thead>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</th>
@@ -78,7 +76,7 @@
 
             @if (pagedList != null)
             {
-                <div class="mt-1">
+                <div class="mt-3">
                     <span class="page-no-label">
                         @pagedList.FirstItemOnPage - @pagedList.LastItemOnPage 件 / @pagedList.TotalItemCount 件中
                     </span>
@@ -107,10 +105,10 @@
                     <h2 class="modal__title" id="modal-1-title">
                         修正
                     </h2>
-                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                    <button class="modal__close123" aria-label="Close modal" data-micromodal-close><i class="fas fa-times-circle"></i></button>
                 </header>
                 <form method="post" asp-controller="MSystemSetting" enctype="multipart/form-data" autocomplete="on"
-                      data-ajax="true" data-ajax-update="formDetails">
+                      data-ajax="true" data-ajax-update="formDetails" class="mt-3">
                     @Html.AntiForgeryToken()
                     <div class="form-group" style="display: none">
                         <input name="SearchKeyWord" class="form-control readonlyclass" id="SearchKeyWordEdit" value="@Model.SearchKeyWord" type="text" readonly />
@@ -122,7 +120,7 @@
                     </div>
                     <div class="form-group my-1">
                         <label>システム設定概要</label>
-                        <input name="SystemSettingOutline" class="form-control" id="SystemSettingOutline" type="text" />
+                        <input name="SystemSettingOutline" class="form-control" id="SystemSettingOutline" type="text" readonly />
                     </div>
                     <div class="form-group my-1">
                         <label>システム設定値</label>
