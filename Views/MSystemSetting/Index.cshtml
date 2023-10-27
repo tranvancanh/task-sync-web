@@ -44,7 +44,9 @@
                 <span class="text-success-custom">@ViewData["MessageSuccess"]</span>
                 <span class="text-success-custom">@ViewData["MessageError"] </span>
             </div>
-            <table class="table sticky_table table-hover-evant mt-3">
+
+            <div style="overflow-x: scroll;">
+                <table class="table sticky_table table-hover-evant mt-3">
                 <thead>
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</th>
@@ -73,6 +75,7 @@
                 }
 
             </table>
+            </div>
 
             @if (pagedList != null)
             {

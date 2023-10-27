@@ -113,7 +113,7 @@ namespace task_sync_web.Controllers
                     .WhereNotNull("MAdministrator.AdministratorName")
                     .WhereLike("SystemSettingId", $"%{keySearch}%")
                     .OrWhereLike("SystemSettingOutline", $"%{keySearch}%")
-                     .OrderBy("MSystemSetting.UpdateLoginId")
+                    .OrderBy("MSystemSetting.UpdateLoginId")
                     .Get<MSystemSettingModel>().ToList();
                 }
             }
