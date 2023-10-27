@@ -37,7 +37,7 @@
                     <li><div class="ps-4 pt-3 small fw-bold">管理者名</div></li>
                     <li><div class="ps-5 pt-1 pb-3">山田花子</div></li>
                     <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item p-4 fw-bold" href="#!"><i class="fas fa-lock"></i> パスワード変更</a></li>
+                    <li><a class="dropdown-item p-4 fw-bold" asp-area="" asp-controller="PasswordChange" asp-action="Index"><i class="fas fa-lock"></i> パスワード変更</a></li>
                     <li><a class="dropdown-item p-4 fw-bold" href="#!"><i class="fas fa-sign-out-alt"></i> ログアウト</a></li>
                 </ul>
             </li>
@@ -99,6 +99,10 @@
     <!--datepicker-->
     <!--Micromodal.js-->
     <script src="https://cdn.jsdelivr.net/npm/micromodal/dist/micromodal.min.js"></script>
+
+    <!--jQueryの動的validation-->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

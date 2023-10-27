@@ -17,5 +17,9 @@ namespace task_sync_web.Models
         [Display(Name = "—˜—p’â~ƒtƒ‰ƒO")]
         public bool IsNotUse { get; set; }
 
+        public string Password { get; set; }
+        public string Salt { get; set; }
+
+
     }
 }

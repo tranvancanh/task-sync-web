@@ -30,5 +30,5 @@ namespace task_sync_web.Models
         [Display(Name = "更新ログインID")]
         public string UpdateLoginInfor => $"{UpdateLoginId} {UpdateLoginName}";
 
-    } 
+    }
 }

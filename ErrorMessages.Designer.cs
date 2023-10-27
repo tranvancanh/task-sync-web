@@ -79,7 +79,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   {0}は{1}～{2}の間で入力してください。 に類似しているローカライズされた文字列を検索します。
+        ///   {0}は{2}～{1}文字の間で入力してください。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW003 {
             get {
@@ -88,7 +88,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   日付の形式が正しくありません。yyyy/mm/ddで入力してください。 に類似しているローカライズされた文字列を検索します。
+        ///   {0}は{1}～{2}の間で入力してください。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW004 {
             get {
@@ -97,7 +97,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   開始日は終了日より前でなければいけません。 に類似しているローカライズされた文字列を検索します。
+        ///   日付の形式が正しくありません。yyyy/mm/ddで入力してください。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW005 {
             get {
@@ -106,7 +106,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   時間の形式が正しくありません。hh:mmで入力してください。 に類似しているローカライズされた文字列を検索します。
+        ///   開始日は終了日より前でなければいけません。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW006 {
             get {
@@ -115,11 +115,29 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   時間の形式が正しくありません。hh:mm:ssで入力してください。 に類似しているローカライズされた文字列を検索します。
+        ///   時間の形式が正しくありません。hh:mmで入力してください。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW007 {
             get {
                 return ResourceManager.GetString("EW007", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   時間の形式が正しくありません。hh:mm:ssで入力してください。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW008 {
+            get {
+                return ResourceManager.GetString("EW008", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   ログインIDまたはパスワードが違います。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1001 {
+            get {
+                return ResourceManager.GetString("EW1001", resourceCulture);
             }
         }
         
@@ -142,20 +160,38 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   IDが存在しません。 に類似しているローカライズされた文字列を検索します。
+        ///   現在のパスワードが違います。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string EW301 {
+        public static string EW1101 {
             get {
-                return ResourceManager.GetString("EW301", resourceCulture);
+                return ResourceManager.GetString("EW1101", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   コードが存在しません。 に類似しているローカライズされた文字列を検索します。
+        ///   新しいパスワードと新しいパスワード(確認用)が一致しません。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string EW302 {
+        public static string EW1102 {
             get {
-                return ResourceManager.GetString("EW302", resourceCulture);
+                return ResourceManager.GetString("EW1102", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   現在のパスワードと新しいパスワードが同じです。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1103 {
+            get {
+                return ResourceManager.GetString("EW1103", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0}が存在しません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW301 {
+            get {
+                return ResourceManager.GetString("EW301", resourceCulture);
             }
         }
         
