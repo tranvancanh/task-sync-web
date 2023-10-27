@@ -1,0 +1,160 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Web.Common;
+
+@model MSystemSettingViewModel
+@{
+    ViewData["Title"] = @Model.DisplayName;
+    var pagedList = Model.SystemSettingModels;
+}
+
+<style>
+    .modal__container{
+        width: 400px; /* // モーダルの幅を設定  */
+        height: 350px; /* // モーダルの高さを設定 */
+    }
+
+    .readonlyclass:focus{
+        background-color: #ced4da;
+    }
+</style>
+
+<div class="h4 mb-3">
+    @{
+        ViewData["Title"] = @Model.DisplayName;
+    }
+</div>
+<div class="card shadow m-4">
+    <div class="card-header">
+        <h3 class="pt-2">@Model.DisplayName</h3>
+    </div>
+    <div class="card-body">
+        <div class="p-2">
+            <form class="form-inline" asp-controller="MAdministrator" enctype="multipart/form-data" method="get">
+                <div class="row">
+                    <div class="form-group col-auto">
+                        <div class="input-group">
+                            <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                            <button class="btn btn-secondary btn-custom" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="col-auto">
+                <div class="col-auto">
+                    <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
+                    <span class="text-success-custom">@ViewData["Message"] </span>
+                </div>
+            </div>
+            <table class="sticky_table table-hover-evant mt-2">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</th>
+                        <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</th>
+                        <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</th>
+                        <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateDateTime)</th>
+                        <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateLoginInfor)</th>
+                    </tr>
+                </thead>
+
+                @if (Model != null && pagedList != null && pagedList.Count > 0)
+                {
+                    <tbody>
+                        @foreach (var item in pagedList)
+                        {
+                            <tr data-micromodal-trigger="modal-1" role="button" onclick="GetSystemSettingSubmitAjax(systemSettingId = '@item.SystemSettingId', systemSettingOutline = '@item.SystemSettingOutline', systemSettingStringValue = '@item.SystemSettingStringValue')">
+                                <td class="text-right">@Html.DisplayFor(model => item.SystemSettingId)</td>
+                                <td class="text-left">@Html.DisplayFor(model => item.SystemSettingOutline)</td>
+                                <td class="text-left">@Html.DisplayFor(model => item.SystemSettingStringValue)</td>
+                                <td class="text-center">@Html.DisplayFor(model => item.UpdateDateTime)</td>
+                                <td class="text-center">@Html.DisplayFor(model => item.UpdateLoginId) &nbsp&nbsp @Html.DisplayFor(model => item.UpdateLoginName)</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                }
+
+            </table>
+
+            @if (pagedList != null)
+            {
+                <div class="mt-1">
+                    <span class="page-no-label">
+                        @pagedList.FirstItemOnPage - @pagedList.LastItemOnPage 件 / @pagedList.TotalItemCount 件中
+                    </span>
+                    @Html.PagedListPager((IPagedList)pagedList, pageNumber => Url.Action("Index", new {searchKeyWord = Model.SearchKeyWord, pageNumber = pageNumber }),
+                new PagedListRenderOptions
+                {
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" },
+                MaximumPageNumbersToDisplay = 10, //表示するページャーの数
+                DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded, //「次へ」の非表示設定
+                DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded, //「前へ」の非表示設定
+                DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded, //「最初へ」の非表示設定
+                DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded, //「最後へ」の表示設定
+                })
+                </div>
+            }
+            </div>
+
+    </div>
+
+    
+    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="modal-1-title">
+                        修正
+                    </h2>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                </header>
+                <form method="post" asp-controller="MSystemSetting" enctype="multipart/form-data" autocomplete="on"
+                      data-ajax="true" data-ajax-update="formDetails">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group" style="display: none">
+                        <input name="SearchKeyWord" class="form-control readonlyclass" id="SearchKeyWordEdit" value="@Model.SearchKeyWord" type="text" readonly />
+                        <input name="PageNumber" class="form-control readonlyclass" id="PageNumberEdit" value="@pagedList.PageNumber" type="text" readonly />
+                    </div>
+                    <div class="form-group my-1">
+                        <label>システム設定ID</label>
+                        <input name="SystemSettingId" class="form-control readonlyclass" id="SystemSettingId" type="text" readonly />
+                    </div>
+                    <div class="form-group my-1">
+                        <label>システム設定概要</label>
+                        <input name="SystemSettingOutline" class="form-control" id="SystemSettingOutline" type="text" />
+                    </div>
+                    <div class="form-group my-1">
+                        <label>システム設定値</label>
+                        <input name="SystemSettingStringValue" class="form-control" id="SystemSettingStringValue" type="text" />
+                    </div>
+               
+                    <footer class="modal__footer mt-4">
+                        <button class="modal__btn modal__btn-primary col-md-4" type="submit" asp-action="Edit" style="margin-left: 10px;">
+                            保存
+                        </button>
+                        <label class="col-md-3"></label>
+                        <button class="modal__btn col-md-4" data-micromodal-close aria-label="Close this dialog window" type="button">キャンセル</button>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        let ROOT = '@Url.Content("~")';
+        $(document).ready(function () {
+           
+        });
+        function GetSystemSettingSubmitAjax(systemSettingId, systemSettingOutline, systemSettingStringValue) {
+            $("#SystemSettingId").val(systemSettingId)
+            $("#SystemSettingOutline").val(systemSettingOutline)
+            $("#SystemSettingStringValue").val(systemSettingStringValue)
+        }
+    </script>
+
+}
