@@ -75,7 +75,7 @@ namespace task_sync_web.Controllers
             {
                 if (string.IsNullOrWhiteSpace(keySearch))
                 {
-                    list = db.Query("MSystemSetting")
+                    var list1 = db.Query("MSystemSetting")
                     .Select(
                         "MSystemSetting.SystemSettingId",
                         "MSystemSetting.SystemSettingOutline",
@@ -85,10 +85,10 @@ namespace task_sync_web.Controllers
                         "MAdministrator.AdministratorLoginId as UpdateAdministratorId",
                         "MAdministrator.AdministratorName as UpdateAdministratorName"
                         )
-                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.UpdateAdministratorId")
+                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.AdministratorId")
                     .WhereNotNull("MAdministrator.AdministratorName")
                     .OrderBy("MSystemSetting.SystemSettingId")
-                    .Get<MSystemSettingModel>().ToList();
+                    .Get<MSystemSettingModel>();
                 }
                 else
                 {
