@@ -1,9 +1,5 @@
-﻿using SqlKata.Compilers;
-using SqlKata.Execution;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Data.SqlClient;
-using System.Security.Cryptography;
-using System.Text;
 using task_sync_web.Models;
 
 namespace task_sync_web.Commons
@@ -13,6 +9,20 @@ namespace task_sync_web.Commons
 
     public static class Utils
     {
+
+        public static List<PropertyModel> GetModelProperties<T>() 
+        {
+            var propaties = typeof(T).GetProperties()
+                .Where(p => p.IsDefined(typeof(DisplayAttribute), false))
+                .Select(p => new PropertyModel
+                {
+                    PropertyName = p.Name,
+                    DisplayName = p.GetCustomAttributes(typeof(DisplayAttribute),
+                            false).Cast<DisplayAttribute>().Single().Name
+                });
+            return propaties.ToList();
+        }
+
         //public static (QueryFactory queryFactory, SqlServerCompiler compiler, SqlConnection connection) GetQueryFactory(string databeseName)
         //{
         //    var connectionString = new GetConnectString(databeseName).ConnectionString;

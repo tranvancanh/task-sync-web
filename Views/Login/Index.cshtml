@@ -1,0 +1,80 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "ログイン";
+    Layout = "_Layout_login";
+}
+
+<style>
+    .card {
+        border-radius:30px;
+    }
+
+    .card-footer{
+        border-bottom-left-radius: 30px!important;
+        border-bottom-right-radius: 30px !important;
+        background-color: var(--othercolor);
+    }
+</style>
+
+<div class="m-5 d-flex align-items-center">
+    <div class="container col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-center py-4">スマホで作業記録</h4>
+                <div>
+                    <form id="login-input-form" method="post">
+
+                        <div class="p-3">
+                            <span class="text-danger-custom error-message">@ViewData["ErrorMessage"]</span>
+                        </div>
+
+                        <div class="p-3 col-auto">
+                            <input type="text" class="form-control form-control-lg" asp-for="@Model.AdministratorLoginId" placeholder="管理者ログインID">
+                            <span asp-validation-for="AdministratorLoginId" class="text-danger-custom"></span>
+                        </div>
+
+                        <div class="p-3 col-auto">
+                            <input type="password" class="form-control form-control-lg" asp-for="@Model.Password" placeholder="パスワード">
+                            <span asp-validation-for="Password" class="text-danger-custom"></span>
+                        </div>
+
+                        <div class ="p-3 text-center">
+                            <div class="d-inline-block">
+                                <label class="ECM_CheckboxInput">
+                                    <input class="ECM_CheckboxInput-Input" type="checkbox" asp-for="RememberMe">
+                                    <span class="ECM_CheckboxInput-DummyInput"></span>
+                                    <span class="ECM_CheckboxInput-LabelText">ログインを記憶</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 p-4">
+                            <button type="submit" class="btn btn-custom btn-lg">ログイン</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <div class="card-footer text-center py-3">
+                Copyright &copy; TOZAN 2023
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            history.pushState(null, null, null);
+            $(window).on("popstate", function (event) {
+                if (!event.originalEvent.state) {
+                    history.pushState(null, null, null);
+                    return;
+                }
+            });
+
+        });
+
+    </script>
+}

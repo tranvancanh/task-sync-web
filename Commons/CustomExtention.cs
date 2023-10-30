@@ -1,4 +1,4 @@
-﻿namespace task_sync_web.Models.Commons
+﻿namespace task_sync_web.Commons
 {
     [Serializable]
     public class CustomExtention : Exception

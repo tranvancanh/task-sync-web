@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SpreadsheetLight;
 using SqlKata.Execution;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Diagnostics;
 using task_sync_web.Commons;
-using task_sync_web.Commons.DbSqlKata;
 using task_sync_web.Models;
-using task_sync_web.Models.Commons;
 using X.PagedList;
 
 namespace task_sync_web.Controllers
@@ -27,14 +26,14 @@ namespace task_sync_web.Controllers
         /// <param name="pageNumber"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Index(MAdministratorViewModel viewModel, int? pageNumber)
+        public IActionResult Index(MAdministratorViewModel viewModel, int pageNumber = 1)
         {
             try
             {
                 var listUser = GetListMAdministrator(viewModel.SearchKeyWord);
 
                 // page the list
-                var administratorModels = listUser.ToPagedList(pageNumber ?? 1, viewModel.PageRowCount);
+                var administratorModels = listUser.ToPagedList(pageNumber, viewModel.PageRowCount);
                 viewModel.AdministratorModels = administratorModels;
 
                 return View(viewModel);
@@ -46,7 +45,7 @@ namespace task_sync_web.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                ViewData["ErrorMessage"] = ErrorMessages.EW0500;
                 return View(viewModel);
             }
         }
@@ -62,7 +61,7 @@ namespace task_sync_web.Controllers
             try
             {
                 var administratorModels = GetListMAdministrator(viewModel.SearchKeyWord);
-                var memoryStream = this.ExcelCreate(viewModel.ExcelHeaderList, administratorModels);
+                var memoryStream = this.ExcelCreate(administratorModels);
 
                 // ファイル名
                 var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -75,7 +74,7 @@ namespace task_sync_web.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                ViewData["ErrorMessage"] = ErrorMessages.EW0500;
                 return View("Index", viewModel);
             }
         }
@@ -90,24 +89,25 @@ namespace task_sync_web.Controllers
             try
             {
                 var administratorModels = new List<MAdministratorModel>();
-                using (var db = new DbSqlKata())
-                {
-                    searchKey = (searchKey ?? "").Trim();
 
+                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
+                using (var db = new DbSqlKata(dbName))
+                {
                     // DBからデータ一覧を取得
                     var administratorList = db.Query("MAdministrator").Get<MAdministratorModel>().ToList();
                     if (administratorList.Count == 0)
                     {
-                        throw new CustomExtention(ErrorMessages.EW101);
+                        throw new CustomExtention(ErrorMessages.EW0101);
                     }
 
+                    searchKey = (searchKey ?? "").Trim();
                     if (administratorList.Count > 0 && searchKey.Length > 0)
                     {
                         // 検索キーワードが存在する場合
                         administratorModels = administratorList.Where(x => x.AdministratorLoginId.Contains(searchKey) || x.AdministratorName.Contains(searchKey) || x.AdministratorNameKana.Contains(searchKey)).ToList();
                         if (administratorModels.Count == 0)
                         {
-                            throw new CustomExtention(ErrorMessages.EW102);
+                            throw new CustomExtention(ErrorMessages.EW0102);
                         }
                     }
                     else
@@ -123,7 +123,7 @@ namespace task_sync_web.Controllers
             }
         }
 
-        public MemoryStream ExcelCreate(List<string> headerList, List<MAdministratorModel> administratorList)
+        public MemoryStream ExcelCreate(List<MAdministratorModel> administratorList)
         {
             try
             {
@@ -135,11 +135,14 @@ namespace task_sync_web.Controllers
                     // 太字
                     keyStyle.SetFontBold(true);
 
+                    // ModelのProperty一覧を取得
+                    var properties = Utils.GetModelProperties<MAdministratorModel>();
+
                     // 1行目：ヘッダーをセット
-                    for (int i = 1; i < (headerList.Count + 1); ++i)
+                    for (int i = 1; i < (properties.Count()+ 1); ++i)
                     {
                         sl.SetCellStyle(1, i, keyStyle);
-                        sl.SetCellValue(1, i, headerList[i - 1]);
+                        sl.SetCellValue(1, i, properties[i - 1].DisplayName);
                     }
 
                     // 2行目～：値をセット
@@ -157,7 +160,7 @@ namespace task_sync_web.Controllers
                         }
                     }
 
-                    sl.AutoFitColumn(0, headerList.Count);
+                    sl.AutoFitColumn(0, properties.Count);
 
                     sl.SaveAs(ms);
                 }

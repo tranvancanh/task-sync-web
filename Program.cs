@@ -1,3 +1,9 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using task_sync_web.Filters;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Razor ファイルのコンパイル有効化
@@ -11,8 +17,39 @@ if (builder.Environment.IsDevelopment())
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Program.csにフォールバック認可ポリシーを追記する(すべてのコントローラーが[Authorize]になる)
+// https://qiita.com/mkuwan/items/bd5ff882108998d76dca
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
+});
+
 // セッションの利用
 builder.Services.AddSession();
+
+// Cookie による認証スキームを追加する
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+
+        // リダイレクトするログインURLも小文字に変える
+        // ~/Account/Login =＞ ~/account/login
+        options.LoginPath = CookieAuthenticationDefaults.LoginPath.ToString().ToLower();
+        //options.Cookie.IsEssential = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
+        //options.Cookie.MaxAge = TimeSpan.FromMinutes(1440);
+        options.LoginPath = "/Login/index";
+        options.SlidingExpiration = false;
+    });
+
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(typeof(MyFilter));
+});
 
 var app = builder.Build();
 
@@ -29,6 +66,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Cookie認証実装に必要
+app.UseAuthentication();
 app.UseAuthorization();
 
 // セッションの利用

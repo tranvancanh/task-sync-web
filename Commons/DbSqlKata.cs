@@ -3,16 +3,27 @@ using SqlKata.Execution;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace task_sync_web.Commons.DbSqlKata
+namespace task_sync_web.Commons
 {
     public class DbSqlKata : QueryFactory, IDisposable
     {
-        private static readonly string connectionString = new GetConnectString("tasksync_0_test").ConnectionString;
+        private static readonly string masterConnectionString = new GetConnectString("tasksync_0_master").ConnectionString;
 
         private IDbTransaction _transaction = null;
 
-        public DbSqlKata() 
+        public DbSqlKata(string dbName = "") 
         {
+            string connectionString;
+            if (dbName == "")
+            {
+                // マスターDBの接続文字列をセット
+                connectionString = masterConnectionString;
+            }
+            else
+            {
+                // 各会社DBの接続文字列をセット
+                connectionString = new GetConnectString(dbName).ConnectionString;
+            }
             var connection = new SqlConnection(connectionString);
             var compiler = new SqlServerCompiler();
             this.Connection = connection;

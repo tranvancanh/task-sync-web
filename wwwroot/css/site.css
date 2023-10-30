@@ -49,7 +49,6 @@ body {
     color: var(--fontcolor) !important;
     border: 0px solid var(--fontcolor) !important;
     border-radius: 100vh !important;
-    height: 2.8rem;
 }
     .btn-custom:hover, .btn-search:hover {
         background-color: var(--sublightcolor) !important;
@@ -66,7 +65,7 @@ body {
 }
 
     .form-control:focus, .btn:focus, a.page-link:focus {
-        box-shadow: 0 0 0 5px var(--mainlightcolor) !important;
+        box-shadow: 0 0 0 3px var(--mainlightcolor) !important;
     }
 
 .text-right {
@@ -104,10 +103,11 @@ body {
 
 /*Å´dropdown-menu custom*/
 .dropdown-menu {
-    --bs-dropdown-min-width: 20rem!important;
+    --bs-dropdown-min-width: 20rem !important;
 }
-    .dropdown-menu a:focus {
-        background-color: var(--maincolor) !important;
+
+    .dropdown-menu a.dropdown-item:focus {
+        background-color: var(--mainlightcolor) !important;
     }
 /*Å™dropdown-menu custom*/
 
@@ -246,3 +246,82 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/*Å´checkbutton design css*/
+.ECM_CheckboxInput {
+    padding: 12px 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.ECM_CheckboxInput-Input {
+    margin: 0;
+    width: 0;
+    opacity: 0;
+}
+
+.ECM_CheckboxInput:hover {
+    background: var(--sublightcolor) !important;
+}
+
+    .ECM_CheckboxInput:hover > .ECM_CheckboxInput-DummyInput {
+        transform: scale(1.1);
+    }
+
+.ECM_CheckboxInput-Input:focus + .ECM_CheckboxInput-DummyInput {
+    transform: scale(1.1);
+}
+
+.ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput {
+    background: var(--subcolor);
+}
+
+    .ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 35%;
+        height: 4px;
+        border-radius: 2px;
+        transform: translate(-6px, 5px) rotateZ(-135deg);
+        transform-origin: 2px 2px;
+        background: #FFFFFF;
+    }
+
+    .ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput::after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 70%;
+        height: 4px;
+        border-radius: 2px;
+        transform: translate(-6px, 5px) rotateZ(-45deg);
+        transform-origin: 2px 2px;
+        background: #FFFFFF;
+    }
+
+.ECM_CheckboxInput-DummyInput {
+    position: relative;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 32px;
+    height: 32px;
+    border: solid 2px transparent;
+    background: rgba(0, 0, 0, .10);
+    border-radius: 50%;
+    transition: all .15s linear;
+}
+
+.ECM_CheckboxInput-LabelText {
+    margin-left: 12px;
+    display: block;
+    font-weight: bold;
+}
+
+/*Å™checkbutton design css*/

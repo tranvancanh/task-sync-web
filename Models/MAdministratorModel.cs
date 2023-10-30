@@ -17,9 +17,12 @@ namespace task_sync_web.Models
         [Display(Name = "—˜—p’âŽ~ƒtƒ‰ƒO")]
         public bool IsNotUse { get; set; }
 
+        [Key]
+        public int AdministratorId { get; set; }
+
         public string Password { get; set; }
         public string Salt { get; set; }
-
+        public bool IsLogin { get; set; }
 
     }
 }
