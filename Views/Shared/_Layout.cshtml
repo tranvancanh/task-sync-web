@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using task_sync_web.Commons;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -33,12 +34,12 @@
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li><div class="ps-4 pt-3 small fw-bold">会社名</div></li>
-                    <li><div class="ps-5 pt-1">トヨタモビリティパーツ大阪支社</div></li>
+                    <li><div class="ps-5 pt-1">@User.Claims.Where(c => c.Type == CustomClaimTypes.ClaimType_CampanyName).First().Value</div></li>
                     <li><div class="ps-4 pt-3 small fw-bold">管理者名</div></li>
-                    <li><div class="ps-5 pt-1 pb-3">山田花子</div></li>
+                    <li><div class="ps-5 pt-1 pb-3">@User.Claims.Where(c => c.Type == CustomClaimTypes.ClaimType_AdministratorLoginId).First().Value : @User.Claims.Where(c => c.Type == CustomClaimTypes.ClaimType_AdministratorName).First().Value</div></li>
                     <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item p-4 fw-bold" asp-area="" asp-controller="PasswordChange" asp-action="Index"><i class="fas fa-lock"></i> パスワード変更</a></li>
-                    <li><a class="dropdown-item p-4 fw-bold" href="#!"><i class="fas fa-sign-out-alt"></i> ログアウト</a></li>
+                    <li><a class="dropdown-item p-4 fw-bold" asp-area="" asp-controller="PasswordChange" asp-action="Index"><i class="fas fa-lock fa-fw"></i> パスワード変更</a></li>
+                    <li><a class="dropdown-item p-4 fw-bold" id="logout-button" href="#" role="button" data-micromodal-trigger="modal-logout"><i class="fas fa-sign-out-alt fa-fw"></i> ログアウト</a></li>
                 </ul>
             </li>
         </ul>
@@ -50,18 +51,30 @@
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">データ</div>
                         <a class="nav-link" href="index.html">
-                            <div class="sb-nav-link-icon"><i class="far fa-file-alt"></i></div>
+                            <div class="sb-nav-link-icon"><i class="far fa-file-alt fa-fw"></i></div>
                             作業実績
                         </a>
                         <div class="sb-sidenav-menu-heading">管理</div>
                         <a class="nav-link collapsed" asp-area="" asp-controller="Home" asp-action="Index" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fas fa-wrench"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-wrench fa-fw"></i></div>
                             マスター
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" asp-area="" asp-controller="MAdministrator" asp-action="Index">管理者マスター</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" asp-area="" asp-controller="MTaskUser" asp-action="Index">作業者マスター</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" asp-area="" asp-controller="" asp-action="Index">作業項目マスター</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" asp-area="" asp-controller="MInterruptReason" asp-action="Index">中断理由マスター</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" asp-area="" asp-controller="MSystemSetting" asp-action="Index">システム設定</a>
                             </nav>
                         </div>
                     </div>
@@ -86,6 +99,25 @@
                     </div>
                 </div>
             </footer>
+        </div>
+    </div>
+
+    <div class="modal micromodal-slide" id="modal-logout" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header">
+                    <h3 id="modal-1-title">確認</h3>
+                    <button class="btn btn-custom  btn-lg" aria-label="Close modal" data-micromodal-close><i class="fas fa-times"></i></button>
+                </header>
+                <main class="modal__content" id="modal-1-content">
+                    <p>
+                        ログアウトします。よろしいですか？
+                    </p>
+                </main>
+                <footer class="modal__footer d-grid gap-2">
+                    <a class="btn btn-custom btn-lg" asp-controller="Login" asp-action="Logout">ログアウト</a>
+                </footer>
+            </div>
         </div>
     </div>
 

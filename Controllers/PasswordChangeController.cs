@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
+﻿using Microsoft.AspNetCore.Mvc;
 using SqlKata.Execution;
 using task_sync_web.Commons;
-using task_sync_web.Commons.DbSqlKata;
 using task_sync_web.Models;
 
 namespace task_sync_web.Controllers
@@ -20,7 +17,7 @@ namespace task_sync_web.Controllers
         [HttpPost]
         public IActionResult Index(PasswordChangeViewModel viewModel)
         {
-            viewModel.AddministratorId = 7;
+            int administratorId = Convert.ToInt32(User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_AdministratorId).First().Value);
 
             if (!ModelState.IsValid)
             {
@@ -34,15 +31,30 @@ namespace task_sync_web.Controllers
 
             try
             {
-                using (var db = new DbSqlKata())
+                // 現在のパスワードと新しいパスワードが同じ場合はエラー
+                if (viewModel.CurrentPassword == viewModel.NewPassword)
+                {
+                    ViewData["ErrorMessage"] = ErrorMessages.EW1103;
+                    return View(viewModel);
+                }
+
+                // 新しいパスワードと新しいパスワード(確認用)が同じでない場合はエラー
+                if (viewModel.NewPassword != viewModel.ConfirmNewPassword)
+                {
+                    ViewData["ErrorMessage"] = ErrorMessages.EW1102;
+                    return View(viewModel);
+                }
+
+                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
+                using (var db = new DbSqlKata(dbName))
                 {
                     var administratorList = db
                         .Query("MAdministrator")
-                        .Where("AdministratorId", viewModel.AddministratorId)
+                        .Where("AdministratorId", administratorId)
                         .FirstOrDefault<MAdministratorModel>();
                     if (administratorList == null || administratorList.AdministratorLoginId == null)
                     {
-                        ViewData["ErrorMessage"] = ErrorMessages.EW900;
+                        ViewData["ErrorMessage"] = ErrorMessages.EW0900;
                         return View(viewModel);
                     }
 
@@ -50,7 +62,7 @@ namespace task_sync_web.Controllers
                     var currentPassword = administratorList.Password;
                     if (administratorList.Salt.Length == 0)
                     {
-                        // 【初期変更時のみ】ソルトが空白の場合のみ、ハッシュ化していないパスワードで一致しているかチェック
+                        // 初期ログイン時のみ：ソルトが空白の場合、ハッシュ化していないパスワードで一致しているかチェック
                         // 現在のパスワードと、入力した現在のパスワードが異なっている場合はエラー
                         if (currentPassword != viewModel.CurrentPassword)
                         {
@@ -67,20 +79,6 @@ namespace task_sync_web.Controllers
                             ViewData["ErrorMessage"] = ErrorMessages.EW1101;
                             return View(viewModel);
                         }
-                    }
-
-                    // 現在のパスワードと新しいパスワードが同じ場合はエラー
-                    if (viewModel.CurrentPassword == viewModel.NewPassword)
-                    {
-                        ViewData["ErrorMessage"] = ErrorMessages.EW1103;
-                        return View(viewModel);
-                    }
-
-                    // 新しいパスワードと新しいパスワード(確認用)が同じでない場合はエラー
-                    if (viewModel.NewPassword != viewModel.ConfirmNewPassword)
-                    {
-                        ViewData["ErrorMessage"] = ErrorMessages.EW1102;
-                        return View(viewModel);
                     }
 
                     // 新しいソルトでパスワードをハッシュ化
@@ -100,7 +98,7 @@ namespace task_sync_web.Controllers
             }
             catch (Exception)
             {
-                ViewData["ErrorMessage"] = ErrorMessages.EW900;
+                ViewData["ErrorMessage"] = ErrorMessages.EW0900;
                 return View(viewModel);
             }
         }

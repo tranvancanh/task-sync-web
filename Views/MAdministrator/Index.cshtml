@@ -23,13 +23,13 @@
                 <div class="row">
                     <div class="form-group col-auto p-2">
                         <div class="input-group">
-                            <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                            <button class="btn btn-search" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            <input class="form-control form-control-lg" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                            <button class="btn btn-search btn-lg" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
                     <div class="form-group col-auto p-2">
                         <!--ExcelTest-->
-                        <button class="btn btn-custom" asp-action="ExcelOutput" ype="submit"><span class="p-2"><i class="fas fa-download fa-fw"></i> Excel出力</span></button>
+                        <button class="btn btn-custom btn-lg" asp-action="ExcelOutput" ype="submit"><span class="p-2"><i class="fas fa-download fa-fw"></i> Excel出力</span></button>
                     </div>
                 </div>
             </form>

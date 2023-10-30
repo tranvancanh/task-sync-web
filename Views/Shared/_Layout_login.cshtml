@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TaskSync</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css?@DateTime.Now" />
+
+    <!--Bootstrap admin template-->
+    <link rel="stylesheet" href="~/lib/startbootstrap-sb-admin-gh-pages/css/styles.css" />
+
+    <!--Font Awesome Free 5.15.3-->
+    <link rel="stylesheet" href="~/font/icon/fontawesome-free/css/all.min.css" type="text/css">
+
+    <!--Micromodal.js-->
+    <link rel="stylesheet" href="~/css/micromodal.css" />
+
+
+</head>
+<body>
+
+    <div class="">
+        <main>
+                @RenderBody()
+        </main>
+    </div>
+
+    <!-- 確認用モーダルの設定 -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">確認</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="confirm-modal-body" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                    <button type="button" id="confirm-modal-run-btn" class="btn btn-danger">実行</button>
+                </div><!-- /.modal-footer -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!--Bootstrap admin template-->
+    <script src="~/lib/startbootstrap-sb-admin-gh-pages/js/scripts.js"></script>
+
+    <!--Micromodal.js-->
+    <script src="https://cdn.jsdelivr.net/npm/micromodal/dist/micromodal.min.js"></script>
+
+    <!--jQueryの動的validation-->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+<script>
+    MicroModal.init();
+</script>
