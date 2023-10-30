@@ -14,7 +14,7 @@ namespace task_sync_web.Models
         public MSystemSettingViewModel()
         {
             DisplayName = "システム設定";
-            PageRowCount = 50;
+            PageRowCount = 3;
         }
     }
 }

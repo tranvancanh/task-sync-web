@@ -23,12 +23,12 @@ namespace task_sync_web.Models
         [Display(Name = "更新日時")]
         public DateTime UpdateDateTime { get; set; }
 
-        public int UpdateLoginId { get; set; }
+        public string UpdateAdministratorId { get; set; }
 
-        public string UpdateLoginName { get; set; }
+        public string UpdateAdministratorName { get; set; }
 
-        [Display(Name = "更新ログインID")]
-        public string UpdateLoginInfor => $"{UpdateLoginId} {UpdateLoginName}";
+        [Display(Name = "更新者")]
+        public string UpdateLoginInfor => $"{UpdateAdministratorId} {UpdateAdministratorName}";
 
     }
 }

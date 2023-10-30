@@ -22,10 +22,6 @@ namespace task_sync_web.Controllers
                 {
                     ViewData["MessageSuccess"] = TempData["MessageSuccess"];
                 }
-                else if (!string.IsNullOrEmpty(Convert.ToString(TempData["MessageError"])))
-                {
-                    ViewData["MessageError"] = TempData["MessageError"];
-                }
 
                 return View(viewModel);
             }
@@ -37,14 +33,11 @@ namespace task_sync_web.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(MSystemSettingModel settingModel, string searchKeyWord, int pageNumber)
+        public IActionResult Edit(MSystemSettingModel settingModel)
         {
-            var viewModel = new MSystemSettingViewModel();
             var updateLoginId = "8";
             try
             {
-                TempData["MessageSuccess"] = null;
-                TempData["MessageError"] = null;
                 // update
                 using (var db = new DbSqlKata())
                 {
@@ -52,27 +45,19 @@ namespace task_sync_web.Controllers
                     {
                         SystemSettingStringValue = settingModel.SystemSettingStringValue,
                         UpdateDateTime = DateTime.Now.Date,
-                        UpdateLoginId = updateLoginId
+                        UpdateAdministratorId = updateLoginId
                     });
                     if (efftedRows > 0)
-                        TempData["MessageSuccess"] = ErrorMessages.EW503;
+                        return Json(new {Result = "OK", Mess = ErrorMessages.EW503}); 
                     else
-                        TempData["MessageError"] = ErrorMessages.EW502;
+                        return Json(new { Result = "NG", Mess = ErrorMessages.EW502 });
                 }
-
-                viewModel = new MSystemSettingViewModel() { SearchKeyWord = searchKeyWord };
 
             }
             catch (Exception ex)
             {
-                TempData["MessageError"] = ex.Message;
+                return Json(new { Result = "NG", Mess = ex.Message });
             }
-           
-            return RedirectToAction("Index", new
-            {
-                searchKeyWord = viewModel.SearchKeyWord,
-                pageNumber = pageNumber
-            });
         }
 
         private List<MSystemSettingModel> GetListMAdministrator(string keySearch)
@@ -89,12 +74,12 @@ namespace task_sync_web.Controllers
                         "MSystemSetting.SystemSettingDetail",
                         "MSystemSetting.SystemSettingStringValue",
                         "MSystemSetting.UpdateDateTime",
-                        "MSystemSetting.UpdateLoginId",
-                        "MAdministrator.AdministratorName as UpdateLoginName"
+                        "MAdministrator.AdministratorLoginId as UpdateAdministratorId",
+                        "MAdministrator.AdministratorName as UpdateAdministratorName"
                         )
-                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateLoginId", "MAdministrator.AdministratorId")
+                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.UpdateAdministratorId")
                     .WhereNotNull("MAdministrator.AdministratorName")
-                    .OrderBy("MSystemSetting.UpdateLoginId")
+                    .OrderBy("MSystemSetting.SystemSettingId")
                     .Get<MSystemSettingModel>().ToList();
                 }
                 else
@@ -106,14 +91,14 @@ namespace task_sync_web.Controllers
                         "MSystemSetting.SystemSettingDetail",
                         "MSystemSetting.SystemSettingStringValue",
                         "MSystemSetting.UpdateDateTime",
-                        "MSystemSetting.UpdateLoginId",
-                        "MAdministrator.AdministratorName as UpdateLoginName"
+                        "MAdministrator.AdministratorLoginId as UpdateAdministratorId",
+                        "MAdministrator.AdministratorName as UpdateAdministratorName"
                         )
-                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateLoginId", "MAdministrator.AdministratorId")
+                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.UpdateAdministratorId")
                     .WhereNotNull("MAdministrator.AdministratorName")
                     .WhereLike("SystemSettingId", $"%{keySearch}%")
                     .OrWhereLike("SystemSettingOutline", $"%{keySearch}%")
-                    .OrderBy("MSystemSetting.UpdateLoginId")
+                    .OrderBy("MSystemSetting.SystemSettingId")
                     .Get<MSystemSettingModel>().ToList();
                 }
             }

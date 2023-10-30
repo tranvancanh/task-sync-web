@@ -42,7 +42,7 @@
             </form>
             <div class="col-auto my-2">
                 <span class="text-success-custom">@ViewData["MessageSuccess"]</span>
-                <span class="text-success-custom">@ViewData["MessageError"] </span>
+                <span class="text-danger-custom">@ViewData["MessageError"]</span>
             </div>
 
             <div style="overflow-x: scroll;">
@@ -67,7 +67,7 @@
                                 <td class="text-left">@Html.DisplayFor(model => item.SystemSettingOutline)</td>
                                 <td class="text-left">@Html.DisplayFor(model => item.SystemSettingStringValue)</td>
                                 <td class="text-center">@Html.DisplayFor(model => item.UpdateDateTime)</td>
-                                <td class="text-center">@Html.DisplayFor(model => item.UpdateLoginId) &nbsp&nbsp @Html.DisplayFor(model => item.UpdateLoginName)</td>
+                                <td class="text-center">@Html.DisplayFor(model => item.UpdateAdministratorId) &nbsp&nbsp @Html.DisplayFor(model => item.UpdateAdministratorName)</td>
                             </tr>
 
                         }
@@ -108,8 +108,11 @@
                     <h2 class="modal__title" id="modal-1-title">
                         修正
                     </h2>
-                    <button class="modal__close123" aria-label="Close modal" data-micromodal-close><i class="fas fa-times-circle"></i></button>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
+                <div class="valid-area alert alert-danger" role="alert" style="display: none;">
+                    <span></span>
+                </div>
                 <form method="post" asp-controller="MSystemSetting" enctype="multipart/form-data" autocomplete="on"
                       data-ajax="true" data-ajax-update="formDetails" class="mt-3">
                     @Html.AntiForgeryToken()
@@ -118,20 +121,20 @@
                         <input name="PageNumber" class="form-control readonlyclass" id="PageNumberEdit" value="@pagedList.PageNumber" type="text" readonly />
                     </div>
                     <div class="form-group my-1">
-                        <label>システム設定ID</label>
+                        <label>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</label>
                         <input name="SystemSettingId" class="form-control readonlyclass" id="SystemSettingId" type="text" readonly />
                     </div>
                     <div class="form-group my-1">
-                        <label>システム設定概要</label>
+                        <label>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</label>
                         <input name="SystemSettingOutline" class="form-control" id="SystemSettingOutline" type="text" readonly />
                     </div>
                     <div class="form-group my-1">
-                        <label>システム設定値</label>
+                        <label>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</label>
                         <input name="SystemSettingStringValue" class="form-control" id="SystemSettingStringValue" type="text" />
                     </div>
                
                     <footer class="modal__footer mt-4">
-                        <button class="modal__btn modal__btn-primary col-md-4" type="submit" asp-action="Edit" style="margin-left: 10px;">
+                        <button class="modal__btn modal__btn-primary col-md-4" type="button" id="btnSave" asp-action="Edit" style="margin-left: 10px;">
                             保存
                         </button>
                         <label class="col-md-3"></label>
@@ -152,10 +155,56 @@
            
         });
         function GetSystemSettingSubmitAjax(systemSettingId, systemSettingOutline, systemSettingStringValue) {
-            $("#SystemSettingId").val(systemSettingId)
-            $("#SystemSettingOutline").val(systemSettingOutline)
-            $("#SystemSettingStringValue").val(systemSettingStringValue)
+            $("#SystemSettingId").val(systemSettingId);
+            $("#SystemSettingOutline").val(systemSettingOutline);
+            $("#SystemSettingStringValue").val(systemSettingStringValue);
         }
+
+        $('#btnSave').on('click', function () {
+            
+            let systemSettingId = $("#SystemSettingId").val();
+            let systemSettingOutline = $("#SystemSettingOutline").val();
+            let systemSettingStringValue = $("#SystemSettingStringValue").val();
+            let searchKeyWordEdit = $("#SearchKeyWordEdit").val();
+            let pageNumberEdit = $("#PageNumberEdit").val();
+            // console.log({ searchKeyWordEdit });
+            // console.log({ pageNumberEdit });
+            // alert('画面に表示させたい値');
+
+            // ボタン非活性化
+            let editData = {
+                SystemSettingId : systemSettingId,
+                SystemSettingOutline: systemSettingOutline,
+                SystemSettingStringValue: systemSettingStringValue
+            };
+            let searchData = {
+                SearchKeyWord: searchKeyWordEdit,
+                PageNumber: pageNumberEdit
+            };
+
+            $.ajax({
+                url: ROOT + '/MSystemSetting/Edit',
+                type: 'POST',
+                dataType: 'json',
+                data: editData,
+                success: function (res) {
+                    console.log({ res });
+
+                    if (res.result === "OK") {
+                        window.location.href = ROOT + `/MSystemSetting/Index?SearchKeyWord=${searchKeyWordEdit}&PageNumber=${pageNumberEdit}`;
+                    }
+                    else {
+                        $("#modal-1 .valid-area").fadeIn();
+                        $("#modal-1").find(".valid-area span").text(res.mess);
+                    }
+                },
+                processData: true
+            });
+
+            // alert('画面に表示させたい値');
+
+        });
+       
     </script>
 
 }
