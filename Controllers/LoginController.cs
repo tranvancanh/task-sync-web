@@ -110,7 +110,8 @@ namespace task_sync_web.Controllers
             try
             {
                 // URLからパスを取得(https://www.tozan.co.jp/の直後１つ目のパス)
-                var urlWebPath = HttpContext.Request.PathBase.ToString().Substring(1);
+                //var urlWebPath = HttpContext.Request.PathBase.ToString().Substring(1);
+                var urlWebPath = "tasksync_test";
                 if (urlWebPath != "")
                 {
                     using (var db = new DbSqlKata())
