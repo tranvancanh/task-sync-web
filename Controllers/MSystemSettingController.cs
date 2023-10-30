@@ -56,7 +56,7 @@ namespace task_sync_web.Controllers
                         UpdateAdministratorId = LoginUser.AdministratorId
                     });
                     if (efftedRows > 0)
-                        return Json(new { Result = "OK", Mess = ErrorMessages.EW503 });
+                        return Json(new { Result = "OK", Mess = SuccessMessages.SW002 });
                     else
                         return Json(new { Result = "NG", Mess = ErrorMessages.EW0502 });
                 }
