@@ -212,4 +212,13 @@
     <value>現在のパスワードと新しいパスワードが同じです。</value>
     <comment>パスワード変更画面</comment>
   </data>
+  <data name="EW0900" xml:space="preserve">
+    <value>ユーザー名が存在していません</value>
+  </data>
+  <data name="EW500" xml:space="preserve">
+    <value>システムエラー</value>
+  </data>
+  <data name="EW002" xml:space="preserve">
+    <value>入力文字が長さ過ぎて再入力ください。</value>
+  </data>
 </root>

@@ -1,28 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SqlKata.Execution;
-using task_sync_web.Commons.DbSqlKata;
+using task_sync_web.Commons;
 using task_sync_web.Models;
 using X.PagedList;
 
 namespace task_sync_web.Controllers
 {
-    public class MSystemSettingController : Controller
+    public class MSystemSettingController : BaseController
     {
         [HttpGet]
-        public IActionResult Index(MSystemSettingViewModel viewModel, int? pageNumber)
+        public IActionResult Index(MSystemSettingViewModel viewModel, int? pageNumber, string mess = null)
         {
             try
             {
-                var listSetting = GetListMAdministrator(viewModel.SearchKeyWord);
+                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
+                var listSetting = GetListMAdministrator(viewModel.SearchKeyWord, dbName);
+                if (!listSetting.Any())
+                {
+                    ViewData["MessageError"] = ErrorMessages.EW0102;
+                    return View(viewModel);
+                }
+
                 // page the list
                 var listPaged = listSetting.ToPagedList(pageNumber ?? 1, viewModel.PageRowCount);
                 viewModel.SystemSettingModels = listPaged;
 
-                if (!string.IsNullOrEmpty(Convert.ToString(TempData["MessageSuccess"])))
+                if (!string.IsNullOrEmpty(mess))
                 {
-                    ViewData["MessageSuccess"] = TempData["MessageSuccess"];
+                    ViewData["MessageSuccess"] = mess;
                 }
-
                 return View(viewModel);
             }
             catch
@@ -35,22 +41,26 @@ namespace task_sync_web.Controllers
         [HttpPost]
         public IActionResult Edit(MSystemSettingModel settingModel)
         {
-            var updateLoginId = "8";
             try
             {
+                var administratorId = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_AdministratorId).First().Value;
+                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
+
                 // update
-                using (var db = new DbSqlKata())
+                using (var db = new DbSqlKata(dbName))
                 {
+                   if(string.IsNullOrEmpty(settingModel.SystemSettingStringValue))
+                        settingModel.SystemSettingStringValue = string.Empty;
                     var efftedRows = db.Query("MSystemSetting").Where("SystemSettingId", settingModel.SystemSettingId).Update(new
                     {
                         SystemSettingStringValue = settingModel.SystemSettingStringValue,
                         UpdateDateTime = DateTime.Now.Date,
-                        UpdateAdministratorId = updateLoginId
+                        UpdateAdministratorId = administratorId
                     });
                     if (efftedRows > 0)
-                        return Json(new {Result = "OK", Mess = ErrorMessages.EW503}); 
+                        return Json(new { Result = "OK", Mess = ErrorMessages.EW503 });
                     else
-                        return Json(new { Result = "NG", Mess = ErrorMessages.EW502 });
+                        return Json(new { Result = "NG", Mess = ErrorMessages.EW0502 });
                 }
 
             }
@@ -60,10 +70,10 @@ namespace task_sync_web.Controllers
             }
         }
 
-        private List<MSystemSettingModel> GetListMAdministrator(string keySearch)
+        private List<MSystemSettingModel> GetListMAdministrator(string keySearch, string dbName)
         {
             var list = new List<MSystemSettingModel>();
-            using (var db = new DbSqlKata())
+            using (var db = new DbSqlKata(dbName))
             {
                 if (string.IsNullOrWhiteSpace(keySearch))
                 {

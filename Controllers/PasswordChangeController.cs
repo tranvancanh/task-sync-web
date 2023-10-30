@@ -98,7 +98,7 @@ namespace task_sync_web.Controllers
             }
             catch (Exception)
             {
-                ViewData["ErrorMessage"] = ErrorMessages.EW0900;
+                ViewData["ErrorMessage"] = ErrorMessages.EW500;
                 return View(viewModel);
             }
         }

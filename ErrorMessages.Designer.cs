@@ -133,7 +133,16 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   対象データが存在しません。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 入力文字が長さ過ぎて再入力ください。.
+        /// </summary>
+        public static string EW002 {
+            get {
+                return ResourceManager.GetString("EW002", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 対象データが存在しません。.
         /// </summary>
         public static string EW0101 {
             get {
@@ -142,7 +151,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   検索条件に一致するデータが存在しません。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 検索条件に一致するデータが存在しません。.
         /// </summary>
         public static string EW0102 {
             get {
@@ -151,7 +160,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   {0}が存在しません。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to {0}が存在しません。.
         /// </summary>
         public static string EW0301 {
             get {
@@ -160,7 +169,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   データの取得に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to データの取得に失敗しました。.
         /// </summary>
         public static string EW0500 {
             get {
@@ -169,7 +178,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   データの登録に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to データの登録に失敗しました。.
         /// </summary>
         public static string EW0501 {
             get {
@@ -178,7 +187,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   データの更新に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to データの更新に失敗しました。.
         /// </summary>
         public static string EW0502 {
             get {
@@ -187,7 +196,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   予期せぬエラーが発生しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to ユーザー名が存在していません.
         /// </summary>
         public static string EW0900 {
             get {
@@ -196,7 +205,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   現在のパスワードが違います。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to ログインIDまたはパスワードが違います。.
         /// </summary>
         public static string EW1001 {
             get {
@@ -205,7 +214,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   会社情報の取得に失敗しました。システム管理者に問い合わせてください。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 会社情報の取得に失敗しました。システム管理者に問い合わせてください。.
         /// </summary>
         public static string EW1002 {
             get {
@@ -214,7 +223,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   現在のパスワードと新しいパスワードが同じです。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to ログイン更新処理に失敗しました。.
         /// </summary>
         public static string EW1003 {
             get {
@@ -223,7 +232,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   ログインに失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to ログインに失敗しました。.
         /// </summary>
         public static string EW1004 {
             get {
@@ -232,7 +241,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   データの取得に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 異なるログインがあったため自動ログアウトされました。.
         /// </summary>
         public static string EW1010 {
             get {
@@ -241,7 +250,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   現在のパスワードが違います。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 現在のパスワードが違います。.
         /// </summary>
         public static string EW1101 {
             get {
@@ -250,7 +259,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   新しいパスワードと新しいパスワード(確認用)が一致しません。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 新しいパスワードと新しいパスワード(確認用)が一致しません。.
         /// </summary>
         public static string EW1102 {
             get {
@@ -259,7 +268,24 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   現在のパスワードと新しいパスワードが同じです。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 現在のパスワードと新しいパスワードが同じです。.
+        /// </summary>
+        public static string EW1103 {
+            get {
+                return ResourceManager.GetString("EW1103", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to システムエラー.
+        /// </summary>
+        public static string EW500 {
+            get {
+                return ResourceManager.GetString("EW500", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to データの更新が完了しました。.
         /// </summary>
         public static string EW503 {
@@ -271,9 +297,9 @@ namespace task_sync_web {
         /// <summary>
         ///   Looks up a localized string similar to 予期せぬエラーが発生しました。.
         /// </summary>
-        public static string EW1103 {
+        public static string EW900 {
             get {
-                return ResourceManager.GetString("EW1103", resourceCulture);
+                return ResourceManager.GetString("EW900", resourceCulture);
             }
         }
     }

@@ -15,6 +15,7 @@ namespace task_sync_web.Models
         {
             DisplayName = "システム設定";
             PageRowCount = 3;
+            SystemSettingModels = new List<MSystemSettingModel>().ToPagedList(1, PageRowCount);
         }
     }
 }
