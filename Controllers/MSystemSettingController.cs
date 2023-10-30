@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SqlKata.Execution;
 using task_sync_web.Commons;
 using task_sync_web.Models;
@@ -6,6 +7,7 @@ using X.PagedList;
 
 namespace task_sync_web.Controllers
 {
+    [Authorize]
     public class MSystemSettingController : BaseController
     {
         [HttpGet]
@@ -13,8 +15,7 @@ namespace task_sync_web.Controllers
         {
             try
             {
-                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
-                var listSetting = GetListMAdministrator(viewModel.SearchKeyWord, dbName);
+                var listSetting = GetListMAdministrator(viewModel.SearchKeyWord);
                 if (!listSetting.Any())
                 {
                     ViewData["MessageError"] = ErrorMessages.EW0102;
@@ -43,11 +44,8 @@ namespace task_sync_web.Controllers
         {
             try
             {
-                var administratorId = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_AdministratorId).First().Value;
-                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
-
                 // update
-                using (var db = new DbSqlKata(dbName))
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
                    if(string.IsNullOrEmpty(settingModel.SystemSettingStringValue))
                         settingModel.SystemSettingStringValue = string.Empty;
@@ -55,7 +53,7 @@ namespace task_sync_web.Controllers
                     {
                         SystemSettingStringValue = settingModel.SystemSettingStringValue,
                         UpdateDateTime = DateTime.Now.Date,
-                        UpdateAdministratorId = administratorId
+                        UpdateAdministratorId = LoginUser.AdministratorId
                     });
                     if (efftedRows > 0)
                         return Json(new { Result = "OK", Mess = ErrorMessages.EW503 });
@@ -70,10 +68,10 @@ namespace task_sync_web.Controllers
             }
         }
 
-        private List<MSystemSettingModel> GetListMAdministrator(string keySearch, string dbName)
+        private List<MSystemSettingModel> GetListMAdministrator(string keySearch)
         {
             var list = new List<MSystemSettingModel>();
-            using (var db = new DbSqlKata(dbName))
+            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
                 if (string.IsNullOrWhiteSpace(keySearch))
                 {
