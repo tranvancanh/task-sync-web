@@ -105,7 +105,7 @@
         <div class="modal__overlay" tabindex="-1" data-micromodal-close>
             <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
                 <header class="modal__header">
-                    <h3 id="modal-1-title" class=" fw-bold">修正</h3>
+                    <h3 id="modal-1-title" class="fw-bold">修正</h3>
                     <button class="btn btn-custom  btn-lg" aria-label="Close modal" data-micromodal-close><i class="fas fa-times"></i></button>
                 </header>
                 <div class="valid-area alert alert-danger" role="alert" style="display: none;">
@@ -115,28 +115,35 @@
                       data-ajax="true" data-ajax-update="formDetails" class="mt-3">
                     @Html.AntiForgeryToken()
                     <div class="form-group" style="display: none">
-                        <input name="SearchKeyWord" class="form-control readonlyclass" id="SearchKeyWordEdit" value="@Model.SearchKeyWord" type="text" readonly />
-                        <input name="PageNumber" class="form-control readonlyclass" id="PageNumberEdit" value="@pagedList.PageNumber" type="text" readonly />
+                        <input name="SearchKeyWord" class="form-control" id="SearchKeyWordEdit" value="@Model.SearchKeyWord" type="text" readonly />
+                        <input name="PageNumber" class="form-control form-control-lg" id="PageNumberEdit" value="@pagedList.PageNumber" type="text" readonly />
                     </div>
-                    <div class="form-group my-1">
-                        <label>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</label>
-                        <input name="SystemSettingId" class="form-control readonlyclass" id="SystemSettingId" type="text" readonly />
+                    <div class="form-group my-3">
+                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</label>
+                        <input name="SystemSettingId" class="form-control form-control-lg" id="SystemSettingId" type="text" readonly />
                     </div>
-                    <div class="form-group my-1">
-                        <label>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</label>
-                        <input name="SystemSettingOutline" class="form-control" id="SystemSettingOutline" type="text" readonly />
+                    <div class="form-group my-3">
+                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</label>
+                        <input name="SystemSettingOutline" class="form-control form-control-lg" id="SystemSettingOutline" type="text" readonly />
                     </div>
-                    <div class="form-group my-1">
-                        <label>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</label>
-                        <input name="SystemSettingStringValue" class="form-control" id="SystemSettingStringValue" type="text" />
+                    <div class="form-group my-3">
+                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingDetail)</label>
+                        <input name="SystemSettingDetail" class="form-control form-control-lg" id="SystemSettingDetail" type="text" readonly />
                     </div>
-
-                    <footer class="modal__footer mt-4">
-                        <button class="modal__btn modal__btn-primary col-md-4" type="button" id="btnSave" asp-action="Edit" style="margin-left: 10px;">
-                            保存
+                        <div class="form-group my-3">
+                            <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingValue)</label>
+                            <input name="SystemSettingValue" class="form-control form-control-lg" id="SystemSettingValue" type="text" />
+                        </div>
+                    <div class="form-group my-3">
+                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</label>
+                        <input name="SystemSettingStringValue" class="form-control form-control-lg" id="SystemSettingStringValue" type="text" />
+                    </div>
+                    <footer class="modal__footer my-5 text-right">
+                        <button class="btn btn-custom btn-lg" type="button" id="btnSave" asp-action="Edit">
+                            <span class="p-2">
+                                <i class="fas fa-check fa-fw"></i> 更新
+                            </span>
                         </button>
-                        <label class="col-md-3"></label>
-                        <button class="modal__btn col-md-4" data-micromodal-close aria-label="Close this dialog window" type="button">キャンセル</button>
                     </footer>
                 </form>
             </div>

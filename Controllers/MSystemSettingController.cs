@@ -78,61 +78,54 @@ namespace task_sync_web.Controllers
 
         private List<MSystemSettingModel> GetListMAdministrator(string searchKey)
         {
-            var systemSettingModels = new List<MSystemSettingModel>();
-            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            try
             {
-                // DBからデータ一覧を取得
-                var systemSettingList = db.Query("MSystemSetting")
-                .Select(
-                    "MSystemSetting.SystemSettingId",
-                    "MSystemSetting.SystemSettingOutline",
-                    "MSystemSetting.SystemSettingDetail",
-                    "MSystemSetting.SystemSettingValue",
-                    "MSystemSetting.SystemSettingStringValue",
-                    "MSystemSetting.UpdateDateTime",
-                    "MAdministrator.AdministratorLoginId as UpdateAdministratorId",
-                    "MAdministrator.AdministratorName as UpdateAdministratorName"
-                    )
-                .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.AdministratorId")
-                .OrderBy("MSystemSetting.SystemSettingId")
-                .Get<MSystemSettingModel>().ToList();
-
-                if (systemSettingList.Count == 0)
+                var systemSettingModels = new List<MSystemSettingModel>();
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                    throw new CustomExtention(ErrorMessages.EW0101);
-                }
-
-                searchKey = (searchKey ?? "").Trim();
-                if (systemSettingList.Count > 0 && searchKey.Length > 0)
-                {
-                    // 検索キーワードが存在する場合
-                    systemSettingModels = systemSettingList.Where(x => x.SystemSettingId.ToString().Contains(searchKey) || x.SystemSettingOutline.Contains(searchKey)).ToList();
-                    if (systemSettingModels.Count == 0)
-                    {
-                        throw new CustomExtention(ErrorMessages.EW0102);
-                    }
-                }
-                else
-                {
-                    list = db.Query("MSystemSetting")
+                    // DBからデータ一覧を取得
+                    var systemSettingList = db.Query("MSystemSetting")
                     .Select(
                         "MSystemSetting.SystemSettingId",
                         "MSystemSetting.SystemSettingOutline",
                         "MSystemSetting.SystemSettingDetail",
+                        "MSystemSetting.SystemSettingValue",
                         "MSystemSetting.SystemSettingStringValue",
                         "MSystemSetting.UpdateDateTime",
                         "MAdministrator.AdministratorLoginId as UpdateAdministratorId",
                         "MAdministrator.AdministratorName as UpdateAdministratorName"
                         )
-                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.UpdateAdministratorId")
-                    .WhereNotNull("MAdministrator.AdministratorName")
-                    .WhereLike("SystemSettingId", $"%{keySearch}%")
-                    .OrWhereLike("SystemSettingOutline", $"%{keySearch}%")
+                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.AdministratorId")
                     .OrderBy("MSystemSetting.SystemSettingId")
                     .Get<MSystemSettingModel>().ToList();
+
+                    if (systemSettingList.Count == 0)
+                    {
+                        throw new CustomExtention(ErrorMessages.EW0101);
+                    }
+
+                    searchKey = (searchKey ?? "").Trim();
+                    if (systemSettingList.Count > 0 && searchKey.Length > 0)
+                    {
+                        // 検索キーワードが存在する場合
+                        systemSettingModels = systemSettingList.Where(x => x.SystemSettingId.ToString().Contains(searchKey) || x.SystemSettingOutline.Contains(searchKey)).ToList();
+                        if (systemSettingModels.Count == 0)
+                        {
+                            throw new CustomExtention(ErrorMessages.EW0102);
+                        }
+                    }
+                    else
+                    {
+                        systemSettingModels = systemSettingList;
+                    }
                 }
                 return systemSettingModels;
             }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+
     }
 }
