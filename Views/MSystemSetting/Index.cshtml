@@ -41,8 +41,8 @@
                 </div>
             </form>
             <div class="col-auto my-2">
-                <span class="text-success-custom">@ViewData["MessageSuccess"]</span>
-                <span class="text-danger-custom">@ViewData["MessageError"]</span>
+                <span class="text-success-custom" id="MessageSuccess">@ViewData["MessageSuccess"]</span>
+                <span class="text-danger-custom" id="MessageError">@ViewData["MessageError"]</span>
             </div>
 
             <div style="overflow-x: scroll;">
@@ -110,7 +110,7 @@
                     </h2>
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
-                <div class="valid-area alert alert-danger" role="alert" style="display: none;">
+                <div class="valid-area alert alert-danger" role="alert" style="display: none;" id="erorDiv">
                     <span></span>
                 </div>
                 <form method="post" asp-controller="MSystemSetting" enctype="multipart/form-data" autocomplete="on"
@@ -130,7 +130,7 @@
                     </div>
                     <div class="form-group my-1">
                         <label>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</label>
-                        <input name="SystemSettingStringValue" class="form-control" id="SystemSettingStringValue" type="text" />
+                        <input name="SystemSettingStringValue" class="form-control" id="SystemSettingStringValue" type="text" maxlength="100" />
                     </div>
 
                     <footer class="modal__footer mt-4">
@@ -155,6 +155,13 @@
 
         });
         function GetSystemSettingSubmitAjax(systemSettingId, systemSettingOutline, systemSettingStringValue) {
+            //reset message
+            $("#erorDiv").css("display", "none");
+            $("#modal-1").find(".valid-area span").text('');
+
+            $("#MessageSuccess").text('');
+            $("#MessageError").text('');
+
             $("#SystemSettingId").val(systemSettingId);
             $("#SystemSettingOutline").val(systemSettingOutline);
             $("#SystemSettingStringValue").val(systemSettingStringValue);

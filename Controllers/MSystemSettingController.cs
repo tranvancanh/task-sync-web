@@ -44,11 +44,15 @@ namespace task_sync_web.Controllers
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(settingModel.SystemSettingStringValue))
+                    settingModel.SystemSettingStringValue = string.Empty;
+
+                if (settingModel.SystemSettingStringValue.Length > 100)
+                    throw new CustomExtention(ErrorMessages.EW002);
+
                 // update
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                   if(string.IsNullOrEmpty(settingModel.SystemSettingStringValue))
-                        settingModel.SystemSettingStringValue = string.Empty;
                     var efftedRows = db.Query("MSystemSetting").Where("SystemSettingId", settingModel.SystemSettingId).Update(new
                     {
                         SystemSettingStringValue = settingModel.SystemSettingStringValue,
@@ -75,7 +79,7 @@ namespace task_sync_web.Controllers
             {
                 if (string.IsNullOrWhiteSpace(keySearch))
                 {
-                    var list1 = db.Query("MSystemSetting")
+                    list = db.Query("MSystemSetting")
                     .Select(
                         "MSystemSetting.SystemSettingId",
                         "MSystemSetting.SystemSettingOutline",
@@ -88,7 +92,7 @@ namespace task_sync_web.Controllers
                     .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.AdministratorId")
                     .WhereNotNull("MAdministrator.AdministratorName")
                     .OrderBy("MSystemSetting.SystemSettingId")
-                    .Get<MSystemSettingModel>();
+                    .Get<MSystemSettingModel>().ToList();
                 }
                 else
                 {
@@ -102,7 +106,7 @@ namespace task_sync_web.Controllers
                         "MAdministrator.AdministratorLoginId as UpdateAdministratorId",
                         "MAdministrator.AdministratorName as UpdateAdministratorName"
                         )
-                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.UpdateAdministratorId")
+                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.AdministratorId")
                     .WhereNotNull("MAdministrator.AdministratorName")
                     .WhereLike("SystemSettingId", $"%{keySearch}%")
                     .OrWhereLike("SystemSettingOutline", $"%{keySearch}%")
