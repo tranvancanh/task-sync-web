@@ -11,11 +11,15 @@ namespace task_sync_web.Models
 
         public IPagedList<MSystemSettingModel> SystemSettingModels { get; set; }
 
+        public int EditSystemSettingId { get; set; }
+        public MSystemSettingModel SystemSettingEditModel { get; set; }
+
         public MSystemSettingViewModel()
         {
             DisplayName = "システム設定";
-            PageRowCount = 50;
+            PageRowCount = 2;
             SystemSettingModels = new List<MSystemSettingModel>().ToPagedList(1, PageRowCount);
+            SystemSettingEditModel = new MSystemSettingModel();
         }
     }
 }
