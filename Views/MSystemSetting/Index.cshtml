@@ -110,7 +110,7 @@
                     </h2>
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
-                <div class="valid-area alert alert-danger" role="alert" style="display: none;" id="erorDiv">
+                <div class="valid-area alert alert-danger" role="alert" style="display: none;">
                     <span></span>
                 </div>
                 <form method="post" asp-controller="MSystemSetting" enctype="multipart/form-data" autocomplete="on"
@@ -156,7 +156,7 @@
         });
         function GetSystemSettingSubmitAjax(systemSettingId, systemSettingOutline, systemSettingStringValue) {
             //reset message
-            $("#erorDiv").css("display", "none");
+            $("#modal-1 .valid-area").css("display", "none");
             $("#modal-1").find(".valid-area span").text('');
 
             $("#MessageSuccess").text('');
