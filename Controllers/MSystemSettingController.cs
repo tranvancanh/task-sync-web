@@ -48,11 +48,15 @@ namespace task_sync_web.Controllers
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(settingModel.SystemSettingStringValue))
+                    settingModel.SystemSettingStringValue = string.Empty;
+
+                if (settingModel.SystemSettingStringValue.Length > 100)
+                    throw new CustomExtention(ErrorMessages.EW002);
+
                 // update
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                   if(string.IsNullOrEmpty(settingModel.SystemSettingStringValue))
-                        settingModel.SystemSettingStringValue = string.Empty;
                     var efftedRows = db.Query("MSystemSetting").Where("SystemSettingId", settingModel.SystemSettingId).Update(new
                     {
                         settingModel.SystemSettingStringValue,
@@ -110,7 +114,22 @@ namespace task_sync_web.Controllers
                 }
                 else
                 {
-                    systemSettingModels = systemSettingList;
+                    list = db.Query("MSystemSetting")
+                    .Select(
+                        "MSystemSetting.SystemSettingId",
+                        "MSystemSetting.SystemSettingOutline",
+                        "MSystemSetting.SystemSettingDetail",
+                        "MSystemSetting.SystemSettingStringValue",
+                        "MSystemSetting.UpdateDateTime",
+                        "MAdministrator.AdministratorLoginId as UpdateAdministratorId",
+                        "MAdministrator.AdministratorName as UpdateAdministratorName"
+                        )
+                    .LeftJoin("MAdministrator", "MSystemSetting.UpdateAdministratorId", "MAdministrator.UpdateAdministratorId")
+                    .WhereNotNull("MAdministrator.AdministratorName")
+                    .WhereLike("SystemSettingId", $"%{keySearch}%")
+                    .OrWhereLike("SystemSettingOutline", $"%{keySearch}%")
+                    .OrderBy("MSystemSetting.SystemSettingId")
+                    .Get<MSystemSettingModel>().ToList();
                 }
                 return systemSettingModels;
             }
