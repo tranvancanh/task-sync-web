@@ -40,6 +40,9 @@
                 <div class="row">
                     <div class="form-group col-auto">
                         <div class="input-group">
+                            <button class="btn btn-secondary btn-custom" id="btnNavbarSearch" type="button" data-micromodal-trigger="modal-1" role="button" onclick="GetSystemSettingSubmitAjax(interruptReasonId = '', interruptReasonCode = '', interruptReasonName = '', isNotUse = 'false')">
+                                <i class="fas fa-plus"></i>
+                                </button>
                             <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
                             <button class="btn btn-secondary btn-custom" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
