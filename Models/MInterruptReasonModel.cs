@@ -13,7 +13,7 @@ namespace task_sync_web.Models
         [StringLength(50, MinimumLength = 1, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
         [FromForm(Name = "InterruptReasonModels[0].InterruptReasonCode")]
-        public string InterruptReasonCode {  get; set; }
+        public string InterruptReasonCode { get; set; }
 
         [Display(Name = "中断理由名")]
         [StringLength(50, MinimumLength = 1, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
@@ -29,7 +29,7 @@ namespace task_sync_web.Models
 
         [Display(Name = "登録日")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
-        public DateTime CreateDateTime {  get; set; }
+        public DateTime CreateDateTime { get; set; }
 
         [Display(Name = "更新日時")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]

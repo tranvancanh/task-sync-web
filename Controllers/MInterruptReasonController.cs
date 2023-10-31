@@ -34,7 +34,7 @@ namespace task_sync_web.Controllers
             }
             catch (Exception ex)
             {
-                if(ex is CustomExtention)
+                if (ex is CustomExtention)
                 {
                     ViewData["ErrorMessage"] = ex.Message;
                     return View(viewModel);
@@ -57,7 +57,7 @@ namespace task_sync_web.Controllers
                 var administratorId = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_AdministratorId).First().Value;
                 var efftedRows = -1;
 
-                if(string.IsNullOrWhiteSpace(model.InterruptReasonCode))
+                if (string.IsNullOrWhiteSpace(model.InterruptReasonCode))
                     model.InterruptReasonCode = string.Empty;
 
                 if (string.IsNullOrWhiteSpace(model.InterruptReasonName))
