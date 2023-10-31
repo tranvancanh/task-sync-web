@@ -10,7 +10,7 @@ namespace task_sync_web.Controllers
     public class MInterruptReasonController : BaseController
     {
         [HttpGet]
-        public IActionResult Index(MInterruptReasonViewModel viewModel, int? pageNumber, string mess = null)
+        public IActionResult Index(MInterruptReasonViewModel viewModel, int? pageNumber)
         {
             try
             {
@@ -25,10 +25,10 @@ namespace task_sync_web.Controllers
                 var listPaged = listInterruptReason.ToPagedList(pageNumber ?? 1, viewModel.PageRowCount);
                 viewModel.InterruptReasonModels = listPaged;
 
-                if (!string.IsNullOrEmpty(mess))
-                {
-                    ViewData["SuccessMessage"] = mess;
-                }
+                if (!string.IsNullOrEmpty(Convert.ToString(TempData["SuccessMessage"])))
+                    ViewData["SuccessMessage"] = TempData["SuccessMessage"];
+                else
+                    ViewData["ErrorMessage"] = TempData["ErrorMessage"];
                 return View(viewModel);
             }
             catch (Exception ex)
@@ -52,6 +52,9 @@ namespace task_sync_web.Controllers
         {
             try
             {
+                TempData["SuccessMessage"] = null;
+                TempData["ErrorMessage"] = null;
+
                 if (string.IsNullOrWhiteSpace(model.InterruptReasonCode))
                     model.InterruptReasonCode = string.Empty;
 
@@ -70,37 +73,35 @@ namespace task_sync_web.Controllers
                         UpdateAdministratorId = LoginUser.AdministratorId
                     });
                     if (efftedRows > 0)
+                    {
+                        TempData["SuccessMessage"] = SuccessMessages.SW002;
                         return RedirectToAction("Index", new
                         {
                             searchKeyWord = searchKeyWord,
-                            pageNumber = pageNumber,
-                            mess = SuccessMessages.SW002
+                            pageNumber = pageNumber
                         });
+                    }
                     else
+                    {
+                        TempData["ErrorMessage"] = ErrorMessages.EW0502;
                         return RedirectToAction("Index", new
                         {
                             searchKeyWord = searchKeyWord,
-                            pageNumber = pageNumber,
-                            mess = ErrorMessages.EW0502
+                            pageNumber = pageNumber
                         });
+                    }
                 }
             }
             catch (Exception ex)
             {
                 if (ex is CustomExtention)
-                {
-                    ViewData["ErrorMessage"] = ex.Message;
-                }
+                    TempData["ErrorMessage"] = ex.Message;
                 else
-                {
-                    ViewData["ErrorMessage"] = ErrorMessages.EW500;
-                }
-                var error = Convert.ToString(ViewData["ErrorMessage"]);
+                    TempData["ErrorMessage"] = ErrorMessages.EW500;
                 return RedirectToAction("Index", new
                 {
                     searchKeyWord = searchKeyWord,
-                    pageNumber = pageNumber,
-                    mess = error
+                    pageNumber = pageNumber
                 });
             }
         }
