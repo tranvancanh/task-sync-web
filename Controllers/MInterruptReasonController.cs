@@ -41,7 +41,7 @@ namespace task_sync_web.Controllers
                 }
                 else
                 {
-                    //ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                    ViewData["ErrorMessage"] = ErrorMessages.EW500;
                     return View(viewModel);
                 }
             }
@@ -66,7 +66,7 @@ namespace task_sync_web.Controllers
                 // update
                 using (var db = new DbSqlKata(dbName))
                 {
-                    efftedRows = db.Query("MSystemSetting").Where("InterruptReasonId", model.InterruptReasonId).Update(new
+                    efftedRows = db.Query("MInterruptReason").Where("InterruptReasonId", model.InterruptReasonId).Update(new
                     {
                         InterruptReasonCode = model.InterruptReasonCode,
                         InterruptReasonName = model.InterruptReasonName,
@@ -98,7 +98,7 @@ namespace task_sync_web.Controllers
                 }
                 else
                 {
-                    //ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                    ViewData["ErrorMessage"] = ErrorMessages.EW500;
                 }
                 var error = Convert.ToString(ViewData["ErrorMessage"]);
                 return RedirectToAction("Index", new
@@ -136,9 +136,10 @@ namespace task_sync_web.Controllers
                 .LeftJoin("MAdministrator as c", "a.UpdateAdministratorId", "c.AdministratorId")
                 .OrderBy("a.InterruptReasonId")
                 .Get<MInterruptReasonModel>().ToList();
+                listInterruptReason = listInterruptReason.Where(x => x.AdministratorNameCreate != null && x.AdministratorNameUpdate != null).ToList();
             }
 
-            if (listInterruptReason.Count > 0)
+            if (listInterruptReason.Count == 0)
             {
                 throw new CustomExtention(ErrorMessages.EW0101);
             }
