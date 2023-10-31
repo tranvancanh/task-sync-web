@@ -8,14 +8,14 @@
     --font-family-sans-serif: "BIZ UDPGothic", Meiryo UI, sans-serif;
 }
 
-html {
-    color: var(--fontcolor);
+html .modal{
     font-family: var(--font-family-sans-serif) !important;
 }
 
 body {
+    color: var(--fontcolor);
+    background-color: whitesmoke !important;
     font-family: var(--font-family-sans-serif) !important;
-    background-color:whitesmoke!important;
 }
 
 /*‰æ–Ê‚ª¬‚³‚¢‚ÍA•¶š‚Ì‘å‚«‚³‚ğ¬‚³‚­‚·‚é*/
@@ -60,12 +60,15 @@ body {
     border-radius: 0px !important;
 }
 
-.form-control:focus {
-    background-color: var(--othercolor) !important;
-}
-
     .form-control:focus, .btn:focus, a.page-link:focus {
         box-shadow: 0 0 0 3px var(--mainlightcolor) !important;
+    }
+
+    .form-control:disabled, .form-control[readonly] {
+        background-color: var(--othercolor) !important;
+        border: none !important;
+        border-bottom: 0px !important;
+        border-radius: 0px !important;
     }
 
 .text-right {
@@ -231,6 +234,12 @@ th.table-border-less, td.table-border-less {
     background-color: #fff !important;
 }
 /*ªtable-hover*/
+
+/*«Micromodal.js*/
+.modal__container {
+    min-width: 300px !important;
+}
+/*ªMicromodal.js*/
 
 @media (min-width: 768px) {
   html {
