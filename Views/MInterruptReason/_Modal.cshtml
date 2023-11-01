@@ -1,60 +1,67 @@
-﻿
-@model MInterruptReasonViewModel
+﻿@model MInterruptReasonViewModel
 
 <div class="modal micromodal-slide" id="modal-system-setting-edit" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-system-setting-title">
             <header class="modal__header">
-                <h3 id="modal-system-setting-title" class="fw-bold">修正</h3>
+                @if (@Model.IsModalState == true)
+                {
+                    <h3 id="modal-system-setting-title" class="fw-bold">新規登録</h3>
+                }
+                else if (@Model.IsModalState == false)
+                {
+                    <h3 id="modal-system-setting-title" class="fw-bold">修正</h3>
+                }
                 <button class="btn btn-custom btn-lg" aria-label="Close modal" data-micromodal-close><i class="fas fa-times"></i></button>
             </header>
-           
             @if (!String.IsNullOrEmpty((@ViewData["ErrorMessageModal"] ?? "").ToString()))
-            { 
+            {
                 <div class="alert alert-danger fadeIn mt-3 py-2" role="alert">
                     <span class="text-danger-custom">@ViewData["ErrorMessageModal"]</span>
                 </div>
             }
-            
             <form method="post" asp-controller="MInterruptReason" enctype="multipart/form-data" autocomplete="off"
                   data-ajax="true" data-ajax-update="formDetails" class="mt-3">
                 @Html.AntiForgeryToken()
                 <div class="form-group" style="display: none">
-                    <input asp-for="@Model.SearchKeyWord" class="form-control readonlyclass" id="SearchKeyWordEdit" type="text" readonly />
-                    <input asp-for="@Model.PageNumber" class="form-control readonlyclass" id="PageNumberEdit" readonly />
-                    <input asp-for="@Model.IsModalStatus" class="form-control readonlyclass" id="IsModalStatus" type="text" readonly />
+                    <input asp-for="@Model.SearchKeyWord" class="form-control" id="SearchKeyWordEdit" type="text" readonly />
+                    <input asp-for="@Model.PageNumber" class="form-control" id="PageNumberEdit" readonly />
+                    <input asp-for="@Model.IsModalState" class="form-control" id="IsModalState" type="text" readonly />
                 </div>
-                <div class="form-group my-1" style="display: none">
-                    <label>@Html.DisplayNameFor(model => model.ModalModel.InterruptReasonId)</label>
-                    <input asp-for ="ModalModel.InterruptReasonId" class="form-control readonlyclass" id="InterruptReasonId" type="text" />
+                <div class="form-group my-3" style="display: none">
+                    <input asp-for="ModalModel.InterruptReasonId" class="form-control" id="InterruptReasonId" type="number" />
                 </div>
-                <div class="form-group my-1">
+                <div class="form-group my-3">
                     <label class="required-mark">@Html.DisplayNameFor(model => model.ModalModel.InterruptReasonCode)</label>
-                    <input asp-for="ModalModel.InterruptReasonCode" class="form-control readonlyclass" id="InterruptReasonCode" type="text" />
+                    <input asp-for="ModalModel.InterruptReasonCode" class="form-control" id="InterruptReasonCode" type="text" />
                     <span asp-validation-for="ModalModel.InterruptReasonCode" class="text-danger-custom"></span>
                 </div>
-                <div class="form-group my-1">
+                <div class="form-group my-3">
                     <label class="required-mark">@Html.DisplayNameFor(model => model.ModalModel.InterruptReasonName)</label>
                     <input asp-for="ModalModel.InterruptReasonName" class="form-control" id="InterruptReasonName" type="text" />
                     <span asp-validation-for="ModalModel.InterruptReasonName" class="text-danger-custom"></span>
                 </div>
-                <div class="form-group my-1">
+                <div class="form-group my-3">
                     <label>@Html.DisplayNameFor(model => model.ModalModel.Remark)</label>
                     <input asp-for="ModalModel.Remark" class="form-control" id="InterruptReasonName" type="text" />
                 </div>
-                <div class="form-group my-1">
+                <div class="form-group my-3">
                     <label>@Html.DisplayNameFor(model => model.ModalModel.IsNotUse)</label>
                     <select asp-for="ModalModel.IsNotUse" class="form-select" id="IsNotUse" aria-label="Default select example">
                         <option value="False">0:利用中</option>
                         <option value="True">1:利用停止</option>
                     </select>
                 </div>
-
                 <footer class="modal__footer my-5 text-right">
-                    <button class="btn btn-custom btn-lg" type="submit" id="btnSave" name="isUpdate" value="true">
-                        <span class="p-2">
-                            <i class="fas fa-check fa-fw"></i> 更新
-                        </span>
+                    <button class="btn btn-custom btn-lg" type="submit" id="btnSave">
+                        @if (@Model.IsModalState == true)
+                        {
+                            <span class="p-2"><i class="fas fa-plus"></i>登録</span>
+                        }
+                        else if (@Model.IsModalState == false)
+                        {
+                            <span class="p-2"><i class="fas fa-check fa-fw"></i>更新</span>
+                        }
                     </button>
                 </footer>
             </form>

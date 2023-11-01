@@ -15,8 +15,9 @@ namespace task_sync_web.Controllers
             try
             {
                 var listInterruptReason = GetListInterruptReason(viewModel.SearchKeyWord);
+                ModelState.Clear();
                 //検索処理
-                if (viewModel.IsModalStatus == null)
+                if (viewModel.IsModalState == null)
                 {
                     if (!listInterruptReason.Any())
                     {
@@ -24,16 +25,14 @@ namespace task_sync_web.Controllers
                         return View(viewModel);
                     }
                 }
-                else if(viewModel.IsModalStatus == true)
+                else if(viewModel.IsModalState == true)
                 {
                     //新規登録処理
-                    ModelState.Clear();
-                    viewModel.ModalModel = new MInterruptReasonModel();
+                    viewModel.ModalModel = new MInterruptReasonModel() { InterruptReasonId = viewModel.ModalModel.InterruptReasonId};
                 }
                 else
                 {
                     //更新処理
-                    ModelState.Clear();
                     var modalVal = listInterruptReason.Where(x => x.InterruptReasonId == viewModel.ModalModel.InterruptReasonId).FirstOrDefault();
                     if (modalVal != null)
                         viewModel.ModalModel = modalVal;
@@ -67,7 +66,7 @@ namespace task_sync_web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(MInterruptReasonViewModel viewModel, bool? isModalStatus)
+        public IActionResult Index(MInterruptReasonViewModel viewModel, bool? isModalState)
         {
             ViewData["SuccessMessage"] = null;
             ViewData["ErrorMessageModal"] = null;
@@ -86,7 +85,7 @@ namespace task_sync_web.Controllers
                 var efftedRows = -1;
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                    if (isModalStatus == true)
+                    if (isModalState == true)
                     {
                         //新規登録処理
                         efftedRows = db.Query("MInterruptReason").Insert(
@@ -96,7 +95,7 @@ namespace task_sync_web.Controllers
                                         new object[] { viewModel.ModalModel.InterruptReasonCode, viewModel.ModalModel.InterruptReasonName, viewModel.ModalModel.Remark, viewModel.ModalModel.IsNotUse, DateTime.Now.Date, LoginUser.AdministratorId, "1900/01/01", LoginUser.AdministratorId }
                                     });
                     }
-                    else if (isModalStatus == false)
+                    else if (isModalState == false)
                     {
                         //更新処理
                         efftedRows = db.Query("MInterruptReason").Where("InterruptReasonId", viewModel.ModalModel.InterruptReasonId).Update(new
@@ -113,7 +112,7 @@ namespace task_sync_web.Controllers
 
                 if (efftedRows > 0)
                 {
-                    viewModel.IsModalStatus = null;
+                    viewModel.IsModalState = null;
                     ViewData["SuccessMessage"] = SuccessMessages.SW002;
                 }
                 else

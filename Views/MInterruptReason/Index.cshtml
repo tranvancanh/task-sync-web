@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </form>
-            <div class="col-auto my-2">
+            <div class="col-auto mt-4">
                 <span class="text-success-custom" id="MessageSuccess">@ViewData["SuccessMessage"]</span>
                 <span class="text-danger-custom" id="MessageError">@ViewData["ErrorMessage"]</span>
             </div>
@@ -132,19 +132,17 @@
 
         });
 
-        function SubmitForm(interruptReasonId, modalStatus) {
-            console.log({ interruptReasonId });
-            console.log({ modalStatus });
+        function SubmitForm(interruptReasonId, modalState) {
             let form = $(document).find('#interrupt-reason-form');
             let inputInterruptReasonId = $("<input>").attr("type", "hidden").attr("name", "ModalModel.InterruptReasonId").val(interruptReasonId);
-            let inputModalStatus = $("<input>").attr("type", "hidden").attr("name", "IsModalStatus").val(modalStatus);
+            let inputModalStatus = $("<input>").attr("type", "hidden").attr("name", "IsModalState").val(modalState);
             $(form).append($(inputInterruptReasonId));
             $(form).append($(inputModalStatus));
             form.submit();
         }
 
         $(function () {
-            if ('@Model.IsModalStatus' != '') {
+            if ('@Model.IsModalState' != '') {
                 MicroModal.show('modal-system-setting-edit');
             }
         });
