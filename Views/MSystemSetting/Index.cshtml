@@ -61,7 +61,7 @@
                         <tbody>
                             @foreach (var item in pagedList)
                             {
-                                <tr onclick="SystemSettingEditView('@item.SystemSettingId')">
+                                <tr role="button" onclick="SystemSettingEditView('@item.SystemSettingId')">
                                     <td class="text-right">
                                         @Html.DisplayFor(model => item.SystemSettingId)
                                         </td>
@@ -115,20 +115,26 @@
 
 </div>
 
-@if (Model.SystemSettingEditModel != null && Model.SystemSettingEditModel.SystemSettingId > 0)
+@if (Model.SystemSettingEditModel.SystemSettingId > 0)
 {
-    @await Html.PartialAsync("_Edit")
+    @await Html.PartialAsync("_Edit");
 }
 
 @section Scripts {
     <script>
 
         function SystemSettingEditView(systemSettingId) {
-            var form = $(document).find('form');
+            var form = $(document).find('#system-setting-form');
             var input1 = $("<input>").attr("type", "hidden").attr("name", "editSystemSettingId").val(systemSettingId);
             $(form).append($(input1));
             form.submit();
         }
 
+        $(function () {
+            if (@Model.SystemSettingEditModel.SystemSettingId > 0) {
+                MicroModal.show('modal-system-setting-edit');
+            }
+        });
+
     </script>
-    }
+}

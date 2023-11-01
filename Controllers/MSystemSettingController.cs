@@ -56,7 +56,7 @@ namespace task_sync_web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(MSystemSettingViewModel viewModel)
+        public IActionResult Index(MSystemSettingViewModel viewModel, bool isUpdate)
         {
             try
             {
