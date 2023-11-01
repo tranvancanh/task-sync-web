@@ -10,8 +10,8 @@
 
 <style>
     .modal__container {
-        width: 450px; /* // モーダルの幅を設定  */
-        height: 400px; /* // モーダルの高さを設定 */
+        max-width: 800px !important; /* モーダルの幅を設定  */
+        width: 800px !important; /* モーダルの幅を設定  */
     }
 
     .readonlyclass:focus {
@@ -30,20 +30,24 @@
         ViewData["Title"] = @Model.DisplayName;
     }
 </div>
+
+@await Html.PartialAsync("~/Views/MInterruptReason/_Modal.cshtml")
+
 <div class="card shadow m-4">
     <div class="card-header">
         <h3 class="pt-2">@Model.DisplayName</h3>
     </div>
     <div class="card-body">
         <div class="p-2">
-            <form class="form-inline" asp-controller="MAdministrator" enctype="multipart/form-data" method="get">
+            <form id="interrupt-reason-form" class="form-inline" asp-controller="MInterruptReason" enctype="multipart/form-data" method="get">
                 <div class="row">
                     <div class="form-group col-auto">
                         <div class="input-group">
-                            <button class="btn btn-secondary btn-custom" id="btnNavbarSearch" type="button" data-micromodal-trigger="modal-1" role="button" onclick="GetSystemSettingSubmitAjax(interruptReasonId = '', interruptReasonCode = '', interruptReasonName = '', isNotUse = 'false')">
+                            <button class="btn btn-secondary btn-custom" id="btnNavbarSearch" type="button" role="button" onclick="SubmitForm('-99', 'true')">
                                 <i class="fas fa-plus"></i>
                                 </button>
                             <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                            <input type="hidden" asp-for="PageNumber" name="PageNumber" />
                             <button class="btn btn-secondary btn-custom" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
@@ -75,7 +79,7 @@
                         <tbody>
                             @foreach (var item in pagedList)
                             {
-                                <tr data-micromodal-trigger="modal-1" role="button" onclick="GetSystemSettingSubmitAjax(interruptReasonId = '@item.InterruptReasonId', interruptReasonCode = '@item.InterruptReasonCode', interruptReasonName = '@item.InterruptReasonName', isNotUse = '@item.IsNotUse')">
+                                <tr role="button" onclick="SubmitForm('@item.InterruptReasonId', 'false')">
                                     <td class="text-right" style="display: none">@Html.DisplayFor(model => item.InterruptReasonId)</td>
                                     <td class="text-right">@Html.DisplayFor(model => item.InterruptReasonCode)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.InterruptReasonName)</td>
@@ -117,86 +121,33 @@
 
     </div>
 
-
-    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
-        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
-                <header class="modal__header">
-                    <h2 class="modal__title" id="modal-1-title">
-                        修正
-                    </h2>
-                    <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
-                </header>
-                <div class="valid-area alert alert-danger" role="alert" style="display: none;">
-                    <span></span>
-                </div>
-                @if (Model != null && pagedList != null && pagedList.Count > 0)
-                {
-                    <form method="post" asp-controller="MInterruptReason" enctype="multipart/form-data" autocomplete="on"
-                          data-ajax="true" data-ajax-update="formDetails" class="mt-3">
-                        @Html.AntiForgeryToken()
-                        <div class="form-group" style="display: none">
-                            <input name="SearchKeyWord" class="form-control readonlyclass" id="SearchKeyWordEdit" value="@Model.SearchKeyWord" type="text" readonly />
-                            <input name="PageNumber" class="form-control readonlyclass" id="PageNumberEdit" value="@pagedList.PageNumber" type="text" readonly />
-                        </div>
-                        <div class="form-group my-1" style="display: none">
-                            <label>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonId)</label>
-                            <input name="InterruptReasonId" class="form-control readonlyclass" id="InterruptReasonId" type="text" />
-                        </div>
-                        <div class="form-group my-1">
-                            <label class="required-mark">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonCode)</label>
-                            <input asp-for="InterruptReasonModels[0].InterruptReasonCode" class="form-control readonlyclass" id="InterruptReasonCode" type="text" />
-                            <span asp-validation-for="InterruptReasonModels[0].InterruptReasonCode" class="text-danger-custom"></span>
-                        </div>
-                        <div class="form-group my-1">
-                            <label class="required-mark">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonName)</label>
-                            <input asp-for="InterruptReasonModels[0].InterruptReasonName" class="form-control" id="InterruptReasonName" type="text" />
-                            <span asp-validation-for="InterruptReasonModels[0].InterruptReasonName" class="text-danger-custom"></span>
-                        </div>
-                        <div class="form-group my-1">
-                            <label>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].IsNotUse)</label>
-                            <select name="IsNotUse" class="form-select" id="IsNotUse" aria-label="Default select example">
-                                <option value="False">0:利用中</option>
-                                <option value="True">1:利用停止</option>
-                            </select>
-                        </div>
-
-                        <footer class="modal__footer mt-4">
-                            <button class="modal__btn modal__btn-primary col-md-4" type="submit" id="btnSave" asp-action="Edit" style="margin-left: 10px;">
-                                保存
-                            </button>
-                            <label class="col-md-3"></label>
-                            <button class="modal__btn col-md-4" data-micromodal-close aria-label="Close this dialog window" type="button">キャンセル</button>
-                        </footer>
-                    </form>
-                }
-            </div>
-        </div>
-    </div>
-
 </div>
+
 
 @section Scripts {
 
-    <script type="text/javascript">
+    <script>
         const ROOT = '@Url.Content("~")';
         $(document).ready(function () {
 
         });
-        function GetSystemSettingSubmitAjax(interruptReasonId, interruptReasonCode, interruptReasonName, isNotUse) {
-            //reset message
-            $("#modal-1 .valid-area").css("display", "none");
-            $("#modal-1").find(".valid-area span").text('');
-            $("#MessageSuccess").text('');
-            $("#MessageError").text('');
-            $("input ~ span").find("span").text('');
 
-            //set val
-            $("#InterruptReasonId").val(interruptReasonId);
-            $("#InterruptReasonCode").val(interruptReasonCode);
-            $("#InterruptReasonName").val(interruptReasonName);
-            $("#IsNotUse").val(isNotUse);
+        function SubmitForm(interruptReasonId, modalStatus) {
+            console.log({ interruptReasonId });
+            console.log({ modalStatus });
+            let form = $(document).find('#interrupt-reason-form');
+            let inputInterruptReasonId = $("<input>").attr("type", "hidden").attr("name", "ModalModel.InterruptReasonId").val(interruptReasonId);
+            let inputModalStatus = $("<input>").attr("type", "hidden").attr("name", "IsModalStatus").val(modalStatus);
+            $(form).append($(inputInterruptReasonId));
+            $(form).append($(inputModalStatus));
+            form.submit();
         }
+
+        $(function () {
+            if ('@Model.IsModalStatus' != '') {
+                MicroModal.show('modal-system-setting-edit');
+            }
+        });
 
     </script>
 

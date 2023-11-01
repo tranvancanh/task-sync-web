@@ -10,25 +10,44 @@ namespace task_sync_web.Controllers
     public class MInterruptReasonController : BaseController
     {
         [HttpGet]
-        public IActionResult Index(MInterruptReasonViewModel viewModel, int? pageNumber)
+        public IActionResult Index(MInterruptReasonViewModel viewModel)
         {
             try
             {
                 var listInterruptReason = GetListInterruptReason(viewModel.SearchKeyWord);
-                if (!listInterruptReason.Any())
+                //検索処理
+                if (viewModel.IsModalStatus == null)
                 {
-                    ViewData["ErrorMessage"] = ErrorMessages.EW0102;
-                    return View(viewModel);
+                    if (!listInterruptReason.Any())
+                    {
+                        ViewData["ErrorMessage"] = ErrorMessages.EW0102;
+                        return View(viewModel);
+                    }
+                }
+                else if(viewModel.IsModalStatus == true)
+                {
+                    //新規登録処理
+                    ModelState.Clear();
+                    viewModel.ModalModel = new MInterruptReasonModel();
+                }
+                else
+                {
+                    //更新処理
+                    ModelState.Clear();
+                    var modalVal = listInterruptReason.Where(x => x.InterruptReasonId == viewModel.ModalModel.InterruptReasonId).FirstOrDefault();
+                    if (modalVal != null)
+                        viewModel.ModalModel = modalVal;
+                    else
+                    {
+                        ViewData["ErrorMessage"] = ErrorMessages.EW0102;
+                        return View(viewModel);
+                    }
                 }
 
                 // page the list
-                var listPaged = listInterruptReason.ToPagedList(pageNumber ?? 1, viewModel.PageRowCount);
+                var listPaged = listInterruptReason.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
                 viewModel.InterruptReasonModels = listPaged;
 
-                if (!string.IsNullOrEmpty(Convert.ToString(TempData["SuccessMessage"])))
-                    ViewData["SuccessMessage"] = TempData["SuccessMessage"];
-                else
-                    ViewData["ErrorMessage"] = TempData["ErrorMessage"];
                 return View(viewModel);
             }
             catch (Exception ex)
@@ -48,61 +67,72 @@ namespace task_sync_web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public RedirectToActionResult Edit(MInterruptReasonModel model, string searchKeyWord, int pageNumber)
+        public IActionResult Index(MInterruptReasonViewModel viewModel, bool? isModalStatus)
         {
+            ViewData["SuccessMessage"] = null;
+            ViewData["ErrorMessage"] = null;
+
             try
             {
-                TempData["SuccessMessage"] = null;
-                TempData["ErrorMessage"] = null;
+                if (string.IsNullOrWhiteSpace(viewModel.ModalModel.InterruptReasonCode))
+                    viewModel.ModalModel.InterruptReasonCode = string.Empty;
 
-                if (string.IsNullOrWhiteSpace(model.InterruptReasonCode))
-                    model.InterruptReasonCode = string.Empty;
+                if (string.IsNullOrWhiteSpace(viewModel.ModalModel.InterruptReasonName))
+                    viewModel.ModalModel.InterruptReasonName = string.Empty;
 
-                if (string.IsNullOrWhiteSpace(model.InterruptReasonName))
-                    model.InterruptReasonName = string.Empty;
+                if (string.IsNullOrWhiteSpace(viewModel.ModalModel.Remark))
+                    viewModel.ModalModel.Remark = string.Empty;
 
-                // update
+                var efftedRows = -1;
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                    var efftedRows = db.Query("MInterruptReason").Where("InterruptReasonId", model.InterruptReasonId).Update(new
+                    if (isModalStatus == true)
                     {
-                        InterruptReasonCode = model.InterruptReasonCode,
-                        InterruptReasonName = model.InterruptReasonName,
-                        IsNotUse = model.IsNotUse,
-                        UpdateDateTime = DateTime.Now.Date,
-                        UpdateAdministratorId = LoginUser.AdministratorId
-                    });
-                    if (efftedRows > 0)
-                    {
-                        TempData["SuccessMessage"] = SuccessMessages.SW002;
-                        return RedirectToAction("Index", new
-                        {
-                            searchKeyWord = searchKeyWord,
-                            pageNumber = pageNumber
-                        });
+                        //新規登録処理
+                        // insertまとめて
+                        efftedRows = db.Query("MInterruptReason").Insert(
+                                    new[] { "InterruptReasonCode", "InterruptReasonName", "Remark", "IsNotUse", "CreateDateTime", "CreateAdministratorId", "UpdateDateTime", "UpdateAdministratorId" },
+                                    new[] 
+                                    {
+                                        new object[] { viewModel.ModalModel.InterruptReasonCode, viewModel.ModalModel.InterruptReasonName, viewModel.ModalModel.Remark, viewModel.ModalModel.IsNotUse, DateTime.Now.Date, LoginUser.AdministratorId, "1900/01/01", LoginUser.AdministratorId }
+                                    });
                     }
-                    else
+                    else if (isModalStatus == false)
                     {
-                        TempData["ErrorMessage"] = ErrorMessages.EW0502;
-                        return RedirectToAction("Index", new
+                        //更新処理
+                        efftedRows = db.Query("MInterruptReason").Where("InterruptReasonId", viewModel.ModalModel.InterruptReasonId).Update(new
                         {
-                            searchKeyWord = searchKeyWord,
-                            pageNumber = pageNumber
+                            InterruptReasonCode = viewModel.ModalModel.InterruptReasonCode,
+                            InterruptReasonName = viewModel.ModalModel.InterruptReasonName,
+                            Remark = viewModel.ModalModel.Remark,
+                            IsNotUse = viewModel.ModalModel.IsNotUse,
+                            UpdateDateTime = DateTime.Now.Date,
+                            UpdateAdministratorId = LoginUser.AdministratorId
                         });
                     }
                 }
+
+                if (efftedRows > 0)
+                {
+                    viewModel.IsModalStatus = null;
+                    ViewData["SuccessMessage"] = SuccessMessages.SW002;
+                }
+                else
+                {
+                    ViewData["ErrorMessageModal"] = ErrorMessages.EW0502;
+                }
+                var listInterruptReason = GetListInterruptReason(viewModel.SearchKeyWord);
+                var listPaged = listInterruptReason.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
+                viewModel.InterruptReasonModels = listPaged;
+                return View("Index", viewModel);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 if (ex is CustomExtention)
-                    TempData["ErrorMessage"] = ex.Message;
+                    ViewData["ErrorMessageModal"] = ex.Message;
                 else
-                    TempData["ErrorMessage"] = ErrorMessages.EW500;
-                return RedirectToAction("Index", new
-                {
-                    searchKeyWord = searchKeyWord,
-                    pageNumber = pageNumber
-                });
+                    ViewData["ErrorMessageModal"] = ErrorMessages.EW500;
+                return View("Index", viewModel);
             }
         }
 

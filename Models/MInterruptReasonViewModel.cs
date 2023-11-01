@@ -11,11 +11,16 @@ namespace task_sync_web.Models
 
         public IPagedList<MInterruptReasonModel> InterruptReasonModels { get; set; }
 
+        public bool? IsModalStatus { get; set; } = null; // null: 検索処理、true: 新規登録、flase: 更新
+
+        public MInterruptReasonModel ModalModel { get; set; }
+
         public MInterruptReasonViewModel()
         {
             DisplayName = "中断理由マスター";
             PageRowCount = 50;
             InterruptReasonModels = new List<MInterruptReasonModel>().ToPagedList(1, PageRowCount);
+            ModalModel = new MInterruptReasonModel();
         }
     }
 }

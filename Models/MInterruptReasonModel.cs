@@ -6,22 +6,21 @@ namespace task_sync_web.Models
 {
     public class MInterruptReasonModel
     {
-        [HiddenInput]
+
         public int InterruptReasonId { get; set; }
 
         [Display(Name = "中断理由コード")]
-        [StringLength(50, MinimumLength = 1, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
-        [FromForm(Name = "InterruptReasonModels[0].InterruptReasonCode")]
+        [StringLength(50, MinimumLength = 1, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string InterruptReasonCode { get; set; }
 
         [Display(Name = "中断理由名")]
-        [StringLength(50, MinimumLength = 1, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
-        [FromForm(Name = "InterruptReasonModels[0].InterruptReasonName")]
+        [StringLength(50, MinimumLength = 1, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string InterruptReasonName { get; set; }
 
         [Display(Name = "備考")]
+        [StringLength(200, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string Remark { get; set; }
 
         [Display(Name = "利用停止フラグ")]
