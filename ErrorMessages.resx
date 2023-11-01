@@ -221,4 +221,8 @@
   <data name="EW002" xml:space="preserve">
     <value>入力文字が長さ過ぎて再入力ください。</value>
   </data>
+  <data name="EW0009" xml:space="preserve">
+    <value>{0}は半角数値のみ使用できます。</value>
+    <comment>INPUT</comment>
+  </data>
 </root>

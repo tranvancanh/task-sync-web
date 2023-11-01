@@ -7,8 +7,14 @@
         ///// </summary>
         public string DisplayName { get; set; } = string.Empty;
 
-        public List<string> ExcelHeaderList { get; set; }= new List<string>();
+        public int PageNumber { get; set; }
 
         public int PageRowCount { get; set; }
+
+        public BaseViewModel()
+        {
+            PageNumber = 1;
+            PageRowCount = 50;
+        }
     }
 }

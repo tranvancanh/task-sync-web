@@ -26,12 +26,13 @@
     </div>
     <div class="card-body">
         <div class="p-2">
-            <form class="form-inline" asp-controller="MAdministrator" enctype="multipart/form-data" method="get">
+            <form id="system-setting-form" class="form-inline" asp-controller="MSystemSetting" enctype="multipart/form-data" method="get">
                 <div class="row">
                     <div class="form-group col-auto">
                         <div class="input-group">
-                            <input class="form-control form-control-lg" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                            <button class="btn btn-search  btn-lg" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            <input class="form-control form-control-lg" asp-for="SearchKeyWord" name="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                            <input type="hidden" asp-for="PageNumber" name="PageNumber" />
+                            <button class="btn btn-search btn-lg" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
                 </div>
@@ -60,16 +61,28 @@
                         <tbody>
                             @foreach (var item in pagedList)
                             {
-                                <tr data-micromodal-trigger="modal-1" role="button" onclick="GetSystemSettingSubmitAjax(systemSettingId = '@item.SystemSettingId', systemSettingOutline = '@item.SystemSettingOutline', systemSettingStringValue = '@item.SystemSettingStringValue')">
-                                    <td class="text-right">@Html.DisplayFor(model => item.SystemSettingId)</td>
-                                    <td class="text-left">@Html.DisplayFor(model => item.SystemSettingOutline)</td>
-                                    <td class="text-left">@Html.DisplayFor(model => item.SystemSettingDetail)</td>
-                                    <td class="text-left">@Html.DisplayFor(model => item.SystemSettingValue)</td>
-                                    <td class="text-left">@Html.DisplayFor(model => item.SystemSettingStringValue)</td>
-                                    <td class="text-center">@Html.DisplayFor(model => item.UpdateDateTime)</td>
-                                    <td class="text-center">@Html.DisplayFor(model => item.UpdateAdministratorId) &nbsp&nbsp @Html.DisplayFor(model => item.UpdateAdministratorName)</td>
+                                <tr role="button" onclick="SystemSettingEditView('@item.SystemSettingId')">
+                                    <td class="text-right">
+                                        @Html.DisplayFor(model => item.SystemSettingId)
+                                        </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(model => item.SystemSettingOutline)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(model => item.SystemSettingDetail)
+                                        </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(model => item.SystemSettingValue)
+                                        </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(model => item.SystemSettingStringValue)
+                                        </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(model => item.UpdateDateTime)
+                                        </td>
+                                    <td class="text-center">
+                                        @Html.DisplayFor(model => item.UpdateLoginInfor)</td>
                                 </tr>
-
                             }
                         </tbody>
                     }
@@ -100,116 +113,28 @@
 
     </div>
 
-
-    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
-        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
-                <header class="modal__header">
-                    <h3 id="modal-1-title" class="fw-bold">修正</h3>
-                    <button class="btn btn-custom  btn-lg" aria-label="Close modal" data-micromodal-close><i class="fas fa-times"></i></button>
-                </header>
-                <div class="valid-area alert alert-danger" role="alert" style="display: none;">
-                    <span></span>
-                </div>
-                <form method="post" asp-controller="MSystemSetting" enctype="multipart/form-data" autocomplete="on"
-                      data-ajax="true" data-ajax-update="formDetails" class="mt-3">
-                    @Html.AntiForgeryToken()
-                    <div class="form-group" style="display: none">
-                        <input name="SearchKeyWord" class="form-control" id="SearchKeyWordEdit" value="@Model.SearchKeyWord" type="text" readonly />
-                        <input name="PageNumber" class="form-control form-control-lg" id="PageNumberEdit" value="@pagedList.PageNumber" type="text" readonly />
-                    </div>
-                    <div class="form-group my-3">
-                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</label>
-                        <input name="SystemSettingId" class="form-control form-control-lg" id="SystemSettingId" type="text" readonly />
-                    </div>
-                    <div class="form-group my-3">
-                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</label>
-                        <input name="SystemSettingOutline" class="form-control form-control-lg" id="SystemSettingOutline" type="text" readonly />
-                    </div>
-                    <div class="form-group my-3">
-                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingDetail)</label>
-                        <input name="SystemSettingDetail" class="form-control form-control-lg" id="SystemSettingDetail" type="text" readonly />
-                    </div>
-                        <div class="form-group my-3">
-                            <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingValue)</label>
-                            <input name="SystemSettingValue" class="form-control form-control-lg" id="SystemSettingValue" type="text" />
-                        </div>
-                    <div class="form-group my-3">
-                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</label>
-                        <input name="SystemSettingStringValue" class="form-control form-control-lg" id="SystemSettingStringValue" type="text" />
-                    </div>
-                    <footer class="modal__footer my-5 text-right">
-                        <button class="btn btn-custom btn-lg" type="button" id="btnSave" asp-action="Edit">
-                            <span class="p-2">
-                                <i class="fas fa-check fa-fw"></i> 更新
-                            </span>
-                        </button>
-                    </footer>
-                </form>
-            </div>
-        </div>
-    </div>
-
 </div>
 
+@if (Model.SystemSettingEditModel.SystemSettingId > 0)
+{
+    @await Html.PartialAsync("_Edit");
+}
+
 @section Scripts {
+    <script>
 
-    <script type="text/javascript">
-        let ROOT = '@Url.Content("~")';
-        $(document).ready(function () {
-
-        });
-        function GetSystemSettingSubmitAjax(systemSettingId, systemSettingOutline, systemSettingStringValue) {
-            //reset message
-            $("#modal-1 .valid-area").css("display", "none");
-            $("#modal-1").find(".valid-area span").text('');
-
-            $("#MessageSuccess").text('');
-            $("#MessageError").text('');
-
-            $("#SystemSettingId").val(systemSettingId);
-            $("#SystemSettingOutline").val(systemSettingOutline);
-            $("#SystemSettingStringValue").val(systemSettingStringValue);
+        function SystemSettingEditView(systemSettingId) {
+            var form = $(document).find('#system-setting-form');
+            var input1 = $("<input>").attr("type", "hidden").attr("name", "editSystemSettingId").val(systemSettingId);
+            $(form).append($(input1));
+            form.submit();
         }
 
-        $('#btnSave').on('click', function () {
-            const systemSettingId = $("#SystemSettingId").val();
-            const systemSettingOutline = $("#SystemSettingOutline").val();
-            const systemSettingStringValue = $("#SystemSettingStringValue").val();
-            const searchKeyWordEdit = $("#SearchKeyWordEdit").val();
-            const pageNumberEdit = $("#PageNumberEdit").val();
-            // alert('画面に表示させたい値');
-
-            // ボタン非活性化
-            const editData = {
-                SystemSettingId: systemSettingId,
-                SystemSettingOutline: systemSettingOutline,
-                SystemSettingStringValue: systemSettingStringValue
-            };
-            const searchData = {
-                SearchKeyWord: searchKeyWordEdit,
-                PageNumber: pageNumberEdit
-            };
-
-            $.ajax({
-                url: ROOT + '/MSystemSetting/Edit',
-                type: 'POST',
-                dataType: 'json',
-                data: editData,
-                success: function (res) {
-                    if (res.result === "OK") {
-                        window.location.href = ROOT + `/MSystemSetting/Index?SearchKeyWord=${searchKeyWordEdit}&PageNumber=${pageNumberEdit}&Mess=${res.mess}`;
-                    }
-                    else {
-                        $("#modal-1 .valid-area").fadeIn();
-                        $("#modal-1").find(".valid-area span").text(res.mess);
-                    }
-                },
-                processData: true
-            });
-
+        $(function () {
+            if (@Model.SystemSettingEditModel.SystemSettingId > 0) {
+                MicroModal.show('modal-system-setting-edit');
+            }
         });
 
     </script>
-
 }
