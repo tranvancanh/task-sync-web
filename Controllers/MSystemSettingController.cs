@@ -10,25 +10,20 @@ namespace task_sync_web.Controllers
     public class MSystemSettingController : BaseController
     {
         [HttpGet]
-        public IActionResult Index(MSystemSettingViewModel viewModel, int? pageNumber, string message = null)
+        public IActionResult Index(MSystemSettingViewModel viewModel)
         {
             try
             {
-                var listSetting = GetListMAdministrator(viewModel.SearchKeyWord);
-                if (!listSetting.Any())
+                // 一覧表示用のページリストを取得
+                viewModel.SystemSettingModels = GetPageList(viewModel);
+
+                // 修正モーダルを表示する場合
+                if (viewModel.EditSystemSettingId > 0)
                 {
-                    ViewData["ErrorMessage"] = ErrorMessages.EW0102;
-                    return View(viewModel);
+                    // システム設定IDから、システム設定情報を取得
+                    viewModel.SystemSettingEditModel = viewModel.SystemSettingModels.Where(x => x.SystemSettingId == viewModel.EditSystemSettingId).ToList().FirstOrDefault();
                 }
 
-                // page the list
-                var listPaged = listSetting.ToPagedList(pageNumber ?? 1, viewModel.PageRowCount);
-                viewModel.SystemSettingModels = listPaged;
-
-                if (!string.IsNullOrEmpty(message))
-                {
-                    ViewData["SuccessMessage"] = message;
-                }
                 return View(viewModel);
             }
             catch (CustomExtention ex)
@@ -43,37 +38,62 @@ namespace task_sync_web.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult Edit(MSystemSettingModel settingModel)
+        private IPagedList<MSystemSettingModel> GetPageList(MSystemSettingViewModel viewModel)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(settingModel.SystemSettingStringValue))
-                    settingModel.SystemSettingStringValue = string.Empty;
+                var listSetting = GetListMAdministrator(viewModel.SearchKeyWord);
 
-                if (settingModel.SystemSettingStringValue.Length > 100)
-                    throw new CustomExtention(ErrorMessages.EW002);
+                // 一覧表示用のページリストを作成
+                var listPaged = listSetting.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
 
-                // update
+                return listPaged;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Index(MSystemSettingViewModel viewModel, bool isUpdate)
+        {
+            try
+            {
+                // 一覧表示用のページリストを取得
+                viewModel.SystemSettingModels = GetPageList(viewModel);
+
+                // Update
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                    var efftedRows = db.Query("MSystemSetting").Where("SystemSettingId", settingModel.SystemSettingId).Update(new
-                    {
-                        settingModel.SystemSettingStringValue,
-                        UpdateDateTime = DateTime.Now.Date,
-                        UpdateAdministratorId = LoginUser.AdministratorId
-                    });
+                    var efftedRows = db.Query("MSystemSetting")
+                        .Where("SystemSettingId", viewModel.SystemSettingEditModel.SystemSettingId)
+                        .Update(new
+                        {
+                            SystemSettingValue = viewModel.SystemSettingEditModel.SystemSettingValue,
+                            SystemSettingStringValue = (viewModel.SystemSettingEditModel.SystemSettingStringValue ?? "").Trim(),
+                            UpdateDateTime = DateTime.Now.Date,
+                            UpdateAdministratorId = LoginUser.AdministratorId
+                        });
+
                     if (efftedRows > 0)
-                        return Json(new { Result = "OK", Mess = SuccessMessages.SW002 });
+                    {
+                        ViewData["SuccessMessage"] = SuccessMessages.SW002;
+                        viewModel.SystemSettingEditModel = new MSystemSettingModel();
+                    }
                     else
-                        return Json(new { Result = "NG", Mess = ErrorMessages.EW0502 });
+                    {
+                        ViewData["ErrorMessageEdit"] = ErrorMessages.EW0502;
+                    }
                 }
 
             }
             catch (Exception ex)
             {
-                return Json(new { Result = "NG", Mess = ex.Message });
+                ViewData["ErrorMessageEdit"] = ErrorMessages.EW0502;
             }
+
+            return View("Index", viewModel);
         }
 
         private List<MSystemSettingModel> GetListMAdministrator(string searchKey)

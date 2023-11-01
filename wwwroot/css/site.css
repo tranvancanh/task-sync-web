@@ -241,6 +241,23 @@ th.table-border-less, td.table-border-less {
 }
 /*Å™Micromodal.js*/
 
+.fadeIn {
+    animation-name: fadeInAnime;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInAnime {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
