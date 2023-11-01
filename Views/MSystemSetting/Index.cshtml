@@ -118,90 +118,17 @@
 @if (Model.SystemSettingEditModel != null && Model.SystemSettingEditModel.SystemSettingId > 0)
 {
     @await Html.PartialAsync("_Edit")
-    @* @await Html.PartialAsync("~/Views/MSystemSetting/_Edit.cshtml") *@
 }
 
-@* @section Scripts { *@
-<script>
+@section Scripts {
+    <script>
 
-    function SystemSettingEditView(systemSettingId) {
-        var form = $(document).find('form');
-        var input1 = $("<input>").attr("type", "hidden").attr("name", "editSystemSettingId").val(systemSettingId);
-        $(form).append($(input1));
-        form.submit();
-    }
-
-    function GetSystemSettingEditModel(systemSettingId) {
-
-        event.preventDefault();
-        if (!confirm('よろしいですか？')) {
-            return false;
-        }
-        else {
-            var formData = ('#system-setting-form').serialize();
-            // var formData = new FormData(document.querySelector("#system-setting-form"));
-                $.ajax({
-                    async: false,
-                    url: 'MSystemSetting/Edit',
-                    type: 'GET',
-                    data: { formData},
-                    success: function (response) {
-                    console.log(response);
-                    // $("#MailForm").html(data);
-                    }
-                });
-            }
-
-        // $("#modal-1 .valid-area").fadeIn();
-        // $("#modal-1").find(".valid-area span").text(res.mess);
-
+        function SystemSettingEditView(systemSettingId) {
+            var form = $(document).find('form');
+            var input1 = $("<input>").attr("type", "hidden").attr("name", "editSystemSettingId").val(systemSettingId);
+            $(form).append($(input1));
+            form.submit();
         }
 
-    function GetSystemSettingEditModel(systemSettingId) {
-        event.preventDefault();
-        var form = $('#system-setting-form').serialize();
-        // var form = new FormData(document.querySelector("#system-setting-form"));
-        var formData = form.serialize();
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'MSystemSetting/Edit', true);
-        xhr.responseType = 'blob'; //blob型のレスポンスを受け付ける
-        xhr.onload = function (e) {
-            if (this.status == 200) {
-                console.log(this.response);
-                var blob = this.response;//レスポンス
-                if (blob.type == "text/html") {
-
-                    // Blobからデータを読み込み
-                    const reader = new FileReader()
-                    reader.onload = () => {
-                        // 読み込みが完了したので結果を出力
-                        //console.log(reader.result)
-
-                        // view入れ替え
-                        $("#index-page-area").html(reader.result);
-                    }
-                    reader.readAsText(blob)
-
-                }
-                else {
-
-                }
-
-            }
-            else {
-                if (this.status == 500) {
-                    alert("サーバーエラー");
-                    return;
-                }
-            }
-        };
-
-        xhr.onerror = function () {
-            // 非 HTTP エラーの処理(e.g. ネットワークダウン)
-            alert("エラー");
-        };
-
-        xhr.send(formData);
-    }
     </script>
-    @* } *@
+    }

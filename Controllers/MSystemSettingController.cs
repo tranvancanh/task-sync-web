@@ -76,7 +76,7 @@ namespace task_sync_web.Controllers
                             UpdateAdministratorId = LoginUser.AdministratorId
                         });
 
-                    if (efftedRows > 1)
+                    if (efftedRows > 0)
                     {
                         ViewData["SuccessMessage"] = SuccessMessages.SW002;
                         viewModel.SystemSettingEditModel = new MSystemSettingModel();
