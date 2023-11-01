@@ -89,7 +89,6 @@ namespace task_sync_web.Controllers
                     if (isModalStatus == true)
                     {
                         //新規登録処理
-                        // insertまとめて
                         efftedRows = db.Query("MInterruptReason").Insert(
                                     new[] { "InterruptReasonCode", "InterruptReasonName", "Remark", "IsNotUse", "CreateDateTime", "CreateAdministratorId", "UpdateDateTime", "UpdateAdministratorId" },
                                     new[] 
