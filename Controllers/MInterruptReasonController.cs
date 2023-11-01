@@ -70,7 +70,7 @@ namespace task_sync_web.Controllers
         public IActionResult Index(MInterruptReasonViewModel viewModel, bool? isModalStatus)
         {
             ViewData["SuccessMessage"] = null;
-            ViewData["ErrorMessage"] = null;
+            ViewData["ErrorMessageModal"] = null;
 
             try
             {

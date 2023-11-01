@@ -9,13 +9,12 @@
                 <button class="btn btn-custom btn-lg" aria-label="Close modal" data-micromodal-close><i class="fas fa-times"></i></button>
             </header>
            
-                @if (!String.IsNullOrEmpty((@ViewData["ErrorMessageModal"] ?? "").ToString()))
-                { <div class="valid-area alert alert-danger" role="alert">
-                    <div class="alert alert-danger fadeIn mt-3 py-2" role="alert">
-                        <span class="text-danger-custom">@ViewData["ErrorMessageModal"]</span>
-                    </div>
+            @if (!String.IsNullOrEmpty((@ViewData["ErrorMessageModal"] ?? "").ToString()))
+            { 
+                <div class="alert alert-danger fadeIn mt-3 py-2" role="alert">
+                    <span class="text-danger-custom">@ViewData["ErrorMessageModal"]</span>
                 </div>
-                }
+            }
             
             <form method="post" asp-controller="MInterruptReason" enctype="multipart/form-data" autocomplete="off"
                   data-ajax="true" data-ajax-update="formDetails" class="mt-3">
