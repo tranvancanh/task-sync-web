@@ -1,0 +1,254 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Web.Common;
+
+@model MTaskUserViewModel
+@{
+    ViewData["Title"] = @Model.DisplayName;
+    var pagedList = Model.TaskUserModelModels;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .fa-sort-down:before {
+        content: "\f0dd";
+        font-size: 30px;
+    }
+
+    .fa-sort-down {
+        margin-top: -9px;
+        margin-bottom: 4px;
+    }
+
+</style>
+
+<div class="h4 mb-3">
+    @{
+        ViewData["Title"] = @Model.DisplayName;
+    }
+</div>
+<div class="card shadow m-4">
+    <div class="card-header">
+        <h3 class="pt-2">@Model.DisplayName</h3>
+    </div>
+    <div class="card-body">
+        <div class="p-2">
+
+            <form class="form-inline ms-1" id="m-import-form" asp-controller="MTaskUser" enctype="multipart/form-data" method="post">
+                <div class="container-fluid px-0">
+                    <div class="row">
+                        <div class="col-6">
+                            <button class="btn btn-custom" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fas fa-sort-down mr-1"></i>新規登録・修正
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="collapse show" id="collapseExample">
+                            <div class="col-10">
+                                <p class="my-1">
+                                    出力したExcelファイルの値を変更してファイル保存し、Excel取込をしてデータの新規登録・修正を行います。
+                                </p>
+                                <li>新規登録・・・新しい行を追加し、対家行の登録修正フラグに1を入力します。</li>
+                                <li>修正・・・値を変更し、対家行の登録修正フラグに2を入力します。作業者コードをキーに、行の値がへんこうされます。</li>
+                            </div>
+                            <div class="form-group text-center p-2">
+                                <div class="form-inline p-2 rounded col-5 mr-3" style="background-color: #f8f9fc; ">
+                                    <label id="file-label" class="btn btn-secondary">
+                                        <input style="display:none;" type="file" name="File"
+                                               accept="text/plain,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv" />
+                                        取込ファイル選択
+                                    </label>
+                                    <label class="file-name-view ml-2"></label>
+                                    
+                                </div>
+                                <div>
+                                    <button class="btn btn-custom" name="Action" value="ImportOutput" type="submit">
+                                        <span class="p-2">
+                                            <i class="fas fa-upload mr-2"></i>Excel取込
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <form class="form-inline ms-1" asp-controller="MTaskUser" enctype="multipart/form-data" method="get">
+                <div class="row">
+                    <div class="form-group col-auto p-2">
+                        <div class="input-group">
+                            <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                            <button class="btn btn-search" name="Command" value="Search" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group col-auto p-2">
+                        <!--ExcelTest-->
+                        <button class="btn btn-custom" name="Command" value="ExcelOutput" type="submit"><span class="p-2"><i class="fas fa-download fa-fw"></i>Excel出力</span></button>
+                    </div>
+                </div>
+            </form>
+            <div class="col-auto">
+                <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
+                <span class="text-success-custom">@ViewData["SuccessMessage"] </span>
+            </div>
+            <div style="overflow-x: scroll;">
+                <table class="table sticky_table table-hover-evant mt-3">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserLoginId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserNameKana)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserDepartmentName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserGroupName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].IsNotUse)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].CreateDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].CreateAdministratorId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].UpdateDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].UpdateAdministratorId)</th>
+                        </tr>
+                    </thead>
+
+                    @if (Model != null && pagedList != null && pagedList.Count > 0)
+                    {
+                        <tbody>
+                            @foreach (var item in pagedList)
+                            {
+                                <tr>
+                                    <td class="">@Html.DisplayFor(model => item.TaskUserId)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskUserLoginId)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskUserName)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskUserNameKana)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskUserDepartmentName)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskUserGroupName)</td>
+                                    <td class="">@Html.DisplayFor(model => item.IsNotUse)</td>
+                                    <td class="">@Html.DisplayFor(model => item.CreateDateTime)</td>
+                                    <td class="">@Html.DisplayFor(model => item.CreateAdministratorId)</td>
+                                    <td class="">@Html.DisplayFor(model => item.UpdateDateTime)</td>
+                                    <td class="">@Html.DisplayFor(model => item.UpdateAdministratorId)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+
+            @if (pagedList != null)
+            {
+                <div class="mt-3">
+                    <span class="page-no-label">
+                        @pagedList.FirstItemOnPage-@pagedList.LastItemOnPage 件 / @(pagedList.TotalItemCount)件中
+                    </span>
+                    @Html.PagedListPager((IPagedList)pagedList, pageNumber => Url.Action("Index", new { searchKeyWord = Model.SearchKeyWord, pageNumber = pageNumber }),
+                new PagedListRenderOptions
+                {
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" },
+                MaximumPageNumbersToDisplay = 10, //表示するページャーの数
+                DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded, //「次へ」の非表示設定
+                DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded, //「前へ」の非表示設定
+                DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded, //「最初へ」の非表示設定
+                DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded, //「最後へ」の表示設定
+                })
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+
+            // ページ開いたらファイル名セット
+            FileNameSet($('#file-label input'));
+
+            // ファイル選択input内容が変化したら、メッセージ削除＆ファイル名をセットする
+            $('#file-label input').on('change', function () {
+                FormDataCheck();
+                var self = $(this);
+                FileNameSet(self);
+            });
+        });
+
+        var fileNameDefault = "ここに選択したファイル名が表示されます";
+
+        function FileNameSet(self) {
+
+            var files = self.prop('files');
+
+            if (files.length > 0) {
+                var file = files[0];
+                var fileName = file.name;
+                $('.file-name-view').text(fileName);
+            }
+            else {
+                $('.file-name-view').text(fileNameDefault);
+            }
+
+            $('.file-name-view').text(fileName);
+        }
+
+        function MProductFormSubmit() {
+            $("#m-import-form").submit();
+        }
+
+        async function MProductLabelConfirm() {
+            const result = await FormDataCheck();
+            console.log({ result });
+            if (result) {
+                // $("#confirm-modal-body").html("<p>マスタデータは総入れ替えされます。実行してよろしいですか？</p>");
+                // $("#confirm-modal-run-btn").attr("onclick", "MProductFormSubmit();return false;");
+
+                // $('#confirmModal').modal('show');
+            }
+        }
+
+        function FormClear() {
+            $('.file-name-view').text(fileNameDefault);
+            const form = document.querySelector("#m-import-form");
+            form.reset();
+        }
+
+        function FormDataCheck() {
+
+            $('.error-text').text("");
+            $('.msg-text').text("");
+
+            // FormData オブジェクトの利用
+            const formData = new FormData(document.querySelector("#m-import-form"));
+
+            let IsFirst = true;
+            for (let file of formData) {
+
+                if (IsFirst) {
+                    if (file[1]["size"] <= 0) {
+                        $('.error-text').text('ファイルが選択されていません。');
+                        FormClear(formData);
+                        return false;
+                    }
+                    else if (file[1]["name"].indexOf('.xls') <= 0 && file[1]["name"].indexOf('.xlsx') <= 0 && file[1]["name"].indexOf('.csv') <= 0) {
+                        $('.error-text').text('取込対象外の拡張子です。');
+                        FormClear(formData);
+                        return false;
+                    }
+                    else {
+                        IsFirst = false;
+                    }
+                }
+            }
+            return true;
+        }
+
+    </script>
+}
