@@ -33,7 +33,7 @@ namespace task_sync_web.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                ViewData["ErrorMessage"] = ErrorMessages.EW900;
                 return View(viewModel);
             }
         }
@@ -72,7 +72,7 @@ namespace task_sync_web.Controllers
                         {
                             SystemSettingValue = viewModel.SystemSettingEditModel.SystemSettingValue,
                             SystemSettingStringValue = (viewModel.SystemSettingEditModel.SystemSettingStringValue ?? "").Trim(),
-                            UpdateDateTime = DateTime.Now.Date,
+                            UpdateDateTime = DateTime.Now,
                             UpdateAdministratorId = LoginUser.AdministratorId
                         });
 

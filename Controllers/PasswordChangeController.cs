@@ -5,7 +5,7 @@ using task_sync_web.Models;
 
 namespace task_sync_web.Controllers
 {
-    public class PasswordChangeController : Controller
+    public class PasswordChangeController : BaseController
     {
         [HttpGet]
         public IActionResult Index()
@@ -17,8 +17,6 @@ namespace task_sync_web.Controllers
         [HttpPost]
         public IActionResult Index(PasswordChangeViewModel viewModel)
         {
-            int administratorId = Convert.ToInt32(User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_AdministratorId).First().Value);
-
             if (!ModelState.IsValid)
             {
                 var errorMessage = ModelState.Values
@@ -45,60 +43,77 @@ namespace task_sync_web.Controllers
                     return View(viewModel);
                 }
 
-                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
-                using (var db = new DbSqlKata(dbName))
+                // ログイン中の管理者情報を取得
+                var loginAdministrator = new MAdministratorModel();
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
                     var administratorList = db
                         .Query("MAdministrator")
-                        .Where("AdministratorId", administratorId)
-                        .FirstOrDefault<MAdministratorModel>();
-                    if (administratorList == null || administratorList.AdministratorLoginId == null)
-                    {
-                        ViewData["ErrorMessage"] = ErrorMessages.EW0900;
-                        return View(viewModel);
-                    }
+                        .Where("AdministratorId", LoginUser.AdministratorId)
+                        .Get<MAdministratorModel>().ToList();
 
-                    // 現在のパスワードが正しいかチェック
-                    var currentPassword = administratorList.Password;
-                    if (administratorList.Salt.Length == 0)
+                    if (administratorList.Count == 1)
                     {
-                        // 初期ログイン時のみ：ソルトが空白の場合、ハッシュ化していないパスワードで一致しているかチェック
-                        // 現在のパスワードと、入力した現在のパスワードが異なっている場合はエラー
-                        if (currentPassword != viewModel.CurrentPassword)
-                        {
-                            ViewData["ErrorMessage"] = ErrorMessages.EW1101;
-                            return View(viewModel);
-                        }
+                        // 管理者情報の取得成功
+                        loginAdministrator = administratorList.FirstOrDefault();
                     }
                     else
                     {
-                        var currentByteSalt = Hashing.ConvertStringToBytes(administratorList.Salt);
-                        var inputCurrentPasswordHash = Hashing.ConvertPlaintextPasswordToHashedPassword(viewModel.CurrentPassword, currentByteSalt);
-                        if (currentPassword != inputCurrentPasswordHash)
-                        {
-                            ViewData["ErrorMessage"] = ErrorMessages.EW1101;
-                            return View(viewModel);
-                        }
+                        ViewData["ErrorMessage"] = ErrorMessages.EW1104;
+                        return View(viewModel);
                     }
+                }
 
-                    // 新しいソルトでパスワードをハッシュ化
-                    var newSalt = Hashing.GetRandomSalt();
-                    var newPassHash = Hashing.ConvertPlaintextPasswordToHashedPassword(viewModel.NewPassword, newSalt);
-                    var newStringSalt = Hashing.ConvertByteToString(newSalt);
+                // 現在のパスワードが正しいかチェック
+                var currentPassword = loginAdministrator.Password;
+                if (loginAdministrator.Salt.Length == 0)
+                {
+                    // 初期ログイン時のみ：ソルトが空白の場合、ハッシュ化していないパスワードで一致しているかチェック
+                    // 現在のパスワードと、入力した現在のパスワードが異なっている場合はエラー
+                    if (currentPassword != viewModel.CurrentPassword)
+                    {
+                        ViewData["ErrorMessage"] = ErrorMessages.EW1101;
+                        return View(viewModel);
+                    }
+                }
+                else
+                {
+                    var currentByteSalt = Hashing.ConvertStringToBytes(loginAdministrator.Salt);
+                    var inputCurrentPasswordHash = Hashing.ConvertPlaintextPasswordToHashedPassword(viewModel.CurrentPassword, currentByteSalt);
+                    if (currentPassword != inputCurrentPasswordHash)
+                    {
+                        ViewData["ErrorMessage"] = ErrorMessages.EW1101;
+                        return View(viewModel);
+                    }
+                }
 
+                // 新しいソルトでパスワードをハッシュ化
+                var newSalt = Hashing.GetRandomSalt();
+                var newPassHash = Hashing.ConvertPlaintextPasswordToHashedPassword(viewModel.NewPassword, newSalt);
+                var newStringSalt = Hashing.ConvertByteToString(newSalt);
+
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+                {
                     // DB更新
-                    db.Query("MAdministrator")
-                        .Where("AdministratorId", viewModel.AddministratorId)
-                        .Update(new { Password = newPassHash, Salt = newStringSalt });
+                    var efftedRows = db.Query("MAdministrator")
+                            .Where("AdministratorId", LoginUser.AdministratorId)
+                            .Update(new { Password = newPassHash, Salt = newStringSalt });
 
-                    ViewData["SuccessMessage"] = SuccessMessages.SW001;
+                    if (efftedRows > 0)
+                    {
+                        ViewData["SuccessMessage"] = SuccessMessages.SW002;
+                    }
+                    else
+                    {
+                        ViewData["ErrorMessage"] = ErrorMessages.EW0502;
+                    }
                 }
 
                 return View(viewModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                ViewData["ErrorMessage"] = ErrorMessages.EW900;
                 return View(viewModel);
             }
         }

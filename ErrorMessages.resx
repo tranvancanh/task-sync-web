@@ -162,19 +162,15 @@
     <comment>UPDATE</comment>
   </data>
   <data name="EW0500" xml:space="preserve">
-    <value>データの取得に失敗しました。</value>
+    <value>データ取得に失敗しました。</value>
     <comment>SERVER</comment>
   </data>
   <data name="EW0501" xml:space="preserve">
-    <value>データの登録に失敗しました。</value>
+    <value>登録に失敗しました。</value>
     <comment>SERVER</comment>
   </data>
   <data name="EW0502" xml:space="preserve">
-    <value>データの更新に失敗しました。</value>
-    <comment>SERVER</comment>
-  </data>
-  <data name="EW503" xml:space="preserve">
-    <value>データの更新が完了しました。</value>
+    <value>更新に失敗しました。</value>
     <comment>SERVER</comment>
   </data>
   <data name="EW900" xml:space="preserve">
@@ -212,17 +208,16 @@
     <value>現在のパスワードと新しいパスワードが同じです。</value>
     <comment>パスワード変更画面</comment>
   </data>
-  <data name="EW0900" xml:space="preserve">
-    <value>ユーザー名が存在していません</value>
-  </data>
-  <data name="EW500" xml:space="preserve">
-    <value>システムエラー</value>
-  </data>
-  <data name="EW002" xml:space="preserve">
-    <value>入力文字が長さ過ぎて再入力ください。</value>
+  <data name="EW1104" xml:space="preserve">
+    <value>管理者情報の取得に失敗しました。システム管理者に問い合わせてください。</value>
+    <comment>パスワード変更画面</comment>
   </data>
   <data name="EW0009" xml:space="preserve">
-    <value>{0}は半角数値のみ使用できます。</value>
+    <value>{0}は半角数字のみ使用できます。</value>
+    <comment>INPUT</comment>
+  </data>
+  <data name="EW0010" xml:space="preserve">
+    <value>{0}は半角英数字のみ使用できます。</value>
     <comment>INPUT</comment>
   </data>
 </root>

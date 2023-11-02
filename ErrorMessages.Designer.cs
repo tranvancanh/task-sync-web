@@ -133,7 +133,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   {0}は半角数値のみ使用できます。 に類似しているローカライズされた文字列を検索します。
+        ///   {0}は半角数字のみ使用できます。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0009 {
             get {
@@ -142,11 +142,11 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   入力文字が長さ過ぎて再入力ください。 に類似しているローカライズされた文字列を検索します。
+        ///   {0}は半角英数字のみ使用できます。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string EW002 {
+        public static string EW0010 {
             get {
-                return ResourceManager.GetString("EW002", resourceCulture);
+                return ResourceManager.GetString("EW0010", resourceCulture);
             }
         }
         
@@ -178,7 +178,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   データの取得に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   データ取得に失敗しました。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0500 {
             get {
@@ -187,7 +187,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   データの登録に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   登録に失敗しました。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0501 {
             get {
@@ -196,20 +196,11 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   データの更新に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   更新に失敗しました。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0502 {
             get {
                 return ResourceManager.GetString("EW0502", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   ユーザー名が存在していません に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string EW0900 {
-            get {
-                return ResourceManager.GetString("EW0900", resourceCulture);
             }
         }
         
@@ -286,20 +277,11 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   システムエラー に類似しているローカライズされた文字列を検索します。
+        ///   管理者情報の取得に失敗しました。システム管理者に問い合わせてください。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string EW500 {
+        public static string EW1104 {
             get {
-                return ResourceManager.GetString("EW500", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   データの更新が完了しました。 に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string EW503 {
-            get {
-                return ResourceManager.GetString("EW503", resourceCulture);
+                return ResourceManager.GetString("EW1104", resourceCulture);
             }
         }
         
