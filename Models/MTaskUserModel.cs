@@ -22,19 +22,32 @@ namespace task_sync_web.Models
         [Display(Name = "グループ名")]
         public string TaskUserGroupName { get; set; }
 
+        [Display(Name = "備考")]
+        public string Remark { get; set; }
+
         [Display(Name = "利用停止フラグ")]
         public bool IsNotUse { get; set; }
 
-        [Display(Name = "作成日")]
+        [Display(Name = "登録日時")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime CreateDateTime { get; set; }
 
-        [Display(Name = "作成者ID")]
-        public int CreateAdministratorId { get; set; }
-
-        [Display(Name = "更新日")]
+        [Display(Name = "更新日時")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime UpdateDateTime { get; set; }
 
-        [Display(Name = "更新者ID")]
-        public int UpdateAdministratorId { get; set; }
+        public string CreateAdministratorLoginId { get; set; }
+
+        public string CreateAdministratorName { get; set; }
+
+        public string UpdateAdministratorLoginId { get; set; }
+
+        public string UpdateAdministratorName { get; set; }
+
+        [Display(Name = "登録者")]
+        public string CreateFor => $"{CreateAdministratorLoginId} {CreateAdministratorName}";
+
+        [Display(Name = "更新者")]
+        public string UpdateFor => $"{UpdateAdministratorLoginId} {UpdateAdministratorName}";
     }
 }

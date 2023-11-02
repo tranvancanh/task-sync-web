@@ -1,4 +1,6 @@
-﻿using SqlKata.Compilers;
+﻿using Dapper;
+using SqlKata;
+using SqlKata.Compilers;
 using SqlKata.Execution;
 using System.Data;
 using System.Data.SqlClient;
@@ -28,6 +30,36 @@ namespace task_sync_web.Commons
             var compiler = new SqlServerCompiler();
             this.Connection = connection;
             this.Compiler = compiler;
+        }
+
+        public DataTable GetDataTable(Query query)
+        {
+            var table = new DataTable();
+            var conStr = this.Connection.ConnectionString;
+            var connection = new SqlConnection(conStr);
+            var compiler = new SqlServerCompiler();
+            using (var queryFac = new QueryFactory(connection, compiler))
+            {
+                var sqlStr = queryFac.Compiler.Compile(query).Sql;
+                var reader = this.Connection.ExecuteReader(sqlStr, _transaction, commandType: CommandType.Text);
+                table.Load(reader);
+            }
+            return table;
+        }
+
+        public async Task<DataTable> GetDataTableAsync(Query query)
+        {
+            var table = new DataTable();
+            var conStr = this.Connection.ConnectionString;
+            var connection = new SqlConnection(conStr);
+            var compiler = new SqlServerCompiler();
+            using (var queryFac = new QueryFactory(connection, compiler))
+            {
+                var sqlStr = queryFac.Compiler.Compile(query).Sql;
+                var reader = await this.Connection.ExecuteReaderAsync(sqlStr, _transaction, commandType: CommandType.Text);
+                table.Load(reader);
+            }
+            return table;
         }
 
         public IDbTransaction Begin()

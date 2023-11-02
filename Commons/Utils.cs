@@ -12,7 +12,7 @@ namespace task_sync_web.Commons
 
         public static List<PropertyModel> GetModelProperties<T>() 
         {
-            var propaties = typeof(T).GetProperties()
+            var properties = typeof(T).GetProperties()
                 .Where(p => p.IsDefined(typeof(DisplayAttribute), false))
                 .Select(p => new PropertyModel
                 {
@@ -20,7 +20,7 @@ namespace task_sync_web.Commons
                     DisplayName = p.GetCustomAttributes(typeof(DisplayAttribute),
                             false).Cast<DisplayAttribute>().Single().Name
                 });
-            return propaties.ToList();
+            return properties.ToList();
         }
 
         //public static (QueryFactory queryFactory, SqlServerCompiler compiler, SqlConnection connection) GetQueryFactory(string databeseName)
