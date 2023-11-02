@@ -1,0 +1,67 @@
+﻿@model MInterruptReasonViewModel
+@using task_sync_web.Commons
+
+<div class="modal micromodal-slide" id="modal-interrupt-reason" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1">
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-interrupt-reason-title">
+            <header class="modal__header">
+                @if (@Model.ModalType == Enums.ModalType.Create)
+                {
+                    <h3 class="fw-bold">新規登録</h3>
+                }
+                else if (@Model.ModalType == Enums.ModalType.Edit)
+                {
+                    <h3 class="fw-bold">修正</h3>
+                }
+                <button class="btn btn-custom btn-lg" aria-label="Close modal" data-micromodal-close><i class="fas fa-times"></i></button>
+            </header>
+            @if (!String.IsNullOrEmpty((@ViewData["ErrorMessageModal"] ?? "").ToString()))
+            {
+                <div class="alert alert-danger fadeIn mt-3 py-2" role="alert">
+                    <span class="text-danger-custom">@ViewData["ErrorMessageModal"]</span>
+                </div>
+            }
+            <form method="post" asp-controller="MInterruptReason" enctype="multipart/form-data" autocomplete="off"
+                  data-ajax="true" data-ajax-update="formDetails" class="mt-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ModalModel.InterruptReasonId" id="InterruptReasonId" />
+                <input type="hidden" asp-for="@Model.SearchKeyWord" id="SearchKeyWordEdit" />
+                <input type="hidden" asp-for="@Model.PageNumber" id="PageNumberEdit" />
+                <input type="hidden" asp-for="@Model.ModalType" id="ModalType" />
+                <div class="form-group my-3">
+                    <label class="required-mark">@Html.DisplayNameFor(model => model.ModalModel.InterruptReasonCode)</label>
+                    <input asp-for="ModalModel.InterruptReasonCode" class="form-control form-control-lg" id="InterruptReasonCode" type="text" />
+                    <span asp-validation-for="ModalModel.InterruptReasonCode" class="text-danger-custom"></span>
+                </div>
+                <div class="form-group my-3">
+                    <label class="required-mark">@Html.DisplayNameFor(model => model.ModalModel.InterruptReasonName)</label>
+                    <input asp-for="ModalModel.InterruptReasonName" class="form-control form-control-lg" id="InterruptReasonName" type="text" />
+                    <span asp-validation-for="ModalModel.InterruptReasonName" class="text-danger-custom"></span>
+                </div>
+                <div class="form-group my-3">
+                    <label>@Html.DisplayNameFor(model => model.ModalModel.Remark)</label>
+                    <input asp-for="ModalModel.Remark" class="form-control form-control-lg" id="InterruptReasonName" type="text" />
+                </div>
+                <div class="form-group my-3">
+                    <label>@Html.DisplayNameFor(model => model.ModalModel.IsNotUse)</label>
+                    <select asp-for="ModalModel.IsNotUse" class="form-select form-select-lg" id="IsNotUse" aria-label="Default select example">
+                        <option value="False">利用中</option>
+                        <option value="True">停止</option>
+                    </select>
+                </div>
+                <footer class="modal__footer my-5 text-right">
+                    <button class="btn btn-custom btn-lg" type="submit" id="btnSave">
+                        @if (@Model.ModalType == Enums.ModalType.Create)
+                        {
+                            <span class="p-2"><i class="fas fa-check fa-fw"></i> 登録</span>
+                        }
+                        else if (@Model.ModalType == Enums.ModalType.Edit)
+                        {
+                            <span class="p-2"><i class="fas fa-check fa-fw"></i> 更新</span>
+                        }
+                    </button>
+                </footer>
+            </form>
+        </div>
+    </div>
+</div>

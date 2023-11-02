@@ -98,6 +98,11 @@ namespace task_sync_web.Commons
         public new void Dispose()
         {
             base.Dispose();
+            if(_transaction is not null)
+            {
+                _transaction.Dispose();
+            }
+            _transaction = null;
         }
 
     }
