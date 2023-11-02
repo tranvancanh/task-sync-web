@@ -1,6 +1,7 @@
 ﻿@using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @using X.PagedList.Web.Common;
+@using task_sync_web.Commons
 
 @model MInterruptReasonViewModel
 @{
@@ -12,16 +13,6 @@
     .modal__container {
         max-width: 800px !important; /* モーダルの幅を設定  */
         width: 800px !important; /* モーダルの幅を設定  */
-    }
-
-    .readonlyclass:focus {
-        background-color: #ced4da;
-    }
-
-    .required-mark:after {
-        content: "*";
-        color: red;
-        font-weight: bold;
     }
 </style>
 
@@ -41,19 +32,21 @@
         <div class="p-2">
             <form id="interrupt-reason-form" class="form-inline" asp-controller="MInterruptReason" enctype="multipart/form-data" method="get">
                 <div class="row">
-                    <div class="form-group col-auto">
+                    <div class="form-group col-auto p-2">
+                        <button class="btn btn-custom btn-lg" id="btnNavbarSearch" type="button" role="button" onclick="SubmitForm('-99', '@Enums.ModalType.Create')">
+                            <span class="p-2"><i class="fas fa-plus fa-fw"></i> 新規登録</span>
+                        </button>
+                    </div>
+                    <div class="form-group col-auto p-2">
                         <div class="input-group">
-                            <button class="btn btn-secondary btn-custom" id="btnNavbarSearch" type="button" role="button" onclick="SubmitForm('-99', 'true')">
-                                <i class="fas fa-plus"></i>
-                                </button>
-                            <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                            <input class="form-control form-control-lg" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
                             <input type="hidden" asp-for="PageNumber" name="PageNumber" />
-                            <button class="btn btn-secondary btn-custom" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            <button class="btn btn-search btn-lg" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
                 </div>
             </form>
-            <div class="col-auto mt-4">
+            <div class="col-auto my-2">
                 <span class="text-success-custom" id="MessageSuccess">@ViewData["SuccessMessage"]</span>
                 <span class="text-danger-custom" id="MessageError">@ViewData["ErrorMessage"]</span>
             </div>
@@ -62,14 +55,13 @@
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th style="display: none">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonId)</th>
                             <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonCode)</th>
                             <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonName)</th>
                             <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].Remark)</th>
                             <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].IsNotUse)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateAdministratorId)</th>
+                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateFor)</th>
                             <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateAdministratorId)</th>
+                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateFor)</th>
                             <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateDateTime)</th>
                         </tr>
                     </thead>
@@ -79,15 +71,14 @@
                         <tbody>
                             @foreach (var item in pagedList)
                             {
-                                <tr role="button" onclick="SubmitForm('@item.InterruptReasonId', 'false')">
-                                    <td class="text-right" style="display: none">@Html.DisplayFor(model => item.InterruptReasonId)</td>
+                                <tr role="button" onclick="SubmitForm('@item.InterruptReasonId', '@Enums.ModalType.Edit')">
                                     <td class="text-right">@Html.DisplayFor(model => item.InterruptReasonCode)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.InterruptReasonName)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.Remark)</td>
                                     <td class="text-center">@Html.DisplayFor(model => item.IsNotUse)</td>
-                                    <td class="text-left">@Html.DisplayFor(model => item.AdministratorIdCreate) &nbsp&nbsp @Html.DisplayFor(model => item.AdministratorNameCreate)</td>
+                                    <td class="text-left">@Html.DisplayFor(model => item.CreateFor)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.CreateDateTime)</td>
-                                    <td class="text-left">@Html.DisplayFor(model => item.AdministratorIdUpdate) &nbsp&nbsp @Html.DisplayFor(model => item.AdministratorNameUpdate)</td>
+                                    <td class="text-left">@Html.DisplayFor(model => item.UpdateFor)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.UpdateDateTime)</td>
                                 </tr>
 
@@ -128,22 +119,19 @@
 
     <script>
         const ROOT = '@Url.Content("~")';
-        $(document).ready(function () {
-
-        });
 
         function SubmitForm(interruptReasonId, modalState) {
             let form = $(document).find('#interrupt-reason-form');
             let inputInterruptReasonId = $("<input>").attr("type", "hidden").attr("name", "ModalModel.InterruptReasonId").val(interruptReasonId);
-            let inputModalStatus = $("<input>").attr("type", "hidden").attr("name", "IsModalState").val(modalState);
+            let inputModalStatus = $("<input>").attr("type", "hidden").attr("name", "ModalType").val(modalState);
             $(form).append($(inputInterruptReasonId));
             $(form).append($(inputModalStatus));
             form.submit();
         }
 
         $(function () {
-            if ('@Model.IsModalState' != '') {
-                MicroModal.show('modal-system-setting-edit');
+            if ('@((int)Model.ModalType)' > 0) {
+                MicroModal.show('modal-interrupt-reason');
             }
         });
 

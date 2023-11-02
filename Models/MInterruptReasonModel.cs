@@ -11,22 +11,23 @@ namespace task_sync_web.Models
 
         [Display(Name = "中断理由コード")]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
-        [StringLength(50, MinimumLength = 1, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
-        public string InterruptReasonCode { get; set; }
+        [RegularExpression(@"[0-9]+", ErrorMessageResourceName = "EW0009", ErrorMessageResourceType = typeof(ErrorMessages))]
+        [Range(1, 999, ErrorMessageResourceName = "EW0004", ErrorMessageResourceType = typeof(ErrorMessages))]
+        public int? InterruptReasonCode { get; set; }
 
         [Display(Name = "中断理由名")]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
-        [StringLength(50, MinimumLength = 1, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
+        [MaxLength(10, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string InterruptReasonName { get; set; }
 
         [Display(Name = "備考")]
-        [StringLength(200, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
+        [StringLength(200, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string Remark { get; set; }
 
         [Display(Name = "利用停止フラグ")]
         public bool IsNotUse { get; set; }
 
-        [Display(Name = "登録日")]
+        [Display(Name = "登録日時")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime CreateDateTime { get; set; }
 
@@ -34,19 +35,19 @@ namespace task_sync_web.Models
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime UpdateDateTime { get; set; }
 
-        public string AdministratorIdCreate { get; set; }
+        public string CreateAdministratorLoginId { get; set; }
 
-        public string AdministratorNameCreate { get; set; }
+        public string CreateAdministratorName { get; set; }
 
-        public string AdministratorIdUpdate { get; set; }
+        public string UpdateAdministratorLoginId { get; set; }
 
-        public string AdministratorNameUpdate { get; set; }
+        public string UpdateAdministratorName { get; set; }
 
         [Display(Name = "登録者")]
-        public string CreateAdministratorId => $"{AdministratorIdCreate} {AdministratorNameCreate}";
+        public string CreateFor => $"{CreateAdministratorLoginId} {CreateAdministratorName}";
 
         [Display(Name = "更新者")]
-        public string UpdateAdministratorId => $"{AdministratorIdUpdate} {AdministratorNameUpdate}";
+        public string UpdateFor => $"{UpdateAdministratorLoginId} {UpdateAdministratorName}";
 
     }
 }

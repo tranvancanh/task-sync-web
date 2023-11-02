@@ -75,6 +75,12 @@ body {
     text-align: right !important;
 }
 
+.required-mark:after {
+    content: "*";
+    color: var(--maincolor);
+    font-weight: bold;
+}
+
 .card {
     border-color: var(--bs-border-color-translucent) !important;
     min-width: 300px !important;

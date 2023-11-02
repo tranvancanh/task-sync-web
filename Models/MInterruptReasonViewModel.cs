@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using X.PagedList;
+using static task_sync_web.Commons.Enums;
 
 namespace task_sync_web.Models
 {
@@ -11,7 +12,7 @@ namespace task_sync_web.Models
 
         public IPagedList<MInterruptReasonModel> InterruptReasonModels { get; set; }
 
-        public bool? IsModalState { get; set; } = null; // null: 検索処理、true: 新規登録、flase: 更新
+        public ModalType ModalType { get; set; }
 
         public MInterruptReasonModel ModalModel { get; set; }
 

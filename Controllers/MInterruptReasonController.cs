@@ -16,8 +16,9 @@ namespace task_sync_web.Controllers
             {
                 var listInterruptReason = GetListInterruptReason(viewModel.SearchKeyWord);
                 ModelState.Clear();
-                //検索処理
-                if (viewModel.IsModalState == null)
+
+                // 検索処理
+                if (viewModel.ModalType == Enums.ModalType.None)
                 {
                     if (!listInterruptReason.Any())
                     {
@@ -25,14 +26,14 @@ namespace task_sync_web.Controllers
                         return View(viewModel);
                     }
                 }
-                else if(viewModel.IsModalState == true)
+                else if(viewModel.ModalType == Enums.ModalType.Create)
                 {
-                    //新規登録処理
+                    // 新規登録処理
                     viewModel.ModalModel = new MInterruptReasonModel() { InterruptReasonId = viewModel.ModalModel.InterruptReasonId};
                 }
                 else
                 {
-                    //更新処理
+                    // 更新処理
                     var modalVal = listInterruptReason.Where(x => x.InterruptReasonId == viewModel.ModalModel.InterruptReasonId).FirstOrDefault();
                     if (modalVal != null)
                         viewModel.ModalModel = modalVal;
@@ -66,59 +67,56 @@ namespace task_sync_web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(MInterruptReasonViewModel viewModel, bool? isModalState)
+        public IActionResult Index(MInterruptReasonViewModel viewModel, Enums.ModalType modalType)
         {
-            ViewData["SuccessMessage"] = null;
-            ViewData["ErrorMessageModal"] = null;
-
             try
             {
-                if (string.IsNullOrWhiteSpace(viewModel.ModalModel.InterruptReasonCode))
-                    viewModel.ModalModel.InterruptReasonCode = string.Empty;
-
-                if (string.IsNullOrWhiteSpace(viewModel.ModalModel.InterruptReasonName))
-                    viewModel.ModalModel.InterruptReasonName = string.Empty;
-
-                if (string.IsNullOrWhiteSpace(viewModel.ModalModel.Remark))
-                    viewModel.ModalModel.Remark = string.Empty;
-
                 var efftedRows = -1;
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                    if (isModalState == true)
+                    if (modalType == Enums.ModalType.Create)
                     {
-                        //新規登録処理
-                        efftedRows = db.Query("MInterruptReason").Insert(
-                                    new[] { "InterruptReasonCode", "InterruptReasonName", "Remark", "IsNotUse", "CreateDateTime", "CreateAdministratorId", "UpdateDateTime", "UpdateAdministratorId" },
-                                    new[] 
-                                    {
-                                        new object[] { viewModel.ModalModel.InterruptReasonCode, viewModel.ModalModel.InterruptReasonName, viewModel.ModalModel.Remark, viewModel.ModalModel.IsNotUse, DateTime.Now.Date, LoginUser.AdministratorId, "1900/01/01", LoginUser.AdministratorId }
-                                    });
+                        // 新規登録処理
+                        efftedRows = db.Query("MInterruptReason")
+                            .InsertGetId<int>(new
+                            {
+                                viewModel.ModalModel.InterruptReasonCode,
+                                InterruptReasonName = viewModel.ModalModel.InterruptReasonName ?? "",
+                                Remark = viewModel.ModalModel.Remark ?? "",
+                                viewModel.ModalModel.IsNotUse,
+                                CreateDateTime = DateTime.Now,
+                                CreateAdministratorId = LoginUser.AdministratorId,
+                                UpdateDateTime = DateTime.Now,
+                                UpdateAdministratorId = LoginUser.AdministratorId,
+                            });
                     }
-                    else if (isModalState == false)
+                    else if (modalType == Enums.ModalType.Edit)
                     {
-                        //更新処理
-                        efftedRows = db.Query("MInterruptReason").Where("InterruptReasonId", viewModel.ModalModel.InterruptReasonId).Update(new
-                        {
-                            InterruptReasonCode = viewModel.ModalModel.InterruptReasonCode,
-                            InterruptReasonName = viewModel.ModalModel.InterruptReasonName,
-                            Remark = viewModel.ModalModel.Remark,
-                            IsNotUse = viewModel.ModalModel.IsNotUse,
-                            UpdateDateTime = DateTime.Now.Date,
-                            UpdateAdministratorId = LoginUser.AdministratorId
-                        });
+                        // 更新処理
+                        efftedRows = db.Query("MInterruptReason")
+                            .Where("InterruptReasonId", viewModel.ModalModel.InterruptReasonId)
+                            .Update(new
+                            {
+                                viewModel.ModalModel.InterruptReasonCode,
+                                InterruptReasonName = viewModel.ModalModel.InterruptReasonName ?? "",
+                                Remark = viewModel.ModalModel.Remark ?? "",
+                                viewModel.ModalModel.IsNotUse,
+                                UpdateDateTime = DateTime.Now,
+                                UpdateAdministratorId = LoginUser.AdministratorId
+                            });
                     }
                 }
 
                 if (efftedRows > 0)
                 {
-                    viewModel.IsModalState = null;
+                    viewModel.ModalType = Enums.ModalType.None;
                     ViewData["SuccessMessage"] = SuccessMessages.SW002;
                 }
                 else
                 {
                     ViewData["ErrorMessageModal"] = ErrorMessages.EW0502;
                 }
+
                 var listInterruptReason = GetListInterruptReason(viewModel.SearchKeyWord);
                 var listPaged = listInterruptReason.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
                 viewModel.InterruptReasonModels = listPaged;
@@ -147,20 +145,17 @@ namespace task_sync_web.Controllers
                         "InterruptReasonName",
                         "a.Remark",
                         "a.IsNotUse",
-                        "CreateDateTime",
-                        "a.CreateAdministratorId",
-                        "UpdateDateTime",
-                        "a.UpdateAdministratorId",
-                        "b.AdministratorLoginId as AdministratorIdCreate",
-                        "b.AdministratorName as AdministratorNameCreate",
-                        "c.AdministratorLoginId as AdministratorIdUpdate",
-                        "c.AdministratorName as AdministratorNameUpdate"
+                        "a.CreateDateTime",
+                        "b.AdministratorLoginId as CreateAdministratorLoginId",
+                        "b.AdministratorName as CreateAdministratorName",
+                        "a.UpdateDateTime",
+                        "c.AdministratorLoginId as UpdateAdministratorLoginId",
+                        "c.AdministratorName as UpdateAdministratorName"
                     )
                 .LeftJoin("MAdministrator as b", "a.CreateAdministratorId", "b.AdministratorId")
                 .LeftJoin("MAdministrator as c", "a.UpdateAdministratorId", "c.AdministratorId")
-                .OrderBy("a.InterruptReasonId")
+                .OrderBy("a.InterruptReasonCode")
                 .Get<MInterruptReasonModel>().ToList();
-                listInterruptReason = listInterruptReason.Where(x => x.AdministratorNameCreate != null && x.AdministratorNameUpdate != null).ToList();
             }
 
             if (listInterruptReason.Count == 0)
