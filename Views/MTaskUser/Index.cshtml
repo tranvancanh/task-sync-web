@@ -74,9 +74,27 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="form-group text-center p-2">
-                                <span class="text-danger error-text">@ViewData["Error"] </span>
-                                <span class="text-success msg-text">@ViewData["SuccessMessage"] </span>
+                            <div class="form-group text-center p-2 message-area">
+                                @{
+                                    var errorList = ViewData["Error"] as List<string>;
+                                    if (errorList != null && errorList.Any())
+                                    {
+                                        <ul>
+                                            @foreach(var mess in errorList)
+                                            {
+                                                <li class="text-danger error-text">@mess</li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        var successMessage = ViewData["SuccessMessage"] as string;
+                                        if (!string.IsNullOrWhiteSpace(successMessage))
+                                        {
+                                            <li class="text-success msg-text">@successMessage</li>
+                                        }
+                                    }
+                                }
                             </div>
                         </div>
                     </div>
@@ -208,6 +226,7 @@
 
             $('.error-text').text("");
             $('.msg-text').text("");
+            $('.message-area').html('');
 
             // FormData オブジェクトの利用
             const formData = new FormData(document.querySelector("#m-import-form"));
@@ -244,6 +263,15 @@
                 $('#iconUpDow').attr('class', 'fas fa-sort-down fa-rotate-180 mr-1');
             }
         }
+
+        $(function () {
+            if ('@((int)Model.IsState)' > 1) {
+                $('#collapseShow').attr('class', 'collapse');
+            }
+            else{
+                $('#collapseShow').attr('class', 'collapse show');
+            }
+        });
 
     </script>
 }

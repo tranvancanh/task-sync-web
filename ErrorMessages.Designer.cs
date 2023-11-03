@@ -133,7 +133,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   {0}は半角数字のみ使用できます。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to {0}は半角数字のみ使用できます。.
         /// </summary>
         public static string EW0009 {
             get {
@@ -142,7 +142,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   {0}は半角英数字のみ使用できます。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to {0}は半角英数字のみ使用できます。.
         /// </summary>
         public static string EW0010 {
             get {
@@ -178,7 +178,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   データ取得に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to データ取得に失敗しました。.
         /// </summary>
         public static string EW0500 {
             get {
@@ -187,7 +187,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   登録に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 登録に失敗しました。.
         /// </summary>
         public static string EW0501 {
             get {
@@ -196,20 +196,11 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   更新に失敗しました。 に類似しているローカライズされた文字列を検索します。
+        ///   Looks up a localized string similar to 更新に失敗しました。.
         /// </summary>
         public static string EW0502 {
             get {
                 return ResourceManager.GetString("EW0502", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ユーザー名が存在していません.
-        /// </summary>
-        public static string EW0900 {
-            get {
-                return ResourceManager.GetString("EW0900", resourceCulture);
             }
         }
         
@@ -286,20 +277,11 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to システムエラー.
+        ///   Looks up a localized string similar to 管理者情報の取得に失敗しました。システム管理者に問い合わせてください。.
         /// </summary>
         public static string EW1104 {
             get {
-                return ResourceManager.GetString("EW500", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to データの更新が完了しました。.
-        /// </summary>
-        public static string EW503 {
-            get {
-                return ResourceManager.GetString("EW503", resourceCulture);
+                return ResourceManager.GetString("EW1104", resourceCulture);
             }
         }
         
@@ -318,6 +300,24 @@ namespace task_sync_web {
         public static string EW901 {
             get {
                 return ResourceManager.GetString("EW901", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 拡張子がサポート対象外です!.
+        /// </summary>
+        public static string EW902 {
+            get {
+                return ResourceManager.GetString("EW902", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 取込したファイルが存在していません。.
+        /// </summary>
+        public static string EW903 {
+            get {
+                return ResourceManager.GetString("EW903", resourceCulture);
             }
         }
     }

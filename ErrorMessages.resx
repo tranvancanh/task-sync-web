@@ -223,4 +223,10 @@
   <data name="EW901" xml:space="preserve">
     <value>エラーは bool に変換できません。</value>
   </data>
+  <data name="EW902" xml:space="preserve">
+    <value>拡張子がサポート対象外です!</value>
+  </data>
+  <data name="EW903" xml:space="preserve">
+    <value>取込したファイルが存在していません。</value>
+  </data>
 </root>

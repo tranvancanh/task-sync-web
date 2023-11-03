@@ -1,15 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using X.PagedList;
+using static task_sync_web.Commons.Enums;
 
 namespace task_sync_web.Models
 {
     public class MTaskUserViewModel : BaseViewModel
     {
         [Display(Name = "検索キーワード")]
-        [StringLength(50, ErrorMessageResourceName = "EW002", ErrorMessageResourceType = typeof(ErrorMessages))]
+        [StringLength(50, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string SearchKeyWord { get; set; }
 
         public IFormFile File { get; set; }
+
+        public CollapseState IsState { get; set; } = CollapseState.Close;
 
         public IPagedList<MTaskUserModel> TaskUserModelModels { get; set; }
 

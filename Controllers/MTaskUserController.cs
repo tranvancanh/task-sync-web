@@ -45,16 +45,187 @@ namespace task_sync_web.Controllers
                 if (ex is CustomExtention)
                     ViewData["ErrorMessage"] = ex.Message;
                 else
-                    ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                    ViewData["ErrorMessage"] = ErrorMessages.EW900;
                 return View("Index", viewModel);
             }
         }
 
         [HttpPost]
-        public IActionResult Index(MTaskUserViewModel viewModel)
+        public async Task<IActionResult> Index(MTaskUserViewModel viewModel)
         {
+            var totalErrorList = new List<string>();
+            try
+            {
+                viewModel.IsState = Enums.CollapseState.Open;
+                var taskUserViewModel = GetListMTaskUserModel(viewModel.SearchKeyWord);
+                var listPaged = taskUserViewModel.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
+                // page the list
+                viewModel.TaskUserModelModels = listPaged;
 
+                //妥当性チェック
+                totalErrorList = ValidateCheck(viewModel.File);
+                if (totalErrorList.Any()) 
+                {
+                    ViewData["Error"] = totalErrorList;
+                    return View("Index", viewModel);
+                }
+                var dataTable = await ExcelFile<MTaskUserModel>.ReadExcelToDataTable(viewModel.File, true);
+                var list = dataTable.ToList<MTaskUserModel>();
+                for(var i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    var model = new MTaskUserModel();
+                    var rowErrorList = new List<string>();
+                    var taskUserLoginId = Convert.ToString(dataTable.Rows[i]["TaskUserLoginId"]);
+                    if(taskUserLoginId != null && taskUserLoginId.Length > 8)
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者ログインID", "8"));
+
+                    var taskUserName = Convert.ToString(dataTable.Rows[i]["TaskUserName"]);
+                    if (taskUserName != null && taskUserName.Length > 10)
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者名", "10"));
+
+                    var taskUserNameKana = Convert.ToString(dataTable.Rows[i]["TaskUserNameKana"]);
+                    if (taskUserNameKana != null && taskUserNameKana.Length > 50)
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者名かな", "50"));
+
+                    var taskUserDepartmentName = Convert.ToString(dataTable.Rows[i]["TaskUserDepartmentName"]);
+                    if (taskUserDepartmentName != null && taskUserDepartmentName.Length > 10)
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "所属名", "10"));
+
+                    var taskUserGroupName = Convert.ToString(dataTable.Rows[i]["TaskUserGroupName"]);
+                    if (taskUserGroupName != null && taskUserGroupName.Length > 10)
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "グループ名", "10"));
+
+                    var remark = Convert.ToString(dataTable.Rows[i]["Remark"]);
+                    if (remark != null && remark.Length > 200)
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
+
+                    var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
+                    if (isNotUse == null || (isNotUse.Equals("0") && taskUserLoginId.Equals("1")))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "利用停止フラグ", "1"));
+
+                    if (rowErrorList.Count > 0)
+                        totalErrorList.Add($"{i + 1}行目 : " + string.Join(" ", rowErrorList));
+                }
+
+                var listData = dataTable.ToList<MTaskUserModel>();
+                var insertData = listData.Where(x => x.ModifiedFlag != null && x.ModifiedFlag.ToString().Trim().Contains("1")).ToList();
+                var modifyData = listData.Where(x => x.ModifiedFlag != null && x.ModifiedFlag.ToString().Trim().Contains("2")).ToList();
+
+                if (totalErrorList.Any())
+                {
+                    ViewData["Error"] = totalErrorList;
+                    return View("Index", viewModel);
+                }
+
+                var efftedRows = SaveChangeData(insertData, modifyData);
+                if (efftedRows > 0)
+                {
+                    ViewData["SuccessMessage"] = SuccessMessages.SW002;
+                }
+                else
+                {
+                    totalErrorList.Add(ErrorMessages.EW0502);
+                    ViewData["Error"] = totalErrorList;
+                    return View("Index", viewModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex is CustomExtention)
+                    totalErrorList.Add(ex.Message);
+                else
+                    totalErrorList.Add(ex.Message);
+  
+                ViewData["Error"] = totalErrorList;
+                return View("Index", viewModel);
+            }
+           
             return View(viewModel);
+        }
+
+        private List<string> ValidateCheck(IFormFile file)
+        {
+            var errorList = new List<string>();
+            if (file == null || file.Length == 0)
+                errorList.Add(ErrorMessages.EW903);
+            else
+            {
+                //Get file
+                var fileInfor = new FileInfo(file.FileName);
+                var fileExtension = fileInfor.Extension;
+
+                //Check if file is an Excel File
+                if (!fileExtension.ToLower().EndsWith(".xlsx"))
+                    errorList.Add(ErrorMessages.EW902);
+            }
+
+            return errorList;
+        }
+
+        private int SaveChangeData(List<MTaskUserModel> insertData, List<MTaskUserModel> modifyData)
+        {
+            var efftedRows = -1;
+            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            {
+                var tran = db.Begin();
+                try
+                {
+                    efftedRows = 0;
+                    // 新規登録処理
+                    foreach (var data in insertData)
+                    {
+                        var result = db.Query("MTaskUser")
+                            .InsertGetId<int>(new
+                            {
+                                TaskUserLoginId = data.TaskUserLoginId,
+                                TaskUserName = data.TaskUserName,
+                                TaskUserNameKana = data.TaskUserNameKana,
+                                TaskUserDepartmentName = data.TaskUserDepartmentName,
+                                TaskUserGroupName = data.TaskUserGroupName,
+                                Remark = data.Remark,
+                                IsNotUse =data.IsNotUse,
+                                CreateDateTime = DateTime.Now,
+                                CreateAdministratorId = LoginUser.AdministratorId,
+                                UpdateDateTime = DateTime.Now,
+                                UpdateAdministratorId = LoginUser.AdministratorId,
+                            }, tran);
+                        if (result > 0)
+                            efftedRows = efftedRows + result;
+                    }
+
+                    // 更新処理
+                    foreach (var data in modifyData)
+                    {
+                        var result = db.Query("MTaskUser")
+                            .Where("TaskUserLoginId", data.TaskUserLoginId)
+                            .Update(new
+                            {
+                                TaskUserLoginId = data.TaskUserLoginId,
+                                TaskUserName = data.TaskUserName,
+                                TaskUserNameKana = data.TaskUserNameKana,
+                                TaskUserDepartmentName = data.TaskUserDepartmentName,
+                                TaskUserGroupName = data.TaskUserGroupName,
+                                Remark = data.Remark,
+                                IsNotUse = data.IsNotUse,
+                                CreateDateTime = DateTime.Now,
+                                CreateAdministratorId = LoginUser.AdministratorId,
+                                UpdateDateTime = DateTime.Now,
+                                UpdateAdministratorId = LoginUser.AdministratorId,
+                            }, tran);
+                        if (result > 0)
+                            efftedRows = efftedRows + result;
+                    }
+
+                    tran.Commit();
+                }
+                catch (Exception)
+                {
+                    tran.Rollback();
+                    throw;
+                }
+               
+                return efftedRows;
+            }
         }
 
         private List<MTaskUserModel> GetListMTaskUserModel(string searchKey)

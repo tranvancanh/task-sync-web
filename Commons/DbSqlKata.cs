@@ -27,6 +27,8 @@ namespace task_sync_web.Commons
                 connectionString = new GetConnectString(dbName).ConnectionString;
             }
             var connection = new SqlConnection(connectionString);
+            if(connection.State != ConnectionState.Open)
+                connection.Open();
             var compiler = new SqlServerCompiler();
             this.Connection = connection;
             this.Compiler = compiler;
