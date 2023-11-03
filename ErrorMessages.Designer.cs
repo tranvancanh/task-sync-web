@@ -133,7 +133,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}は半角数値のみ使用できます。.
+        ///   {0}は半角数字のみ使用できます。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0009 {
             get {
@@ -142,11 +142,11 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 入力文字が長さ過ぎて再入力ください。.
+        ///   {0}は半角英数字のみ使用できます。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string EW002 {
+        public static string EW0010 {
             get {
-                return ResourceManager.GetString("EW002", resourceCulture);
+                return ResourceManager.GetString("EW0010", resourceCulture);
             }
         }
         
@@ -178,7 +178,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to データの取得に失敗しました。.
+        ///   データ取得に失敗しました。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0500 {
             get {
@@ -187,7 +187,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to データの登録に失敗しました。.
+        ///   登録に失敗しました。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0501 {
             get {
@@ -196,7 +196,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to データの更新に失敗しました。.
+        ///   更新に失敗しました。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0502 {
             get {
@@ -288,7 +288,7 @@ namespace task_sync_web {
         /// <summary>
         ///   Looks up a localized string similar to システムエラー.
         /// </summary>
-        public static string EW500 {
+        public static string EW1104 {
             get {
                 return ResourceManager.GetString("EW500", resourceCulture);
             }

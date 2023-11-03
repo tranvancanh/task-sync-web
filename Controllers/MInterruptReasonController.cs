@@ -59,7 +59,7 @@ namespace task_sync_web.Controllers
                 }
                 else
                 {
-                    ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                    ViewData["ErrorMessage"] = ErrorMessages.EW900;
                     return View(viewModel);
                 }
             }
@@ -127,7 +127,7 @@ namespace task_sync_web.Controllers
                 if (ex is CustomExtention)
                     ViewData["ErrorMessageModal"] = ex.Message;
                 else
-                    ViewData["ErrorMessageModal"] = ErrorMessages.EW500;
+                    ViewData["ErrorMessageModal"] = ErrorMessages.EW900;
                 return View("Index", viewModel);
             }
         }

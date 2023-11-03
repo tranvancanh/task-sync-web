@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SpreadsheetLight;
 using SqlKata.Execution;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Diagnostics;
 using task_sync_web.Commons;
@@ -10,7 +9,7 @@ using X.PagedList;
 
 namespace task_sync_web.Controllers
 {
-    public class MAdministratorController : Controller
+    public class MAdministratorController : BaseController
     {
         private readonly ILogger<MAdministratorController> _logger;
 
@@ -90,8 +89,7 @@ namespace task_sync_web.Controllers
             {
                 var administratorModels = new List<MAdministratorModel>();
 
-                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
-                using (var db = new DbSqlKata(dbName))
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
                     // DBからデータ一覧を取得
                     var administratorList = db.Query("MAdministrator").Get<MAdministratorModel>().ToList();
