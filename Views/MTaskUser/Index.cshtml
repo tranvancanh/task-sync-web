@@ -93,7 +93,7 @@
                     </div>
                     <div class="form-group col-auto p-2">
                         <!--ExcelTest-->
-                        <button class="btn btn-custom" name="Command" value="ExcelOutput" type="submit"><span class="p-2"><i class="fas fa-download fa-fw"></i>Excel出力</span></button>
+                        <button class="btn btn-custom" name="Command" value="ExcelOutput" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
                     </div>
                 </div>
             </form>
@@ -104,7 +104,6 @@
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserId)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserLoginId)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserName)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserNameKana)</th>
@@ -125,7 +124,6 @@
                             @foreach (var item in pagedList)
                             {
                                 <tr>
-                                    <td class="">@Html.DisplayFor(model => item.TaskUserId)</td>
                                     <td class="">@Html.DisplayFor(model => item.TaskUserLoginId)</td>
                                     <td class="">@Html.DisplayFor(model => item.TaskUserName)</td>
                                     <td class="">@Html.DisplayFor(model => item.TaskUserNameKana)</td>

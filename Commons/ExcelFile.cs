@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Newtonsoft.Json;
+using OfficeOpenXml;
 using SpreadsheetLight;
 using System.Collections;
 using System.Data;
@@ -7,6 +8,61 @@ namespace task_sync_web.Commons
 {
     public class ExcelFile<T>
     {
+        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1)
+        {
+            if (startX < 1) { throw new System.Exception("開始位置がおかしいです！"); }
+            if (startY < 1) { throw new System.Exception("開始位置がおかしいです！"); }
+            try
+            {
+                MemoryStream ms = new MemoryStream();
+                using (SLDocument sl = new SLDocument())
+                {
+                    SLStyle keyStyle = sl.CreateStyle();
+
+                    // 太字
+                    keyStyle.SetFontBold(true);
+
+                    // ModelのProperty一覧を取得
+                    var properties = Utils.GetModelProperties<T>();
+
+                    // ヘッダー行目：ヘッダーをセット
+                    for (var i = 0; i < properties.Count(); i++)
+                    {
+                        sl.SetCellStyle(startX, startY + i, keyStyle);
+                        sl.SetCellValue(startX, startY + i, properties[i].DisplayName);
+                    }
+
+                    // 次行目～：値をセット
+                    foreach(var data in listData)
+                    {
+                        startX++;
+                        var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                        var dicts = (Dictionary<string, string>)JsonConvert.DeserializeObject(jsonString, typeof(Dictionary<string, string>));
+                        var values = dicts.Values.ToArray();
+                        for(var i = 0; i < values.Length; i++)
+                        {
+                            sl.SetCellValue(startX, startY + i, values[i]);
+                        }
+                    }
+
+                    if (autoFitCol)
+                    {
+                        sl.AutoFitColumn(0, properties.Count);
+                    }
+
+                    sl.SaveAs(ms);
+                }
+
+                ms.Position = 0;
+
+                return ms;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public static async Task<MemoryStream> ExcelCreateAsync(string[] headerList, DataTable data, bool autoFitCol = false, int startX = 0, int startY = 0)
         {
             if (startX < 0) { throw new System.Exception("開始位置がおかしいです！"); }

@@ -10,34 +10,44 @@ namespace task_sync_web.Controllers
     public class MTaskUserController : BaseController
     {
         [HttpGet]
-        public async Task<IActionResult> Index(MTaskUserViewModel viewModel, string command = null)
+        public IActionResult Index(MTaskUserViewModel viewModel, string command = null)
         {
-            var listTaskUserViewModel = GetListMTaskUserModel(viewModel.SearchKeyWord);
-            switch (command)
+            try
             {
-                //検索処理
-                case null:
-                case "Search":
-                    {
-                        var listPaged = listTaskUserViewModel.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
-                        // page the list
-                        viewModel.TaskUserModelModels = listPaged;
+                var taskUserViewModel = GetListMTaskUserModel(viewModel.SearchKeyWord);
+                switch (command)
+                {
+                    //検索処理
+                    case null:
+                    case "Search":
+                        {
+                            var listPaged = taskUserViewModel.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
+                            // page the list
+                            viewModel.TaskUserModelModels = listPaged;
 
-                        return View(viewModel);
-                    }
-                case "ExcelOutput":
-                    {
-                        //var memoryStream = this.ExcelCreate(administratorModels);
-
-                        // ファイル名
-                        var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
-                        //return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
-
-                        break;
-                    }
+                            return View(viewModel);
+                        }
+                    case "ExcelOutput":
+                        {
+                            var memoryStream = ExcelFile<MTaskUserModel>.ExcelCreate(taskUserViewModel, true);
+                            // ファイル名
+                            var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
+                            return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+                        }
+                    default:
+                        {
+                            return View("_NotFound");
+                        }
+                }
             }
-
-            return View(viewModel);
+            catch (Exception ex)
+            {
+                if (ex is CustomExtention)
+                    ViewData["ErrorMessage"] = ex.Message;
+                else
+                    ViewData["ErrorMessage"] = ErrorMessages.EW500;
+                return View("Index", viewModel);
+            }
         }
 
         [HttpPost]
@@ -49,64 +59,58 @@ namespace task_sync_web.Controllers
 
         private List<MTaskUserModel> GetListMTaskUserModel(string searchKey)
         {
-            var interruptReasonModels = new List<MTaskUserModel>();
-            var listInterruptReason = new List<MTaskUserModel>();
+            var listMTaskUserModel = new List<MTaskUserModel>();
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
-                var dataTable = db.GetDataTable(
-                    db.Query("MTaskUser as a")
-                    .Select(
-                            "a.TaskUserLoginId",
-                            "a.TaskUserName",
-                            "a.TaskUserNameKana",
-                            "a.TaskUserDepartmentName",
-                            "a.TaskUserGroupName",
-                            "a.Remark",
-                            "a.IsNotUse",
-                            "a.CreateDateTime",
-                            "b.AdministratorLoginId as CreateAdministratorLoginId",
-                            "b.AdministratorName as CreateAdministratorName",
-                            "a.UpdateDateTime",
-                            "c.AdministratorLoginId as UpdateAdministratorLoginId",
-                            "c.AdministratorName as UpdateAdministratorName"
-                        )
-                    .LeftJoin("MAdministrator as b", "a.CreateAdministratorId", "b.AdministratorId")
-                    .LeftJoin("MAdministrator as c", "a.UpdateAdministratorId", "c.AdministratorId")
-                    .OrderBy("a.TaskUserLoginId")
-                    );
+                 listMTaskUserModel = db.Query("MTaskUser as a")
+                 .Select(
+                         "a.TaskUserLoginId",
+                         "a.TaskUserName",
+                         "a.TaskUserNameKana",
+                         "a.TaskUserDepartmentName",
+                         "a.TaskUserGroupName",
+                         "a.Remark",
+                         "a.IsNotUse",
+                         "a.CreateDateTime",
+                         "b.AdministratorLoginId as CreateAdministratorLoginId",
+                         "b.AdministratorName as CreateAdministratorName",
+                         "a.UpdateDateTime",
+                         "c.AdministratorLoginId as UpdateAdministratorLoginId",
+                         "c.AdministratorName as UpdateAdministratorName"
+                     )
+                 .LeftJoin("MAdministrator as b", "a.CreateAdministratorId", "b.AdministratorId")
+                 .LeftJoin("MAdministrator as c", "a.UpdateAdministratorId", "c.AdministratorId")
+                 .OrderBy("a.TaskUserLoginId")
+                 .Get<MTaskUserModel>()
+                 .ToList(); ;
             }
 
-            if (listInterruptReason.Count == 0)
+            if (listMTaskUserModel.Count == 0)
             {
                 throw new CustomExtention(ErrorMessages.EW0101);
             }
 
             searchKey = (searchKey ?? string.Empty).Trim();
 
-            if (listInterruptReason.Count > 0 && searchKey.Length > 0)
+
+            if (listMTaskUserModel.Count > 0 && searchKey.Length > 0)
             {
                 // 検索キーワードが存在する場合
-                interruptReasonModels = listInterruptReason.
-                    Where(
+                listMTaskUserModel = listMTaskUserModel.Where(
                     x => x.TaskUserLoginId.ToString().Contains(searchKey) 
                     || x.TaskUserName.Contains(searchKey)
                     || x.TaskUserNameKana.Contains(searchKey)
                     || x.TaskUserDepartmentName.Contains(searchKey)
                     || x.TaskUserGroupName.Contains(searchKey)
                     || x.Remark.Contains(searchKey)
-                    )
-                    .ToList();
-                if (interruptReasonModels.Count == 0)
+                    ).ToList();
+                if (listMTaskUserModel.Count == 0)
                 {
                     throw new CustomExtention(ErrorMessages.EW0102);
                 }
             }
-            else
-            {
-                interruptReasonModels = listInterruptReason;
-            }
-
-            return interruptReasonModels;
+            
+            return listMTaskUserModel;
         }
 
 

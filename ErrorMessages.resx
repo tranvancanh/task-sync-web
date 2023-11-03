@@ -225,4 +225,7 @@
     <value>{0}は半角数値のみ使用できます。</value>
     <comment>INPUT</comment>
   </data>
+  <data name="EW901" xml:space="preserve">
+    <value>エラーは bool に変換できません。</value>
+  </data>
 </root>
