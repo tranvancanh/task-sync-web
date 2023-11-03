@@ -81,8 +81,8 @@ namespace task_sync_web.Controllers
                             .InsertGetId<int>(new
                             {
                                 viewModel.ModalModel.InterruptReasonCode,
-                                InterruptReasonName = viewModel.ModalModel.InterruptReasonName ?? "",
-                                Remark = viewModel.ModalModel.Remark ?? "",
+                                InterruptReasonName = (viewModel.ModalModel.InterruptReasonName ?? "").Trim(),
+                                Remark = (viewModel.ModalModel.Remark ?? "").Trim(),
                                 viewModel.ModalModel.IsNotUse,
                                 CreateDateTime = DateTime.Now,
                                 CreateAdministratorId = LoginUser.AdministratorId,
@@ -98,8 +98,8 @@ namespace task_sync_web.Controllers
                             .Update(new
                             {
                                 viewModel.ModalModel.InterruptReasonCode,
-                                InterruptReasonName = viewModel.ModalModel.InterruptReasonName ?? "",
-                                Remark = viewModel.ModalModel.Remark ?? "",
+                                InterruptReasonName = (viewModel.ModalModel.InterruptReasonName ?? "").Trim(),
+                                Remark = (viewModel.ModalModel.Remark ?? "").Trim(),
                                 viewModel.ModalModel.IsNotUse,
                                 UpdateDateTime = DateTime.Now,
                                 UpdateAdministratorId = LoginUser.AdministratorId
