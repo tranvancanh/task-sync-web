@@ -12,7 +12,7 @@ namespace task_sync_web.Models
 
         public IFormFile File { get; set; }
 
-        public CollapseState IsState { get; set; } = CollapseState.Close;
+        public CollapseState IsState { get; set; } = CollapseState.Hide;
 
         public IPagedList<MTaskUserModel> TaskUserModelModels { get; set; }
 

@@ -229,4 +229,10 @@
   <data name="EW903" xml:space="preserve">
     <value>取込したファイルが存在していません。</value>
   </data>
+  <data name="EW904" xml:space="preserve">
+    <value>作業者ログインIDが存在しました。</value>
+  </data>
+  <data name="EW905" xml:space="preserve">
+    <value>作業者ログインIDが存在しません。</value>
+  </data>
 </root>

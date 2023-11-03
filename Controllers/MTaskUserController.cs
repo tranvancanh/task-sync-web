@@ -56,7 +56,7 @@ namespace task_sync_web.Controllers
             var totalErrorList = new List<string>();
             try
             {
-                viewModel.IsState = Enums.CollapseState.Open;
+                viewModel.IsState = Enums.CollapseState.Show;
                 var taskUserViewModel = GetListMTaskUserModel(viewModel.SearchKeyWord);
                 var listPaged = taskUserViewModel.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
                 // page the list
@@ -75,9 +75,16 @@ namespace task_sync_web.Controllers
                 {
                     var model = new MTaskUserModel();
                     var rowErrorList = new List<string>();
+                    var modifyFlag = Convert.ToString(dataTable.Rows[i]["ModifiedFlag"]);
+
                     var taskUserLoginId = Convert.ToString(dataTable.Rows[i]["TaskUserLoginId"]);
                     if(taskUserLoginId != null && taskUserLoginId.Length > 8)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者ログインID", "8"));
+
+                    if(!string.IsNullOrWhiteSpace(CheckTaskUserLoginId(modifyFlag, taskUserLoginId)))
+                    {
+                        rowErrorList.Add(CheckTaskUserLoginId(modifyFlag, taskUserLoginId));
+                    }
 
                     var taskUserName = Convert.ToString(dataTable.Rows[i]["TaskUserName"]);
                     if (taskUserName != null && taskUserName.Length > 10)
@@ -160,6 +167,39 @@ namespace task_sync_web.Controllers
             }
 
             return errorList;
+        }
+
+        private string CheckTaskUserLoginId(string flag, string taskUserLoginId)
+        {
+            flag = (flag ?? "").Trim();
+            //新規登録チェック
+            if (flag.Equals("1"))
+            {
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+                {
+                    var result = db.Query("MTaskUser")
+                        .WhereIn("TaskUserLoginId", taskUserLoginId)
+                        .Get<MTaskUserModel>()
+                        .FirstOrDefault();
+                    if (result != null)
+                        return ErrorMessages.EW904;
+                }
+            }
+            //更新チェック
+            else if (flag.Equals("2"))
+            {
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+                {
+                    var result = db.Query("MTaskUser")
+                        .WhereIn("TaskUserLoginId", taskUserLoginId)
+                        .Get<MTaskUserModel>()
+                        .FirstOrDefault();
+                    if (result == null)
+                        return ErrorMessages.EW905;
+                }
+            }
+            
+            return string.Empty;
         }
 
         private int SaveChangeData(List<MTaskUserModel> insertData, List<MTaskUserModel> modifyData)

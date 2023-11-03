@@ -9,7 +9,7 @@
 
         public enum CollapseState
         {
-            Open = 1, Close = 2
+            Show = 1, Hide = 2
         }
     }
 }

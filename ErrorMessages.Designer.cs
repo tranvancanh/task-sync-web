@@ -320,5 +320,23 @@ namespace task_sync_web {
                 return ResourceManager.GetString("EW903", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 作業者ログインIDが存在しました。.
+        /// </summary>
+        public static string EW904 {
+            get {
+                return ResourceManager.GetString("EW904", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 作業者ログインIDが存在しません。.
+        /// </summary>
+        public static string EW905 {
+            get {
+                return ResourceManager.GetString("EW905", resourceCulture);
+            }
+        }
     }
 }
