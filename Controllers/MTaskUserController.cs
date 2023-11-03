@@ -70,7 +70,6 @@ namespace task_sync_web.Controllers
                     return View("Index", viewModel);
                 }
                 var dataTable = await ExcelFile<MTaskUserModel>.ReadExcelToDataTable(viewModel.File, true);
-                var list = dataTable.ToList<MTaskUserModel>();
                 for(var i = 0; i < dataTable.Rows.Count; i++)
                 {
                     var model = new MTaskUserModel();
@@ -107,22 +106,22 @@ namespace task_sync_web.Controllers
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
 
                     var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
-                    if (isNotUse == null || (isNotUse.Equals("0") && taskUserLoginId.Equals("1")))
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "利用停止フラグ", "1"));
+                    if (string.IsNullOrWhiteSpace(isNotUse) || (!isNotUse.Equals("0") && !isNotUse.Equals("1")))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0004, "利用停止フラグ", "0", "1"));
 
                     if (rowErrorList.Count > 0)
                         totalErrorList.Add($"{i + 1}行目 : " + string.Join(" ", rowErrorList));
                 }
-
-                var listData = dataTable.ToList<MTaskUserModel>();
-                var insertData = listData.Where(x => x.ModifiedFlag != null && x.ModifiedFlag.ToString().Trim().Contains("1")).ToList();
-                var modifyData = listData.Where(x => x.ModifiedFlag != null && x.ModifiedFlag.ToString().Trim().Contains("2")).ToList();
 
                 if (totalErrorList.Any())
                 {
                     ViewData["Error"] = totalErrorList;
                     return View("Index", viewModel);
                 }
+
+                var listData = dataTable.ToList<MTaskUserModel>();
+                var insertData = listData.Where(x => x.ModifiedFlag != null && x.ModifiedFlag.ToString().Trim().Contains("1")).ToList();
+                var modifyData = listData.Where(x => x.ModifiedFlag != null && x.ModifiedFlag.ToString().Trim().Contains("2")).ToList();
 
                 var efftedRows = SaveChangeData(insertData, modifyData);
                 if (efftedRows > 0)
