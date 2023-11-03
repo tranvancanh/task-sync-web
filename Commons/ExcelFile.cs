@@ -11,8 +11,8 @@ namespace task_sync_web.Commons
     {
         public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1)
         {
-            if (startX < 1) { throw new System.Exception("開始位置がおかしいです！"); }
-            if (startY < 1) { throw new System.Exception("開始位置がおかしいです！"); }
+            if (startX < 1) { throw new System.Exception(); }
+            if (startY < 1) { throw new System.Exception(); }
             try
             {
                 MemoryStream ms = new MemoryStream();
@@ -153,7 +153,7 @@ namespace task_sync_web.Commons
                 }
             }
             else
-                throw new ArgumentException(ErrorMessages.EW902);
+                throw new ArgumentException(ErrorMessages.EW1202);
 
             if(!reChange)
                 return dataTable;

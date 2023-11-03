@@ -35,7 +35,7 @@ public class BoolFormatConverter : JsonConverter
         }
         else
         {
-            throw new CustomExtention(ErrorMessages.EW901);
+            throw new CustomExtention(ErrorMessages.EW1201);
         }
 
     }
