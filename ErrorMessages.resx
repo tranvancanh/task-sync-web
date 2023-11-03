@@ -134,7 +134,7 @@
     <comment>INPUT</comment>
   </data>
   <data name="EW0005" xml:space="preserve">
-    <value>{0}の日付の形式が正しくありません。yyyy/mm/ddで入力してください。</value>
+    <value>{0}の日付形式が正しくありません。yyyy/MM/ddで入力してください。</value>
     <comment>INPUT</comment>
   </data>
   <data name="EW0006" xml:space="preserve">
@@ -171,6 +171,7 @@
   </data>
   <data name="EW9000" xml:space="preserve">
     <value>予期せぬエラーが発生しました。</value>
+    <comment>その他</comment>
   </data>
   <data name="EW1001" xml:space="preserve">
     <value>ログインIDまたはパスワードが違います。</value>

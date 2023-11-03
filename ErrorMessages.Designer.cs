@@ -97,7 +97,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   {0}の日付の形式が正しくありません。yyyy/mm/ddで入力してください。 に類似しているローカライズされた文字列を検索します。
+        ///   {0}の日付形式が正しくありません。yyyy/MM/ddで入力してください。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0005 {
             get {
