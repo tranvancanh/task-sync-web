@@ -19,7 +19,6 @@ namespace task_sync_web.Models
         public MInterruptReasonViewModel()
         {
             DisplayName = "中断理由マスター";
-            PageRowCount = 50;
             InterruptReasonModels = new List<MInterruptReasonModel>().ToPagedList(1, PageRowCount);
             ModalModel = new MInterruptReasonModel();
         }

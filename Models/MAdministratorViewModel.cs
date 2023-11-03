@@ -14,7 +14,6 @@ namespace task_sync_web.Models
         public MAdministratorViewModel()
         {
             DisplayName = "管理者マスター";
-            PageRowCount = 2;
         }
     }
 }
