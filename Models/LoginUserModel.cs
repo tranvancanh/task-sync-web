@@ -2,7 +2,7 @@
 {
     public class LoginUserModel
     {
-        public string CompanyID {  get; set; }
+        public string CompanyId {  get; set; }
         public string CompanyName {  get; set; }
         public string CompanyDatabaseName {  get; set; }
         public int AdministratorId {  get; set; }

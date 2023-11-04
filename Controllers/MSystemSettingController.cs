@@ -60,8 +60,6 @@ namespace task_sync_web.Controllers
         {
             try
             {
-                // 一覧表示用のページリストを取得
-                viewModel.SystemSettingModels = GetPageList(viewModel);
 
                 // Update
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
@@ -86,6 +84,9 @@ namespace task_sync_web.Controllers
                         ViewData["ErrorMessageEdit"] = ErrorMessages.EW0502;
                     }
                 }
+
+                // 一覧表示用のページリストを取得
+                viewModel.SystemSettingModels = GetPageList(viewModel);
 
             }
             catch (Exception ex)

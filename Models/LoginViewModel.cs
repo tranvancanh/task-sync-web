@@ -15,5 +15,10 @@ namespace task_sync_web.Models
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }
+
+        public LoginViewModel()
+        {
+            RememberMe = false;
+        }
     }
 }

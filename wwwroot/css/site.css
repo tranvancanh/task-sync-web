@@ -25,6 +25,10 @@ body {
     }
 }
 
+.navbar-brand {
+    --font-family-sans-serif: "BIZ UDPGothic", Meiryo UI, sans-serif!important;
+}
+
 .text-danger-custom {
     color: var(--maincolor);
     font-weight: 800;
@@ -53,6 +57,17 @@ body {
     .btn-custom:hover, .btn-search:hover {
         background-color: var(--sublightcolor) !important;
     }
+
+.btn-selection {
+    border: 1px solid var(--fontcolor) !important;
+    background-color: transparent !important;
+    color: var(--fontcolor) !important;
+    border-radius: 0px !important;
+}
+
+.btn-selection:hover {
+    background-color: var(--othercolor) !important;
+}
 
 .form-control {
     border: none!important;
@@ -136,7 +151,6 @@ body {
 }
 
     .page-link:hover {
-        font-weight: bold !important;
         background-color: var(--othercolor)!important;
     }
 /*↑ページャーデザイン上書き*/

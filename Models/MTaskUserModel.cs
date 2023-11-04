@@ -41,7 +41,7 @@ namespace task_sync_web.Models
         public bool IsNotUse { get; set; }
 
         [Display(Name = "登録日時")]
-        [JsonConverter(typeof(DateFormatConverter), "yy/MM/dd")]
+        [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime CreateDateTime { get; set; }
 
@@ -62,7 +62,7 @@ namespace task_sync_web.Models
         }
 
         [Display(Name = "更新日時")]
-        [JsonConverter(typeof(DateFormatConverter), "yy/MM/dd")]
+        [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime UpdateDateTime { get; set; }
 

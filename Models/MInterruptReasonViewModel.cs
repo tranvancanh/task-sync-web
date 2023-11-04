@@ -7,7 +7,6 @@ namespace task_sync_web.Models
     public class MInterruptReasonViewModel : BaseViewModel
     {
         [Display(Name = "検索キーワード")]
-        [StringLength(50, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string SearchKeyWord { get; set; }
 
         public IPagedList<MInterruptReasonModel> InterruptReasonModels { get; set; }

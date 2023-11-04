@@ -29,7 +29,10 @@ namespace task_sync_web.Controllers
                         }
                     case "ExcelOutput":
                         {
-                            var memoryStream = ExcelFile<MTaskUserModel>.ExcelCreate(taskUserViewModel, true);
+                            var excelHeaderStyle = new ExcelHeaderStyleModel();
+                            excelHeaderStyle.FirstColorBackgroundColorColumnNumber = new int[1] { 1 };
+                            excelHeaderStyle.SecondColorBackgroundColorColumnNumber = new int[7] { 2, 3, 4, 5, 6, 7, 8 };
+                            var memoryStream = ExcelFile<MTaskUserModel>.ExcelCreate(taskUserViewModel, true, 1, 1, excelHeaderStyle);
                             // ファイル名
                             var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
                             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
@@ -107,7 +110,7 @@ namespace task_sync_web.Controllers
 
                     var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
                     if (string.IsNullOrWhiteSpace(isNotUse) || (!isNotUse.Equals("0") && !isNotUse.Equals("1")))
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0004, "利用停止フラグ", "0", "1"));
+                        rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1"));
 
                     if (rowErrorList.Count > 0)
                         totalErrorList.Add($"{i + 1}行目 : " + string.Join(" ", rowErrorList));
@@ -181,7 +184,7 @@ namespace task_sync_web.Controllers
                         .Get<MTaskUserModel>()
                         .FirstOrDefault();
                     if (result != null)
-                        return ErrorMessages.EW1204;
+                        return string.Format(ErrorMessages.EW1204, "作業者ログインID");
                 }
             }
             //更新チェック
@@ -194,7 +197,7 @@ namespace task_sync_web.Controllers
                         .Get<MTaskUserModel>()
                         .FirstOrDefault();
                     if (result == null)
-                        return ErrorMessages.EW1205;
+                        return string.Format(ErrorMessages.EW1205, "作業者ログインID");
                 }
             }
             

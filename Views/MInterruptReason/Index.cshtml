@@ -34,7 +34,7 @@
                 <div class="row">
                     <div class="form-group col-auto p-2">
                         <button class="btn btn-custom btn-lg" id="btnNavbarSearch" type="button" role="button" onclick="SubmitForm('-99', '@Enums.ModalType.Create')">
-                            <span class="p-2"><i class="fas fa-plus fa-fw"></i> 新規登録</span>
+                            <span class="p-2"><i class="fas fa-plus fa-fw"></i> 登録</span>
                         </button>
                     </div>
                     <div class="form-group col-auto p-2">
@@ -75,7 +75,7 @@
                                     <td class="text-right">@Html.DisplayFor(model => item.InterruptReasonCode)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.InterruptReasonName)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.Remark)</td>
-                                    <td class="text-center">@Html.DisplayFor(model => item.IsNotUse)</td>
+                                    <td class="text-center">@((item.IsNotUse) ? 0 : 1)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.CreateFor)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.CreateDateTime)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.UpdateFor)</td>

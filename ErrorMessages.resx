@@ -218,23 +218,27 @@
     <comment>INPUT</comment>
   </data>
   <data name="EW1201" xml:space="preserve">
-    <value>利用停止フラグは0か1で入力してください。</value>
-    <comment>作業者マスター画面</comment>
+    <value>登録修正フラグは1か2で入力してください。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1202" xml:space="preserve">
     <value>ファイルの拡張子がサポート対象外です。</value>
-    <comment>作業者マスター画面</comment>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1203" xml:space="preserve">
     <value>取込対象のファイルが存在しません。</value>
-    <comment>作業者マスター画面</comment>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1204" xml:space="preserve">
-    <value>作業者ログインIDが既に存在するため新規登録できません。</value>
-    <comment>作業者マスター画面</comment>
+    <value>{0}が既に存在するため登録できません。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1205" xml:space="preserve">
-    <value>作業者ログインIDが存在しないため修正できません。</value>
-    <comment>作業者マスター画面</comment>
+    <value>{0}が存在しないため修正できません。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
+  </data>
+  <data name="EW1206" xml:space="preserve">
+    <value>利用停止フラグは0か1で入力してください。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
 </root>

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using SpreadsheetLight;
 using System.Collections;
@@ -9,7 +10,7 @@ namespace task_sync_web.Commons
 {
     public class ExcelFile<T>
     {
-        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1)
+        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1, ExcelHeaderStyleModel excelHeaderStyleModel = null)
         {
             if (startX < 1) { throw new System.Exception(); }
             if (startY < 1) { throw new System.Exception(); }
@@ -22,15 +23,45 @@ namespace task_sync_web.Commons
 
                     // 太字
                     keyStyle.SetFontBold(true);
+                    // センタリング
+                    keyStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
 
                     // ModelのProperty一覧を取得
                     var properties = Utils.GetModelProperties<T>();
 
-                    // ヘッダー行目：ヘッダーをセット
+                    // ヘッダー行：ヘッダーをセット
                     for (var i = 0; i < properties.Count(); i++)
                     {
                         sl.SetCellStyle(startX, startY + i, keyStyle);
                         sl.SetCellValue(startX, startY + i, properties[i].DisplayName);
+                    }
+
+                    // ヘッダーのカスタムスタイルをセット
+                    if (excelHeaderStyleModel != null)
+                    {
+                        // 1stカラーの背景色で塗りつぶし
+                        var mainColorCols = excelHeaderStyleModel.FirstColorBackgroundColorColumnNumber;
+                        if (mainColorCols.Count() > 0)
+                        {
+                            // MainColor
+                            keyStyle.Fill.SetPattern(PatternValues.Solid, excelHeaderStyleModel.FirstColor, System.Drawing.Color.Empty);
+                            for (var x = 0; x < mainColorCols.Count(); x++)
+                            {
+                                sl.SetCellStyle(startX, mainColorCols[x], keyStyle);
+                            }
+                        }
+
+                        // 2ndカラーの背景色で塗りつぶし
+                        var subColorCols = excelHeaderStyleModel.SecondColorBackgroundColorColumnNumber;
+                        if (subColorCols.Count() > 0)
+                        {
+                            // MainColor
+                            keyStyle.Fill.SetPattern(PatternValues.Solid, excelHeaderStyleModel.SecondColor, System.Drawing.Color.Empty);
+                            for (var x = 0; x < subColorCols.Count(); x++)
+                            {
+                                sl.SetCellStyle(startX, subColorCols[x], keyStyle);
+                            }
+                        }
                     }
 
                     // 次行目～：値をセット

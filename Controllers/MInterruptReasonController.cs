@@ -168,7 +168,9 @@ namespace task_sync_web.Controllers
             if (listInterruptReason.Count > 0 && searchKey.Length > 0)
             {
                 // 検索キーワードが存在する場合
-                interruptReasonModels = listInterruptReason.Where(x => x.InterruptReasonCode.ToString().Contains(searchKey) || x.InterruptReasonName.Contains(searchKey)).ToList();
+                interruptReasonModels = listInterruptReason
+                    .Where(x => x.InterruptReasonCode.ToString().Contains(searchKey) || x.InterruptReasonName.Contains(searchKey) || x.Remark.Contains(searchKey))
+                    .ToList();
                 if (interruptReasonModels.Count == 0)
                 {
                     throw new CustomExtention(ErrorMessages.EW0102);

@@ -23,7 +23,7 @@ namespace task_sync_web.Models
 
         public PasswordChangeViewModel()
         {
-            DisplayName = "パスワード変更";
+            DisplayName = "管理者パスワード変更";
         }
     }
 }
