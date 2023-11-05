@@ -120,7 +120,7 @@ namespace task_sync_web.Commons
 
         }
 
-        public static async Task<DataTable> ReadExcelToDataTable(IFormFile formFile, bool reChange = false)
+        public static async Task<DataTable> ReadExcelToDataTable(IFormFile formFile)
         {
             if (formFile == null || formFile.Length == 0)
             {
@@ -155,13 +155,15 @@ namespace task_sync_web.Commons
             else
                 throw new ArgumentException(ErrorMessages.EW902);
 
-            if(!reChange)
-                return dataTable;
+            return dataTable;
+        }
 
+        public static DataTable ToWithFormat(DataTable dataTable)
+        {
             var firstRow = dataTable.Rows[0].ItemArray.ToList();
             var properties = Utils.GetModelProperties<T>();
             var newDt = new DataTable();
-            foreach(var propertie in properties)
+            foreach (var propertie in properties)
             {
                 newDt.Columns.Add(propertie.PropertyName, typeof(string));
             }
@@ -170,10 +172,10 @@ namespace task_sync_web.Commons
                                  .Select(x => x.ColumnName)
                                  .ToList();
 
-            for(var i = 1; i < dataTable.Rows.Count; i++)
+            for (var i = 1; i < dataTable.Rows.Count; i++)
             {
                 var dtRow = newDt.NewRow();
-                for(var j = 0; j < columnNames.Count; j++)
+                for (var j = 0; j < columnNames.Count; j++)
                 {
                     var colName = columnNames[j];
                     dtRow[colName] = dataTable.Rows[i][j];
@@ -182,7 +184,6 @@ namespace task_sync_web.Commons
             }
 
             return newDt;
-
         }
 
         private static async Task<DataTable> ConvertToDataTable(ExcelWorksheet oSheet)

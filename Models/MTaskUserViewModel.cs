@@ -19,7 +19,7 @@ namespace task_sync_web.Models
         public MTaskUserViewModel()
         {
             DisplayName = "作業者マスター";
-            PageRowCount = 50;
+            PageRowCount = 2;
             TaskUserModelModels = new List<MTaskUserModel>().ToPagedList(1, PageRowCount);
         }
     }

@@ -10,7 +10,7 @@ namespace task_sync_web.Controllers
     public class MTaskUserController : BaseController
     {
         [HttpGet]
-        public IActionResult Index(MTaskUserViewModel viewModel, string command = null)
+        public IActionResult Index(MTaskUserViewModel viewModel, Enums.GetState command = Enums.GetState.Default)
         {
             try
             {
@@ -18,16 +18,15 @@ namespace task_sync_web.Controllers
                 switch (command)
                 {
                     //検索処理
-                    case null:
-                    case "Search":
+                    case Enums.GetState.Default:
+                    case Enums.GetState.Search:
                         {
                             var listPaged = taskUserViewModel.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
                             // page the list
                             viewModel.TaskUserModelModels = listPaged;
-
                             return View(viewModel);
                         }
-                    case "ExcelOutput":
+                    case Enums.GetState.ExcelOutput:
                         {
                             var memoryStream = ExcelFile<MTaskUserModel>.ExcelCreate(taskUserViewModel, true);
                             // ファイル名
@@ -51,36 +50,56 @@ namespace task_sync_web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(MTaskUserViewModel viewModel)
+        public async Task<IActionResult> Import(MTaskUserViewModel viewModel)
         {
             var totalErrorList = new List<string>();
+            var redirectParam = new
+            {
+                SearchKeyWord = viewModel.SearchKeyWord,
+                command = Enums.GetState.Search,
+                PageNumber = viewModel.PageNumber,
+                IsState = Enums.CollapseState.Show
+            };
             try
             {
-                viewModel.IsState = Enums.CollapseState.Show;
                 var taskUserViewModel = GetListMTaskUserModel(viewModel.SearchKeyWord);
                 var listPaged = taskUserViewModel.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
                 // page the list
                 viewModel.TaskUserModelModels = listPaged;
 
-                //妥当性チェック
+                // 妥当性チェック
                 totalErrorList = ValidateCheck(viewModel.File);
-                if (totalErrorList.Any()) 
+                if (totalErrorList.Any())
                 {
-                    ViewData["Error"] = totalErrorList;
-                    return View("Index", viewModel);
+                    TempData["ErrorMessage"] = totalErrorList;
+                    return RedirectToAction("Index", redirectParam);
                 }
-                var dataTable = await ExcelFile<MTaskUserModel>.ReadExcelToDataTable(viewModel.File, true);
-                for(var i = 0; i < dataTable.Rows.Count; i++)
+                var dataTable = await ExcelFile<MTaskUserModel>.ReadExcelToDataTable(viewModel.File);
+
+                // ファイルのフォーマットをチェック
+                var isFormat = FileFormatCheck(dataTable);
+                if (!isFormat)
+                {
+                    totalErrorList.Add("ファイルのフォーマットが正しくない");
+                    if (totalErrorList.Any())
+                    {
+                        TempData["ErrorMessage"] = totalErrorList;
+                        return RedirectToAction("Index", redirectParam);
+                    }
+                }
+
+                dataTable = ExcelFile<MTaskUserModel>.ToWithFormat(dataTable);
+                for (var i = 0; i < dataTable.Rows.Count; i++)
                 {
                     var model = new MTaskUserModel();
                     var rowErrorList = new List<string>();
                     var modifyFlag = Convert.ToString(dataTable.Rows[i]["ModifiedFlag"]);
 
                     var taskUserLoginId = Convert.ToString(dataTable.Rows[i]["TaskUserLoginId"]);
-                    if(taskUserLoginId != null && taskUserLoginId.Length > 8)
+                    if (taskUserLoginId != null && taskUserLoginId.Length > 8)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者ログインID", "8"));
 
-                    if(!string.IsNullOrWhiteSpace(CheckTaskUserLoginId(modifyFlag, taskUserLoginId)))
+                    if (!string.IsNullOrWhiteSpace(CheckTaskUserLoginId(modifyFlag, taskUserLoginId)))
                     {
                         rowErrorList.Add(CheckTaskUserLoginId(modifyFlag, taskUserLoginId));
                     }
@@ -115,24 +134,24 @@ namespace task_sync_web.Controllers
 
                 if (totalErrorList.Any())
                 {
-                    ViewData["Error"] = totalErrorList;
-                    return View("Index", viewModel);
+                    TempData["ErrorMessage"] = totalErrorList;
+                    return RedirectToAction("Index", redirectParam);
                 }
 
                 var listData = dataTable.ToList<MTaskUserModel>();
-                var insertData = listData.Where(x => x.ModifiedFlag != null && x.ModifiedFlag.ToString().Trim().Contains("1")).ToList();
-                var modifyData = listData.Where(x => x.ModifiedFlag != null && x.ModifiedFlag.ToString().Trim().Contains("2")).ToList();
+                var insertData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("1")).ToList();
+                var modifyData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("2")).ToList();
 
                 var efftedRows = SaveChangeData(insertData, modifyData);
                 if (efftedRows > 0)
                 {
-                    ViewData["SuccessMessage"] = SuccessMessages.SW002;
+                    TempData["SuccessMessage"] = SuccessMessages.SW002;
                 }
                 else
                 {
                     totalErrorList.Add(ErrorMessages.EW0502);
-                    ViewData["Error"] = totalErrorList;
-                    return View("Index", viewModel);
+                    TempData["ErrorMessage"] = totalErrorList;
+                    return RedirectToAction("Index", redirectParam);
                 }
             }
             catch (Exception ex)
@@ -141,12 +160,12 @@ namespace task_sync_web.Controllers
                     totalErrorList.Add(ex.Message);
                 else
                     totalErrorList.Add(ex.Message);
-  
-                ViewData["Error"] = totalErrorList;
-                return View("Index", viewModel);
+
+                TempData["ErrorMessage"] = totalErrorList;
+                return RedirectToAction("Index", redirectParam);
             }
-           
-            return View(viewModel);
+
+            return RedirectToAction("Index", redirectParam);
         }
 
         private List<string> ValidateCheck(IFormFile file)
@@ -156,11 +175,11 @@ namespace task_sync_web.Controllers
                 errorList.Add(ErrorMessages.EW903);
             else
             {
-                //Get file
+                // Get file
                 var fileInfor = new FileInfo(file.FileName);
                 var fileExtension = fileInfor.Extension;
 
-                //Check if file is an Excel File
+                // Check if file is an Excel File
                 if (!fileExtension.ToLower().EndsWith(".xlsx"))
                     errorList.Add(ErrorMessages.EW902);
             }
@@ -168,10 +187,34 @@ namespace task_sync_web.Controllers
             return errorList;
         }
 
+        private bool FileFormatCheck(DataTable dataTable)
+        {
+            try
+            {
+                var columnNames = dataTable.Columns.Cast<DataColumn>()
+                                 .Select(x => x.ColumnName)
+                                 .ToList();
+                var properties = Utils.GetModelProperties<MTaskUserModel>();
+                for (var i = 0; i < properties.Count; i++)
+                {
+                    var propertie = properties[i];
+                    if (propertie.DisplayName == columnNames[i])
+                        continue;
+                     else
+                        return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+             return true;
+        }
+
         private string CheckTaskUserLoginId(string flag, string taskUserLoginId)
         {
             flag = (flag ?? "").Trim();
-            //新規登録チェック
+            // 新規登録チェック
             if (flag.Equals("1"))
             {
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
@@ -184,7 +227,7 @@ namespace task_sync_web.Controllers
                         return ErrorMessages.EW904;
                 }
             }
-            //更新チェック
+            // 更新チェック
             else if (flag.Equals("2"))
             {
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
@@ -197,7 +240,7 @@ namespace task_sync_web.Controllers
                         return ErrorMessages.EW905;
                 }
             }
-            
+
             return string.Empty;
         }
 
@@ -222,7 +265,7 @@ namespace task_sync_web.Controllers
                                 TaskUserDepartmentName = data.TaskUserDepartmentName,
                                 TaskUserGroupName = data.TaskUserGroupName,
                                 Remark = data.Remark,
-                                IsNotUse =data.IsNotUse,
+                                IsNotUse = data.IsNotUse,
                                 CreateDateTime = DateTime.Now,
                                 CreateAdministratorId = LoginUser.AdministratorId,
                                 UpdateDateTime = DateTime.Now,
@@ -262,7 +305,7 @@ namespace task_sync_web.Controllers
                     tran.Rollback();
                     throw;
                 }
-               
+
                 return efftedRows;
             }
         }
@@ -272,27 +315,27 @@ namespace task_sync_web.Controllers
             var listMTaskUserModel = new List<MTaskUserModel>();
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
-                 listMTaskUserModel = db.Query("MTaskUser as a")
-                 .Select(
-                         "a.TaskUserLoginId",
-                         "a.TaskUserName",
-                         "a.TaskUserNameKana",
-                         "a.TaskUserDepartmentName",
-                         "a.TaskUserGroupName",
-                         "a.Remark",
-                         "a.IsNotUse",
-                         "a.CreateDateTime",
-                         "b.AdministratorLoginId as CreateAdministratorLoginId",
-                         "b.AdministratorName as CreateAdministratorName",
-                         "a.UpdateDateTime",
-                         "c.AdministratorLoginId as UpdateAdministratorLoginId",
-                         "c.AdministratorName as UpdateAdministratorName"
-                     )
-                 .LeftJoin("MAdministrator as b", "a.CreateAdministratorId", "b.AdministratorId")
-                 .LeftJoin("MAdministrator as c", "a.UpdateAdministratorId", "c.AdministratorId")
-                 .OrderBy("a.TaskUserLoginId")
-                 .Get<MTaskUserModel>()
-                 .ToList(); ;
+                listMTaskUserModel = db.Query("MTaskUser as a")
+                .Select(
+                        "a.TaskUserLoginId",
+                        "a.TaskUserName",
+                        "a.TaskUserNameKana",
+                        "a.TaskUserDepartmentName",
+                        "a.TaskUserGroupName",
+                        "a.Remark",
+                        "a.IsNotUse",
+                        "a.CreateDateTime",
+                        "b.AdministratorLoginId as CreateAdministratorLoginId",
+                        "b.AdministratorName as CreateAdministratorName",
+                        "a.UpdateDateTime",
+                        "c.AdministratorLoginId as UpdateAdministratorLoginId",
+                        "c.AdministratorName as UpdateAdministratorName"
+                    )
+                .LeftJoin("MAdministrator as b", "a.CreateAdministratorId", "b.AdministratorId")
+                .LeftJoin("MAdministrator as c", "a.UpdateAdministratorId", "c.AdministratorId")
+                .OrderBy("a.TaskUserLoginId")
+                .Get<MTaskUserModel>()
+                .ToList(); ;
             }
 
             if (listMTaskUserModel.Count == 0)
@@ -307,7 +350,7 @@ namespace task_sync_web.Controllers
             {
                 // 検索キーワードが存在する場合
                 listMTaskUserModel = listMTaskUserModel.Where(
-                    x => x.TaskUserLoginId.ToString().Contains(searchKey) 
+                    x => x.TaskUserLoginId.ToString().Contains(searchKey)
                     || x.TaskUserName.Contains(searchKey)
                     || x.TaskUserNameKana.Contains(searchKey)
                     || x.TaskUserDepartmentName.Contains(searchKey)
@@ -319,7 +362,7 @@ namespace task_sync_web.Controllers
                     throw new CustomExtention(ErrorMessages.EW0102);
                 }
             }
-            
+
             return listMTaskUserModel;
         }
 

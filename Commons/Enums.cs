@@ -11,5 +11,10 @@
         {
             Show = 1, Hide = 2
         }
+
+        public enum GetState
+        {
+            Default = 1, Search = 2, ExcelOutput
+        }
     }
 }
