@@ -14,13 +14,28 @@
         border-bottom-right-radius: 30px !important;
         background-color: var(--othercolor);
     }
+
+    .login-button {
+        font-weight: bold;
+        background-image: linear-gradient(to right, var(--sublightcolor) 0%, var(--mainlightcolor) 100%);
+        border-radius: 100vh;
+        color: #fff;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+    }
+
+        .login-button:hover {
+            color: #fff;
+            background-image: linear-gradient(to left, var(--sublightcolor) 0%, var(--mainlightcolor) 100%);
+        }
+
 </style>
 
 <div class="m-5 d-flex align-items-center">
     <div class="container col-md-3">
         <div class="card">
-            <div class="card-body">
-                <h4 class="card-title text-center py-4">スマホで作業記録</h4>
+            <div class="card-body py-5">
+                <h4 class="card-title text-center">スマホで作業記録</h4>
                 <div>
                     <form id="login-input-form" method="post">
 
@@ -38,7 +53,7 @@
                             <span asp-validation-for="Password" class="text-danger-custom"></span>
                         </div>
 
-                        <div class ="p-3 text-center">
+@*                         <div class ="p-3 text-center">
                             <div class="d-inline-block">
                                 <label class="ECM_CheckboxInput">
                                     <input class="ECM_CheckboxInput-Input" type="checkbox" asp-for="RememberMe">
@@ -46,10 +61,10 @@
                                     <span class="ECM_CheckboxInput-LabelText">ログインを記憶</span>
                                 </label>
                             </div>
-                        </div>
+                        </div> *@
 
-                        <div class="d-grid gap-2 p-4">
-                            <button type="submit" class="btn btn-custom btn-lg">ログイン</button>
+                        <div class="d-grid gap-2 p-3">
+                            <button type="submit" class="btn btn-custom btn-lg login-button">ログイン</button>
                         </div>
 
                     </form>

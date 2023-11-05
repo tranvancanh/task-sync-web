@@ -97,7 +97,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   {0}の日付の形式が正しくありません。yyyy/mm/ddで入力してください。 に類似しているローカライズされた文字列を検索します。
+        ///   {0}の日付形式が正しくありません。yyyy/MM/ddで入力してください。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0005 {
             get {
@@ -277,7 +277,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   利用停止フラグは0か1で入力してください。 に類似しているローカライズされた文字列を検索します。
+        ///   登録修正フラグは1か2で入力してください。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW1201 {
             get {
@@ -304,7 +304,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   作業者ログインIDが既に存在するため新規登録できません。 に類似しているローカライズされた文字列を検索します。
+        ///   {0}が既に存在するため登録できません。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW1204 {
             get {
@@ -313,11 +313,20 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   作業者ログインIDが存在しないため修正できません。 に類似しているローカライズされた文字列を検索します。
+        ///   {0}が存在しないため修正できません。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW1205 {
             get {
                 return ResourceManager.GetString("EW1205", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   利用停止フラグは0か1で入力してください。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1206 {
+            get {
+                return ResourceManager.GetString("EW1206", resourceCulture);
             }
         }
         

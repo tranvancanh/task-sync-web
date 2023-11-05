@@ -7,7 +7,7 @@
             <header class="modal__header">
                 @if (@Model.ModalType == Enums.ModalType.Create)
                 {
-                    <h3 class="fw-bold">新規登録</h3>
+                    <h3 class="fw-bold">登録</h3>
                 }
                 else if (@Model.ModalType == Enums.ModalType.Edit)
                 {
@@ -45,8 +45,8 @@
                 <div class="form-group my-3">
                     <label>@Html.DisplayNameFor(model => model.ModalModel.IsNotUse)</label>
                     <select asp-for="ModalModel.IsNotUse" class="form-select form-select-lg" id="IsNotUse" aria-label="Default select example">
-                        <option value="False">利用中</option>
-                        <option value="True">停止</option>
+                        <option value="False">0:利用中</option>
+                        <option value="True">1:停止</option>
                     </select>
                 </div>
                 <footer class="modal__footer my-5 text-right">

@@ -110,7 +110,7 @@
                                         <ul>
                                             @foreach(var mess in errorList)
                                             {
-                                                <li class="text-danger error-text">@mess</li>
+                                                <li class="text-danger-custom error-text">@mess</li>
                                             }
                                         </ul>
                                     }
@@ -118,7 +118,7 @@
                                     {
                                         if (!string.IsNullOrWhiteSpace(successMessage))
                                         {
-                                            <li class="text-success msg-text">@successMessage</li>
+                                            <li class="text-success-custom msg-text">@successMessage</li>
                                         }
                                     }
                                     if (errorMessagesTemp != null && errorMessagesTemp.Any())
@@ -191,7 +191,7 @@
                                     <td class="">@Html.DisplayFor(model => item.TaskUserDepartmentName)</td>
                                     <td class="">@Html.DisplayFor(model => item.TaskUserGroupName)</td>
                                     <td class="">@Html.DisplayFor(model => item.Remark)</td>
-                                    <td class="">@Html.DisplayFor(model => item.IsNotUse)</td>
+                                    <td class="text-center">@((item.IsNotUse) ? 0 : 1)</td>
                                     <td class="">@Html.DisplayFor(model => item.CreateDateTime)</td>
                                     <td class="">@Html.DisplayFor(model => item.CreateFor)</td>
                                     <td class="">@Html.DisplayFor(model => item.UpdateDateTime)</td>

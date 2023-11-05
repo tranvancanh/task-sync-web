@@ -6,7 +6,6 @@ namespace task_sync_web.Models
     public class MSystemSettingViewModel : BaseViewModel
     {
         [Display(Name = "検索キーワード")]
-        [StringLength(50, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string SearchKeyWord { get; set; }
 
         public IPagedList<MSystemSettingModel> SystemSettingModels { get; set; }
@@ -17,7 +16,6 @@ namespace task_sync_web.Models
         public MSystemSettingViewModel()
         {
             DisplayName = "システム設定";
-            PageRowCount = 50;
             SystemSettingModels = new List<MSystemSettingModel>().ToPagedList(1, PageRowCount);
             SystemSettingEditModel = new MSystemSettingModel();
         }

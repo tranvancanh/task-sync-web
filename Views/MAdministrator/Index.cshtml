@@ -57,7 +57,7 @@
                                     <td class="">@Html.DisplayFor(model => item.AdministratorLoginId)</td>
                                     <td class="">@Html.DisplayFor(model => item.AdministratorName)</td>
                                     <td class="">@Html.DisplayFor(model => item.AdministratorNameKana)</td>
-                                    <td class="text-center">@Html.DisplayFor(model => item.IsNotUse)</td>
+                                    <td class="text-center">@((item.IsNotUse) ? 0 : 1)</td>
                                 </tr>
 
                             }

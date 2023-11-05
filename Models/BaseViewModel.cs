@@ -7,8 +7,14 @@
         ///// </summary>
         public string DisplayName { get; set; } = string.Empty;
 
+        /// <summary>
+        /// 初期一覧表示のページ番号
+        /// </summary>
         public int PageNumber { get; set; }
 
+        /// <summary>
+        /// １ページに表示する行数
+        /// </summary>
         public int PageRowCount { get; set; }
 
         public BaseViewModel()

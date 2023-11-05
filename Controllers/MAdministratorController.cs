@@ -25,14 +25,14 @@ namespace task_sync_web.Controllers
         /// <param name="pageNumber"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Index(MAdministratorViewModel viewModel, int pageNumber = 1)
+        public IActionResult Index(MAdministratorViewModel viewModel)
         {
             try
             {
                 var listUser = GetListMAdministrator(viewModel.SearchKeyWord);
 
                 // page the list
-                var administratorModels = listUser.ToPagedList(pageNumber, viewModel.PageRowCount);
+                var administratorModels = listUser.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
                 viewModel.AdministratorModels = administratorModels;
 
                 return View(viewModel);

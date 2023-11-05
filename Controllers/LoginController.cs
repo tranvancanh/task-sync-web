@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using task_sync_web.Models;
 using task_sync_web.Commons;
 using SqlKata.Execution;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace task_sync_web.Controllers
 {
@@ -54,7 +53,7 @@ namespace task_sync_web.Controllers
                 {
                     AllowRefresh = false,
                     //ExpiresUtc = DateTimeOffset.Now.AddDays(1),
-                    IsPersistent = loginViewModel.RememberMe
+                    IsPersistent = loginViewModel.RememberMe // セキュリティの懸念から現状常にFalse
                 };
 
                 // ログイン

@@ -7,7 +7,6 @@ namespace task_sync_web.Models
     public class MTaskUserViewModel : BaseViewModel
     {
         [Display(Name = "検索キーワード")]
-        [StringLength(50, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string SearchKeyWord { get; set; }
 
         public IFormFile File { get; set; }
@@ -19,7 +18,6 @@ namespace task_sync_web.Models
         public MTaskUserViewModel()
         {
             DisplayName = "作業者マスター";
-            PageRowCount = 2;
             TaskUserModelModels = new List<MTaskUserModel>().ToPagedList(1, PageRowCount);
         }
     }
