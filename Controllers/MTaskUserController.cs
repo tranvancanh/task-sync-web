@@ -44,7 +44,7 @@ namespace task_sync_web.Controllers
                 if (ex is CustomExtention)
                     ViewData["ErrorMessage"] = ex.Message;
                 else
-                    ViewData["ErrorMessage"] = ErrorMessages.EW900;
+                    ViewData["ErrorMessage"] = ErrorMessages.EW9000;
                 return View("Index", viewModel);
             }
         }
@@ -172,7 +172,7 @@ namespace task_sync_web.Controllers
         {
             var errorList = new List<string>();
             if (file == null || file.Length == 0)
-                errorList.Add(ErrorMessages.EW903);
+                errorList.Add(ErrorMessages.EW1203);
             else
             {
                 // Get file
@@ -181,7 +181,7 @@ namespace task_sync_web.Controllers
 
                 // Check if file is an Excel File
                 if (!fileExtension.ToLower().EndsWith(".xlsx"))
-                    errorList.Add(ErrorMessages.EW902);
+                    errorList.Add(ErrorMessages.EW1202);
             }
 
             return errorList;
@@ -224,7 +224,7 @@ namespace task_sync_web.Controllers
                         .Get<MTaskUserModel>()
                         .FirstOrDefault();
                     if (result != null)
-                        return ErrorMessages.EW904;
+                        return ErrorMessages.EW1204;
                 }
             }
             // 更新チェック
@@ -237,7 +237,7 @@ namespace task_sync_web.Controllers
                         .Get<MTaskUserModel>()
                         .FirstOrDefault();
                     if (result == null)
-                        return ErrorMessages.EW905;
+                        return ErrorMessages.EW1205;
                 }
             }
 

@@ -134,7 +134,7 @@
     <comment>INPUT</comment>
   </data>
   <data name="EW0005" xml:space="preserve">
-    <value>日付の形式が正しくありません。yyyy/mm/ddで入力してください。</value>
+    <value>{0}の日付の形式が正しくありません。yyyy/mm/ddで入力してください。</value>
     <comment>INPUT</comment>
   </data>
   <data name="EW0006" xml:space="preserve">
@@ -157,10 +157,6 @@
     <value>検索条件に一致するデータが存在しません。</value>
     <comment>SELECT</comment>
   </data>
-  <data name="EW0301" xml:space="preserve">
-    <value>{0}が存在しません。</value>
-    <comment>UPDATE</comment>
-  </data>
   <data name="EW0500" xml:space="preserve">
     <value>データ取得に失敗しました。</value>
     <comment>SERVER</comment>
@@ -173,7 +169,7 @@
     <value>更新に失敗しました。</value>
     <comment>SERVER</comment>
   </data>
-  <data name="EW900" xml:space="preserve">
+  <data name="EW9000" xml:space="preserve">
     <value>予期せぬエラーが発生しました。</value>
   </data>
   <data name="EW1001" xml:space="preserve">
@@ -220,19 +216,24 @@
     <value>{0}は半角英数字のみ使用できます。</value>
     <comment>INPUT</comment>
   </data>
-  <data name="EW901" xml:space="preserve">
-    <value>エラーは bool に変換できません。</value>
+  <data name="EW1201" xml:space="preserve">
+    <value>利用停止フラグは0か1で入力してください。</value>
+    <comment>作業者マスター画面</comment>
   </data>
-  <data name="EW902" xml:space="preserve">
-    <value>拡張子がサポート対象外です!</value>
+  <data name="EW1202" xml:space="preserve">
+    <value>ファイルの拡張子がサポート対象外です。</value>
+    <comment>作業者マスター画面</comment>
   </data>
-  <data name="EW903" xml:space="preserve">
-    <value>取込したファイルが存在していません。</value>
+  <data name="EW1203" xml:space="preserve">
+    <value>取込対象のファイルが存在しません。</value>
+    <comment>作業者マスター画面</comment>
   </data>
-  <data name="EW904" xml:space="preserve">
-    <value>作業者ログインIDが存在しました。</value>
+  <data name="EW1204" xml:space="preserve">
+    <value>作業者ログインIDが既に存在するため新規登録できません。</value>
+    <comment>作業者マスター画面</comment>
   </data>
-  <data name="EW905" xml:space="preserve">
-    <value>作業者ログインIDが存在しません。</value>
+  <data name="EW1205" xml:space="preserve">
+    <value>作業者ログインIDが存在しないため修正できません。</value>
+    <comment>作業者マスター画面</comment>
   </data>
 </root>
