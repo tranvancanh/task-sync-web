@@ -169,9 +169,9 @@
     <value>更新に失敗しました。</value>
     <comment>SERVER</comment>
   </data>
-  <data name="EW9000" xml:space="preserve">
-    <value>予期せぬエラーが発生しました。</value>
-    <comment>その他</comment>
+  <data name="EW1207" xml:space="preserve">
+    <value>ファイルのフォーマットが正しくない。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1001" xml:space="preserve">
     <value>ログインIDまたはパスワードが違います。</value>
@@ -240,5 +240,9 @@
   <data name="EW1206" xml:space="preserve">
     <value>利用停止フラグは0か1で入力してください。</value>
     <comment>作業者マスター画面,作業項目マスター画面</comment>
+  </data>
+  <data name="EW9000" xml:space="preserve">
+    <value>予期せぬエラーが発生しました。</value>
+    <comment>その他</comment>
   </data>
 </root>

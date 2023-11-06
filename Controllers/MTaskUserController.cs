@@ -83,7 +83,7 @@ namespace task_sync_web.Controllers
                 var isFormat = FileFormatCheck(dataTable);
                 if (!isFormat)
                 {
-                    totalErrorList.Add("ファイルのフォーマットが正しくない");
+                    totalErrorList.Add(ErrorMessages.EW1207);
                     if (totalErrorList.Any())
                     {
                         TempData["ErrorMessage"] = totalErrorList;
@@ -194,14 +194,12 @@ namespace task_sync_web.Controllers
         {
             try
             {
-                var columnNames = dataTable.Columns.Cast<DataColumn>()
-                                 .Select(x => x.ColumnName)
-                                 .ToList();
+                var columnNames = dataTable.Rows[0].ItemArray.ToList();
                 var properties = Utils.GetModelProperties<MTaskUserModel>();
                 for (var i = 0; i < properties.Count; i++)
                 {
                     var propertie = properties[i];
-                    if (propertie.DisplayName == columnNames[i])
+                    if (propertie.DisplayName == Convert.ToString(columnNames[i]))
                         continue;
                      else
                         return false;
