@@ -340,6 +340,33 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 修正リストは{0}重複できません。.
+        /// </summary>
+        public static string EW1208 {
+            get {
+                return ResourceManager.GetString("EW1208", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 登録リストは{0}重複できません。.
+        /// </summary>
+        public static string EW1209 {
+            get {
+                return ResourceManager.GetString("EW1209", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 修正リストと登録リストは{0}重複できません。.
+        /// </summary>
+        public static string EW1210 {
+            get {
+                return ResourceManager.GetString("EW1210", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 予期せぬエラーが発生しました。.
         /// </summary>
         public static string EW9000 {

@@ -145,6 +145,16 @@ namespace task_sync_web.Controllers
                 var insertData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("1")).ToList();
                 var modifyData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("2")).ToList();
 
+                var result = CheckUnique(insertData, modifyData);
+                if(result.Any())
+                    totalErrorList.AddRange(result);
+
+                if (totalErrorList.Any())
+                {
+                    TempData["ErrorMessage"] = totalErrorList;
+                    return RedirectToAction("Index", redirectParam);
+                }
+
                 var efftedRows = SaveChangeData(insertData, modifyData);
                 if (efftedRows > 0)
                 {
@@ -188,6 +198,26 @@ namespace task_sync_web.Controllers
             }
 
             return errorList;
+        }
+
+        private List<string> CheckUnique(List<MTaskUserModel> insertData, List<MTaskUserModel> modifyData)
+        {
+            var localErr = new List<string>();
+            var anyDuplicateInsert = insertData.GroupBy(x => x.TaskUserLoginId).Any(g => g.Count() > 1);
+            var anyDuplicateModify = modifyData.GroupBy(x => x.TaskUserLoginId).Any(g => g.Count() > 1);
+            if (anyDuplicateModify)
+                localErr.Add(string.Format(ErrorMessages.EW1208, "作業者ログインID"));
+            if (anyDuplicateInsert)
+                localErr.Add(string.Format(ErrorMessages.EW1209, "作業者ログインID"));
+
+            var results = from p in insertData
+                          join c in modifyData
+                          on p.TaskUserLoginId.Trim() equals c.TaskUserLoginId.Trim()
+                          select new { insertData };
+            if (results.Any())
+                localErr.Add(string.Format(ErrorMessages.EW1210, "作業者ログインID"));
+
+            return localErr;
         }
 
         private bool FileFormatCheck(DataTable dataTable)

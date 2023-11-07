@@ -241,6 +241,18 @@
     <value>利用停止フラグは0か1で入力してください。</value>
     <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
+  <data name="EW1208" xml:space="preserve">
+    <value>修正リストは{0}重複できません。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
+  </data>
+  <data name="EW1209" xml:space="preserve">
+    <value>登録リストは{0}重複できません。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
+  </data>
+  <data name="EW1210" xml:space="preserve">
+    <value>修正リストと登録リストは{0}重複できません。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
+  </data>
   <data name="EW9000" xml:space="preserve">
     <value>予期せぬエラーが発生しました。</value>
     <comment>その他</comment>
