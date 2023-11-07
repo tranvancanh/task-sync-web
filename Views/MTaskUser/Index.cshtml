@@ -158,6 +158,7 @@
                         <div class="input-group">
                             <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
                             <button class="btn btn-search" name="Command" value="2" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            @* @Html.HiddenFor(model => model.IsState) *@
                         </div>
                     </div>
                     <div class="form-group col-auto p-2">
@@ -330,12 +331,20 @@
             let ele = document.getElementById('iconUpDow');
             let className = ele.className;
             let position = className.search("fa-rotate-180");
+            let val = '';
             if (position > 0) {
                 $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg');
+                val = 'Hide';
             }
             else {
                 $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg fa-rotate-180');
+                val = 'Show';
             }
+            // $("input[name='IsState']").each(function () {
+            //     let name = $(this).attr("name");
+            //     let id = $(this).attr("id");
+            //     $(this).val(val);
+            // })
         }
 
         $(function () {
