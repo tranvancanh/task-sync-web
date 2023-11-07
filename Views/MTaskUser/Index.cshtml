@@ -151,7 +151,7 @@
                     </div>
                 </div>
             </form>
-
+            
             <form class="form-inline ms-1" asp-controller="MTaskUser" enctype="multipart/form-data" method="get">
                 <div class="row">
                     <div class="form-group col-auto p-2">
@@ -270,34 +270,37 @@
             }
         }
 
-        function FormClear() {
+        function FormClear(mess) {
             $('.file-name-view').text(fileNameDefault);
             const form = document.querySelector("#m-import-form");
             form.reset();
+            $('.message-area').append(`<label class="text-danger-custom error-text2">${mess}</label>`);
         }
 
         function FormDataCheck() {
 
-            $('.error-text').text("");
-            $('.msg-text').text("");
+            $('.error-text').text('');
+            $('.error-text2').text('');
+            $('.msg-text').text('');
             $('.message-area').html('');
 
+            let mess = '';
             // FormData オブジェクトの利用
             const formData = new FormData(document.querySelector("#m-import-form"));
 
             const fileUpload = $("#inputFile").get(0);
             const files = fileUpload.files;
             if (files[0]["size"] <= 0) {
-                $('.error-text').text('ファイルが選択されていません。');
-                FormClear(formData);
+                mess = 'ファイルが選択されていません。';
+                FormClear(mess);
                 return false;
             }
             else if (files[0]["name"].indexOf('.xlsx') <= 0) {
-                $('.error-text').text('取込対象外の拡張子です。');
-                FormClear(formData);
+                mess = '取込対象外の拡張子です。';
+                FormClear(mess);
                 return false;
             }
-                       
+             
             // console.log({ formData });
             // let IsFirst = true;
             // for (let file of formData) {
@@ -322,14 +325,16 @@
         }
 
         function ChangeIconUpDow(element){
-            let className = element.className;
-            let position = className.search("collapsed");
-            console.log({ position });
+            // let className = element.className;
+            // let position = className.search("collapsed");
+            let ele = document.getElementById('iconUpDow');
+            let className = ele.className;
+            let position = className.search("fa-rotate-180");
             if (position > 0) {
-                $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg fa-rotate-180');
+                $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg');
             }
             else {
-                $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg');
+                $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg fa-rotate-180');
             }
         }
 
