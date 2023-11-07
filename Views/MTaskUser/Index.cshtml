@@ -22,6 +22,11 @@
         background-color: #14dbbf;
     }
 
+    .fa, .fas {
+        font-weight: 900;
+        margin-right: 8px;
+    }
+
     .form-inline {
         display: -ms-flexbox;
         display: flex;
@@ -64,8 +69,8 @@
                     <div class="row">
                         <div class="col-6">
                             <button class="btn btn-custom" type="button" data-toggle="collapse" data-target="#collapseShow" aria-expanded="false" aria-controls="collapseShow"
-                                    onclick="ChangeIconUpDow(this)">
-                                <i class="fas fa-sort-up fa-lg mr-1" id="iconUpDow"></i>新規登録・修正
+                                    onclick="ChangeIconUpDow(this)" id="btnCollapseShow">
+                                <i class="fas fa-chevron-down fa-lg" id="iconUpDow"></i>新規登録・修正
                             </button>
                         </div>
                     </div>
@@ -74,31 +79,34 @@
                     @Html.HiddenFor(model => model.IsState)
                     <div class="row">
                         <div class="collapse" id="collapseShow">
-                            <div class="col-10">
-                                <p class="my-1">
-                                    出力したExcelファイルの値を変更してファイル保存し、Excel取込をしてデータの新規登録・修正を行います。
-                                </p>
-                                <li>新規登録・・・新しい行を追加し、対家行の登録修正フラグに1を入力します。</li>
-                                <li>修正・・・値を変更し、対家行の登録修正フラグに2を入力します。作業者コードをキーに、行の値がへんこうされます。</li>
-                            </div>
-                            <div class="form-group text-center p-2">
-                                <div class="form-inline p-2 rounded col-5 mr-3" style="background-color: #CDFAF1; ">
-                                    <label id="file-label" class="btn btn-selection">
-                                        <input style="display:none;" type="file" name="File" id="inputFile"
-                                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-                                        取込ファイル選択
-                                    </label>
-                                    <label class="file-name-view ml-2"></label>
-                                    
+                            <div class="bd-callout">
+                                <div class="col-10">
+                                    <p class="my-1">
+                                        出力したExcelファイルの値を変更してファイル保存し、Excel取込をしてデータの新規登録・修正を行います。
+                                    </p>
+                                    <li>新規登録・・・新しい行を追加し、対家行の登録修正フラグに1を入力します。</li>
+                                    <li>修正・・・値を変更し、対家行の登録修正フラグに2を入力します。作業者コードをキーに、行の値がへんこうされます。</li>
                                 </div>
-                                <div class="mx-3">
-                                    <button class="btn btn-custom" name="Action" value="ImportOutput" type="submit">
-                                        <span class="p-2">
-                                            <i class="fas fa-upload mr-2"></i>Excel取込
-                                        </span>
-                                    </button>
+                                <div class="form-group text-center p-2">
+                                    <div class="form-inline p-2 rounded col-5 mr-3" style="background-color: #CDFAF1; ">
+                                        <label id="file-label" class="btn btn-selection">
+                                            <input style="display:none;" type="file" name="File" id="inputFile"
+                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                                            取込ファイル選択
+                                        </label>
+                                        <label class="file-name-view ml-2"></label>
+
+                                    </div>
+                                    <div class="mx-3">
+                                        <button class="btn btn-custom" name="Action" value="ImportOutput" type="submit">
+                                            <span class="p-2">
+                                                <i class="fas fa-upload mr-2"></i>Excel取込
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                       
                             <div class="form-group text-left p-2 message-area">
                                 @{
                                     var errorList = ViewData["ErrorMessage"] as List<string>;
@@ -242,6 +250,9 @@
             });
         });
 
+        const element = document.getElementById('btnCollapseShow');
+        $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg fa-rotate-180');
+
         const fileNameDefault = "ここに選択したファイル名が表示されます";
 
         function FileNameSet(self) {
@@ -313,11 +324,12 @@
         function ChangeIconUpDow(element){
             let className = element.className;
             let position = className.search("collapsed");
+            console.log({ position });
             if (position > 0) {
-                $('#iconUpDow').attr('class', 'fas fa-sort-down fa-lg mr-1');
+                $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg fa-rotate-180');
             }
             else {
-                $('#iconUpDow').attr('class', 'fas fa-sort-down fa-lg fa-rotate-180 mr-1');
+                $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg');
             }
         }
 
