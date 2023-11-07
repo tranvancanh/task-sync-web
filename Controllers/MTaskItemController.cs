@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SqlKata.Execution;
 using System.Data;
+using System.Linq;
 using task_sync_web.Commons;
 using task_sync_web.Models;
 using X.PagedList;
@@ -100,7 +101,7 @@ namespace task_sync_web.Controllers
 
                     var taskItemId = Convert.ToString(dataTable.Rows[i]["TaskItemId"]);
                     var messCheckItemId = CheckTaskItemId(modifyFlag, taskItemId);
-                    if (string.IsNullOrWhiteSpace(messCheckItemId))
+                    if (!string.IsNullOrWhiteSpace(messCheckItemId))
                     {
                         rowErrorList.Add(messCheckItemId);
                     }
@@ -120,8 +121,8 @@ namespace task_sync_web.Controllers
                     if (taskPrimaryItem != null && taskPrimaryItem.Length > 10)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業大項目", "10"));
 
-                    var taskSecondryItem = Convert.ToString(dataTable.Rows[i]["TaskSecondryItem"]);
-                    if (taskSecondryItem != null && taskSecondryItem.Length > 30)
+                    var taskSecondaryItem = Convert.ToString(dataTable.Rows[i]["TaskSecondaryItem"]);
+                    if (taskSecondaryItem != null && taskSecondaryItem.Length > 30)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業中項目", "30"));
 
                     var taskTertiaryItem = Convert.ToString(dataTable.Rows[i]["TaskTertiaryItem"]);
@@ -149,6 +150,16 @@ namespace task_sync_web.Controllers
                 var listData = dataTable.ToList<MTaskItemModel>();
                 var insertData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("1")).ToList();
                 var modifyData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("2")).ToList();
+
+                var resultCheck = CheckUnique(insertData, modifyData);
+                if (resultCheck.Any())
+                    totalErrorList.AddRange(resultCheck);
+
+                if (totalErrorList.Any())
+                {
+                    TempData["ErrorMessage"] = totalErrorList;
+                    return RedirectToAction("Index", redirectParam);
+                }
 
                 var efftedRows = SaveChangeData(insertData, modifyData);
                 if (efftedRows > 0)
@@ -193,6 +204,30 @@ namespace task_sync_web.Controllers
             }
 
             return errorList;
+        }
+
+        private List<string> CheckUnique(List<MTaskItemModel> insertData, List<MTaskItemModel> modifyData)
+        {
+            var localErr = new List<string>();
+            var anyDuplicateItemId = insertData.GroupBy(x => x.TaskItemId).Any(g => g.Count() > 1);
+            if(anyDuplicateItemId)
+                localErr.Add(string.Format(ErrorMessages.EW1208, "作業項目ID"));
+
+            var anyDuplicateInsert = insertData.GroupBy(x => x.TaskItemCode).Any(g => g.Count() > 1);
+            var anyDuplicateModify = modifyData.GroupBy(x => x.TaskItemCode).Any(g => g.Count() > 1);
+            if (anyDuplicateModify)
+                localErr.Add(string.Format(ErrorMessages.EW1208, "作業項目コード"));
+            if (anyDuplicateInsert)
+                localErr.Add(string.Format(ErrorMessages.EW1209, "作業項目コード"));
+
+            var results = from p in insertData
+                          join c in modifyData
+                          on p.TaskItemCode equals c.TaskItemCode
+                          select new { insertData };
+            if (results.Any())
+                localErr.Add(string.Format(ErrorMessages.EW1210, "作業項目コード"));
+
+            return localErr;
         }
 
         private bool FileFormatCheck(DataTable dataTable)
@@ -315,7 +350,7 @@ namespace task_sync_web.Controllers
                                 TaskItemCode = data.TaskItemCode,
                                 TaskItemCategory = data.TaskItemCategory,
                                 TaskPrimaryItem = data.TaskPrimaryItem,
-                                TaskSecondryItem = data.TaskSecondryItem,
+                                TaskSecondaryItem = data.TaskSecondaryItem,
                                 TaskTertiaryItem = data.TaskTertiaryItem,
                                 Remark = data.Remark,
                                 IsNotUse = data.IsNotUse,
@@ -338,7 +373,7 @@ namespace task_sync_web.Controllers
                                 TaskItemCode = data.TaskItemCode,
                                 TaskItemCategory = data.TaskItemCategory,
                                 TaskPrimaryItem = data.TaskPrimaryItem,
-                                TaskSecondryItem = data.TaskSecondryItem,
+                                TaskSecondaryItem = data.TaskSecondaryItem,
                                 TaskTertiaryItem = data.TaskTertiaryItem,
                                 Remark = data.Remark,
                                 IsNotUse = data.IsNotUse,
@@ -374,7 +409,7 @@ namespace task_sync_web.Controllers
                         "a.TaskItemCode",
                         "a.TaskItemCategory",
                         "a.TaskPrimaryItem",
-                        "a.TaskSecondryItem",
+                        "a.TaskSecondaryItem",
                         "a.TaskTertiaryItem",
                         "a.Remark",
                         "a.IsNotUse",
@@ -407,7 +442,7 @@ namespace task_sync_web.Controllers
                     x => x.TaskItemCode.ToString().Contains(searchKey)
                     || x.TaskItemCategory.Contains(searchKey)
                     || x.TaskPrimaryItem.Contains(searchKey)
-                    || x.TaskSecondryItem.Contains(searchKey)
+                    || x.TaskSecondaryItem.Contains(searchKey)
                     || x.TaskTertiaryItem.Contains(searchKey)
                     || x.Remark.Contains(searchKey)
                     ).ToList();
