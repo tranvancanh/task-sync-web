@@ -213,19 +213,19 @@ namespace task_sync_web.Controllers
             if(anyDuplicateItemId)
                 localErr.Add(string.Format(ErrorMessages.EW1208, "作業項目ID"));
 
-            var anyDuplicateInsert = insertData.GroupBy(x => x.TaskItemCode).Any(g => g.Count() > 1);
-            var anyDuplicateModify = modifyData.GroupBy(x => x.TaskItemCode).Any(g => g.Count() > 1);
-            if (anyDuplicateModify)
-                localErr.Add(string.Format(ErrorMessages.EW1208, "作業項目コード"));
-            if (anyDuplicateInsert)
-                localErr.Add(string.Format(ErrorMessages.EW1209, "作業項目コード"));
+            //var anyDuplicateInsert = insertData.GroupBy(x => x.TaskItemCode).Any(g => g.Count() > 1);
+            //var anyDuplicateModify = modifyData.GroupBy(x => x.TaskItemCode).Any(g => g.Count() > 1);
+            //if (anyDuplicateModify)
+            //    localErr.Add(string.Format(ErrorMessages.EW1208, "作業項目コード"));
+            //if (anyDuplicateInsert)
+            //    localErr.Add(string.Format(ErrorMessages.EW1209, "作業項目コード"));
 
-            var results = from p in insertData
-                          join c in modifyData
-                          on p.TaskItemCode equals c.TaskItemCode
-                          select new { insertData };
-            if (results.Any())
-                localErr.Add(string.Format(ErrorMessages.EW1210, "作業項目コード"));
+            //var results = from p in insertData
+            //              join c in modifyData
+            //              on p.TaskItemCode equals c.TaskItemCode
+            //              select new { insertData };
+            //if (results.Any())
+            //    localErr.Add(string.Format(ErrorMessages.EW1210, "作業項目コード"));
 
             return localErr;
         }
