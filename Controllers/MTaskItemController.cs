@@ -30,7 +30,7 @@ namespace task_sync_web.Controllers
                         {
                             var excelHeaderStyle = new ExcelHeaderStyleModel();
                             excelHeaderStyle.FirstColorBackgroundColorColumnNumber = new int[1] { 1 };
-                            excelHeaderStyle.SecondColorBackgroundColorColumnNumber = new int[7] { 2, 3, 4, 5, 6, 7, 8 };
+                            excelHeaderStyle.SecondColorBackgroundColorColumnNumber = new int[8] { 2, 3, 4, 5, 6, 7, 8, 9 };
                             var memoryStream = ExcelFile<MTaskItemModel>.ExcelCreate(taskUserViewModel, true, 1, 1, excelHeaderStyle);
                             // ファイル名
                             var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -108,9 +108,10 @@ namespace task_sync_web.Controllers
                         rowErrorList.Add(string.Format(ErrorMessages.EW0009, "作業項目コード"));
                     }
 
-                    if (!string.IsNullOrWhiteSpace(CheckTaskItemCode(modifyFlag, taskItemCode)))
+                    var mess = CheckTaskItemId(modifyFlag, taskItemCode);
+                    if (!string.IsNullOrWhiteSpace(mess))
                     {
-                        rowErrorList.Add(CheckTaskItemCode(modifyFlag, taskItemCode));
+                        rowErrorList.Add(mess);
                     }
 
                     var taskItemCategory = Convert.ToString(dataTable.Rows[i]["TaskItemCategory"]);
@@ -218,29 +219,29 @@ namespace task_sync_web.Controllers
             return true;
         }
 
-        private string CheckTaskItemCode(string flag, string taskItemCode)
+        private string CheckTaskItemId(string flag, string taskItemId)
         {
             flag = (flag ?? "").Trim();
             // 新規登録チェック
             if (flag.Equals("1"))
             {
-                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
-                {
-                    var result = db.Query("MTaskUser")
-                        .WhereIn("TaskItemCode", taskItemCode)
-                        .Get<MTaskItemModel>()
-                        .FirstOrDefault();
-                    if (result != null)
-                        return string.Format(ErrorMessages.EW1204, "作業者ログインID");
-                }
+                //using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+                //{
+                //    var result = db.Query("MTaskItem")
+                //        .WhereIn("TaskItemCode", taskItemCode)
+                //        .Get<MTaskItemModel>()
+                //        .FirstOrDefault();
+                //    if (result != null)
+                //        return string.Format(ErrorMessages.EW1204, "作業者ログインID");
+                //}
             }
             // 更新チェック
             else if (flag.Equals("2"))
             {
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                    var result = db.Query("MTaskUser")
-                        .WhereIn("TaskItemCode", taskItemCode)
+                    var result = db.Query("MTaskItem")
+                        .WhereIn("TaskItemId", taskItemId)
                         .Get<MTaskItemModel>()
                         .FirstOrDefault();
                     if (result == null)
@@ -266,11 +267,11 @@ namespace task_sync_web.Controllers
                         var result = db.Query("MTaskItem")
                             .InsertGetId<int>(new
                             {
-                                TaskUserLoginId = data.TaskItemCode,
-                                TaskUserName = data.TaskItemCategory,
-                                TaskUserNameKana = data.TaskPrimaryItem,
-                                TaskUserDepartmentName = data.TaskSecondryItem,
-                                TaskUserGroupName = data.TaskTertiaryItem,
+                                TaskItemCode = data.TaskItemCode,
+                                TaskItemCategory = data.TaskItemCategory,
+                                TaskPrimaryItem = data.TaskPrimaryItem,
+                                TaskSecondryItem = data.TaskSecondryItem,
+                                TaskTertiaryItem = data.TaskTertiaryItem,
                                 Remark = data.Remark,
                                 IsNotUse = data.IsNotUse,
                                 CreateDateTime = DateTime.Now,
@@ -289,11 +290,11 @@ namespace task_sync_web.Controllers
                             .Where("TaskItemCode", data.TaskItemCode)
                             .Update(new
                             {
-                                TaskUserLoginId = data.TaskItemCode,
-                                TaskUserName = data.TaskItemCategory,
-                                TaskUserNameKana = data.TaskPrimaryItem,
-                                TaskUserDepartmentName = data.TaskSecondryItem,
-                                TaskUserGroupName = data.TaskTertiaryItem,
+                                TaskItemCode = data.TaskItemCode,
+                                TaskItemCategory = data.TaskItemCategory,
+                                TaskPrimaryItem = data.TaskPrimaryItem,
+                                TaskSecondryItem = data.TaskSecondryItem,
+                                TaskTertiaryItem = data.TaskTertiaryItem,
                                 Remark = data.Remark,
                                 IsNotUse = data.IsNotUse,
                                 CreateDateTime = DateTime.Now,
@@ -341,9 +342,9 @@ namespace task_sync_web.Controllers
                     )
                 .LeftJoin("MAdministrator as b", "a.CreateAdministratorId", "b.AdministratorId")
                 .LeftJoin("MAdministrator as c", "a.UpdateAdministratorId", "c.AdministratorId")
-                .OrderBy("a.TaskUserLoginId")
+                .OrderBy("a.TaskItemCode")
                 .Get<MTaskItemModel>()
-                .ToList(); ;
+                .ToList();
             }
 
             if (listMTaskItemModel.Count == 0)

@@ -73,7 +73,11 @@ namespace task_sync_web.Commons
                         var values = dicts.Values.ToArray();
                         for(var i = 0; i < values.Length; i++)
                         {
-                            sl.SetCellValue(startX, startY + i, values[i]);
+                            var value = values[i];
+                            if(int.TryParse(value, out int val))
+                                sl.SetCellValue(startX, startY + i, val);
+                            else
+                                sl.SetCellValue(startX, startY + i, value);
                         }
                     }
 
@@ -175,6 +179,8 @@ namespace task_sync_web.Commons
                     {
                         ExcelWorksheet workSheet = package.Workbook.Worksheets.FirstOrDefault();
                         ArgumentNullException.ThrowIfNull(workSheet);
+                        if (workSheet.Dimension == null)
+                            throw new CustomExtention(ErrorMessages.EW1207);
                         // get number of rows and columns in the sheet
                         int totalRows = workSheet.Dimension.Rows;
                         int totalColumns = workSheet.Dimension.Columns;

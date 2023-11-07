@@ -174,6 +174,7 @@
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
+                            <th>@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskItemId)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskItemCode)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskItemCategory)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskPrimaryItem)</th>
@@ -194,6 +195,7 @@
                             @foreach (var item in pagedList)
                             {
                                 <tr>
+                                    <td class="text-center">@Html.DisplayFor(model => item.TaskItemId)</td>
                                     <td class="">@Html.DisplayFor(model => item.TaskItemCode)</td>
                                     <td class="">@Html.DisplayFor(model => item.TaskItemCategory)</td>
                                     <td class="">@Html.DisplayFor(model => item.TaskPrimaryItem)</td>
