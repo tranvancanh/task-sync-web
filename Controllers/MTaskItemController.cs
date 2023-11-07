@@ -98,20 +98,18 @@ namespace task_sync_web.Controllers
                     var rowErrorList = new List<string>();
                     var modifyFlag = Convert.ToString(dataTable.Rows[i]["ModifiedFlag"]);
 
-                    var taskItemCode = Convert.ToString(dataTable.Rows[i]["TaskItemCode"]);
-                    if (string.IsNullOrWhiteSpace(taskItemCode))
+                    var taskItemId = Convert.ToString(dataTable.Rows[i]["TaskItemId"]);
+                    var messCheckItemId = CheckTaskItemId(modifyFlag, taskItemId);
+                    if (string.IsNullOrWhiteSpace(messCheckItemId))
                     {
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業項目コード"));
-                    }
-                    if(!int.TryParse(taskItemCode, out int val))
-                    {
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0009, "作業項目コード"));
+                        rowErrorList.Add(messCheckItemId);
                     }
 
-                    var mess = CheckTaskItemId(modifyFlag, taskItemCode);
-                    if (!string.IsNullOrWhiteSpace(mess))
+                    var taskItemCode = Convert.ToString(dataTable.Rows[i]["TaskItemCode"]);
+                    var messCheckItemCode = CheckTaskItemCode(modifyFlag, taskItemCode);
+                    if (!string.IsNullOrWhiteSpace(messCheckItemCode))
                     {
-                        rowErrorList.Add(mess);
+                        rowErrorList.Add(messCheckItemCode);
                     }
 
                     var taskItemCategory = Convert.ToString(dataTable.Rows[i]["TaskItemCategory"]);
@@ -238,6 +236,10 @@ namespace task_sync_web.Controllers
             // 更新チェック
             else if (flag.Equals("2"))
             {
+                if(!int.TryParse(taskItemId, out int val))
+                {
+                    return string.Format(ErrorMessages.EW0009, "作業項目ID");
+                }
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
                     var result = db.Query("MTaskItem")
@@ -245,7 +247,50 @@ namespace task_sync_web.Controllers
                         .Get<MTaskItemModel>()
                         .FirstOrDefault();
                     if (result == null)
-                        return string.Format(ErrorMessages.EW1205, "作業者ログインID");
+                        return string.Format(ErrorMessages.EW1205, "作業項目ID");
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private string CheckTaskItemCode(string flag, string taskItemCode)
+        {
+            flag = (flag ?? "").Trim();
+
+            if (string.IsNullOrWhiteSpace(taskItemCode))
+            {
+                return string.Format(ErrorMessages.EW0001, "作業項目コード");
+            }
+            if (!int.TryParse(taskItemCode, out int val))
+            {
+                return string.Format(ErrorMessages.EW0009, "作業項目コード");
+            }
+
+            // 新規登録チェック
+            if (flag.Equals("1"))
+            {
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+                {
+                    var result = db.Query("MTaskItem")
+                        .WhereIn("TaskItemCode", taskItemCode)
+                        .Get<MTaskItemModel>()
+                        .FirstOrDefault();
+                    if (result != null)
+                        return string.Format(ErrorMessages.EW1204, "作業項目コード");
+                }
+            }
+            // 更新チェック
+            else if (flag.Equals("2"))
+            {
+                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+                {
+                    var result = db.Query("MTaskItem")
+                        .WhereIn("TaskItemCode", taskItemCode)
+                        .Get<MTaskItemModel>()
+                        .FirstOrDefault();
+                    if (result == null)
+                        return string.Format(ErrorMessages.EW1205, "作業項目コード");
                 }
             }
 
