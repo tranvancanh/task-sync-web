@@ -105,48 +105,48 @@
                                         </button>
                                     </div>
                                 </div>
+                                <div class="form-group text-left p-2 message-area">
+                                    @{
+                                        var errorList = ViewData["ErrorMessage"] as List<string>;
+                                        var errorMessagesTemp = TempData["ErrorMessage"] as IEnumerable<string>;
+                                        var successMessage = ViewData["SuccessMessage"] as string;
+                                        var successMessageTemp = TempData["SuccessMessage"] as string;
+                                        if (errorList != null && errorList.Any())
+                                        {
+                                            <ul>
+                                                @foreach (var mess in errorList)
+                                                {
+                                                    <li class="text-danger-custom error-text">@mess</li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(successMessage))
+                                            {
+                                                <li class="text-success-custom msg-text">@successMessage</li>
+                                            }
+                                        }
+                                        if (errorMessagesTemp != null && errorMessagesTemp.Any())
+                                        {
+                                            <ul>
+                                                @foreach (var mess in errorMessagesTemp)
+                                                {
+                                                    <li class="text-danger error-text">@mess</li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(successMessageTemp))
+                                            {
+                                                <li class="text-success msg-text">@successMessageTemp</li>
+                                            }
+                                        }
+                                    }
+                                </div>
                             </div>
                        
-                            <div class="form-group text-left p-2 message-area">
-                                @{
-                                    var errorList = ViewData["ErrorMessage"] as List<string>;
-                                    var errorMessagesTemp = TempData["ErrorMessage"] as IEnumerable<string>;
-                                    var successMessage = ViewData["SuccessMessage"] as string;
-                                    var successMessageTemp = TempData["SuccessMessage"] as string;
-                                    if (errorList != null && errorList.Any())
-                                    {
-                                        <ul>
-                                            @foreach(var mess in errorList)
-                                            {
-                                                <li class="text-danger-custom error-text">@mess</li>
-                                            }
-                                        </ul>
-                                    }
-                                    else
-                                    {
-                                        if (!string.IsNullOrWhiteSpace(successMessage))
-                                        {
-                                            <li class="text-success-custom msg-text">@successMessage</li>
-                                        }
-                                    }
-                                    if (errorMessagesTemp != null && errorMessagesTemp.Any())
-                                    {
-                                        <ul>
-                                            @foreach (var mess in errorMessagesTemp)
-                                            {
-                                                <li class="text-danger error-text">@mess</li>
-                                            }
-                                        </ul>
-                                    }
-                                    else
-                                    {
-                                        if (!string.IsNullOrWhiteSpace(successMessageTemp))
-                                        {
-                                            <li class="text-success msg-text">@successMessageTemp</li>
-                                        }
-                                    }
-                                }
-                            </div>
                         </div>
                     </div>
                 </div>
