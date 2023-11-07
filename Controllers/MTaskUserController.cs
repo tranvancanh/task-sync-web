@@ -329,11 +329,11 @@ namespace task_sync_web.Controllers
                             efftedRows = efftedRows + result;
                     }
 
-                    tran.Commit();
+                    db.Commit();
                 }
                 catch (Exception)
                 {
-                    tran.Rollback();
+                    db.Rollback();
                     throw;
                 }
 
