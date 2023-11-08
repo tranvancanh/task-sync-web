@@ -209,7 +209,7 @@ namespace task_sync_web.Controllers
         private List<string> CheckUnique(List<MTaskItemModel> insertData, List<MTaskItemModel> modifyData)
         {
             var localErr = new List<string>();
-            var anyDuplicateItemId = insertData.GroupBy(x => x.TaskItemId).Any(g => g.Count() > 1);
+            var anyDuplicateItemId = modifyData.GroupBy(x => x.TaskItemId).Any(g => g.Count() > 1);
             if(anyDuplicateItemId)
                 localErr.Add(string.Format(ErrorMessages.EW1208, "作業項目ID"));
 
@@ -357,7 +357,7 @@ namespace task_sync_web.Controllers
                                 CreateDateTime = DateTime.Now,
                                 CreateAdministratorId = LoginUser.AdministratorId,
                                 UpdateDateTime = DateTime.Now,
-                                UpdateAdministratorId = LoginUser.AdministratorId,
+                                UpdateAdministratorId = LoginUser.AdministratorId
                             }, tran);
                         if (result > 0)
                             efftedRows = efftedRows + result;
@@ -367,7 +367,7 @@ namespace task_sync_web.Controllers
                     foreach (var data in modifyData)
                     {
                         var result = db.Query("MTaskItem")
-                            .Where("TaskItemCode", data.TaskItemCode)
+                            .Where("TaskItemId", data.TaskItemId)
                             .Update(new
                             {
                                 TaskItemCode = data.TaskItemCode,
@@ -380,22 +380,21 @@ namespace task_sync_web.Controllers
                                 CreateDateTime = DateTime.Now,
                                 CreateAdministratorId = LoginUser.AdministratorId,
                                 UpdateDateTime = DateTime.Now,
-                                UpdateAdministratorId = LoginUser.AdministratorId,
+                                UpdateAdministratorId = LoginUser.AdministratorId
                             }, tran);
                         if (result > 0)
                             efftedRows = efftedRows + result;
                     }
 
-                    tran.Commit();
+                    db.Commit();
                 }
                 catch (Exception)
                 {
-                    tran.Rollback();
+                    db.Rollback();
                     throw;
                 }
-
-                return efftedRows;
             }
+            return efftedRows;
         }
 
         private List<MTaskItemModel> GetListTaskItemModel(string searchKey)
