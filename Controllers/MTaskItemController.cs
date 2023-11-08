@@ -302,32 +302,32 @@ namespace task_sync_web.Controllers
                 return string.Format(ErrorMessages.EW0009, "作業項目コード");
             }
 
-            // 新規登録チェック
-            if (flag.Equals("1"))
-            {
-                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
-                {
-                    var result = db.Query("MTaskItem")
-                        .WhereIn("TaskItemCode", taskItemCode)
-                        .Get<MTaskItemModel>()
-                        .FirstOrDefault();
-                    if (result != null)
-                        return string.Format(ErrorMessages.EW1204, "作業項目コード");
-                }
-            }
-            // 更新チェック
-            else if (flag.Equals("2"))
-            {
-                using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
-                {
-                    var result = db.Query("MTaskItem")
-                        .WhereIn("TaskItemCode", taskItemCode)
-                        .Get<MTaskItemModel>()
-                        .FirstOrDefault();
-                    if (result == null)
-                        return string.Format(ErrorMessages.EW1205, "作業項目コード");
-                }
-            }
+            //// 新規登録チェック
+            //if (flag.Equals("1"))
+            //{
+            //    using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            //    {
+            //        var result = db.Query("MTaskItem")
+            //            .WhereIn("TaskItemCode", taskItemCode)
+            //            .Get<MTaskItemModel>()
+            //            .FirstOrDefault();
+            //        if (result != null)
+            //            return string.Format(ErrorMessages.EW1204, "作業項目コード");
+            //    }
+            //}
+            //// 更新チェック
+            //else if (flag.Equals("2"))
+            //{
+            //    using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            //    {
+            //        var result = db.Query("MTaskItem")
+            //            .WhereIn("TaskItemCode", taskItemCode)
+            //            .Get<MTaskItemModel>()
+            //            .FirstOrDefault();
+            //        if (result == null)
+            //            return string.Format(ErrorMessages.EW1205, "作業項目コード");
+            //    }
+            //}
 
             return string.Empty;
         }
