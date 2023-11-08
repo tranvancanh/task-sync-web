@@ -97,25 +97,32 @@ namespace task_sync_web.Controllers
                     var model = new MTaskUserModel();
                     var rowErrorList = new List<string>();
                     var modifyFlag = Convert.ToString(dataTable.Rows[i]["ModifiedFlag"]);
+                    if(!(string.IsNullOrWhiteSpace(modifyFlag) || modifyFlag.Trim().Contains("0") || modifyFlag.Trim().Contains("1")))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW1201, "登録修正フラグ"));
 
                     var taskUserLoginId = Convert.ToString(dataTable.Rows[i]["TaskUserLoginId"]);
+                    if(string.IsNullOrWhiteSpace(taskUserLoginId))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業者ログインID"));
                     if (taskUserLoginId != null && taskUserLoginId.Length > 8)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者ログインID", "8"));
-
                     if (!string.IsNullOrWhiteSpace(CheckTaskUserLoginId(modifyFlag, taskUserLoginId)))
-                    {
                         rowErrorList.Add(CheckTaskUserLoginId(modifyFlag, taskUserLoginId));
-                    }
 
                     var taskUserName = Convert.ToString(dataTable.Rows[i]["TaskUserName"]);
+                    if(string.IsNullOrWhiteSpace(taskUserName))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業者名"));
                     if (taskUserName != null && taskUserName.Length > 10)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者名", "10"));
 
                     var taskUserNameKana = Convert.ToString(dataTable.Rows[i]["TaskUserNameKana"]);
+                    if (string.IsNullOrWhiteSpace(taskUserNameKana))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業者名かな"));
                     if (taskUserNameKana != null && taskUserNameKana.Length > 50)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者名かな", "50"));
 
                     var taskUserDepartmentName = Convert.ToString(dataTable.Rows[i]["TaskUserDepartmentName"]);
+                    if (string.IsNullOrWhiteSpace(taskUserDepartmentName))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "所属名"));
                     if (taskUserDepartmentName != null && taskUserDepartmentName.Length > 10)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "所属名", "10"));
 
