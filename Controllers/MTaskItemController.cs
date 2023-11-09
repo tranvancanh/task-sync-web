@@ -84,7 +84,7 @@ namespace task_sync_web.Controllers
                 var isFormat = FileFormatCheck(dataTable);
                 if (!isFormat)
                 {
-                    totalErrorList.Add(ErrorMessages.EW1207);
+                    totalErrorList.Add(ErrorMessages.EW1202);
                     if (totalErrorList.Any())
                     {
                         TempData["ErrorMessage"] = totalErrorList;
@@ -98,34 +98,42 @@ namespace task_sync_web.Controllers
                     var model = new MTaskItemModel();
                     var rowErrorList = new List<string>();
                     var modifyFlag = Convert.ToString(dataTable.Rows[i]["ModifiedFlag"]);
+                    if (!(string.IsNullOrWhiteSpace(modifyFlag) || modifyFlag.Trim().Contains("1") || modifyFlag.Trim().Contains("2")))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW1201, "登録修正フラグ"));
+                    if (!modifyFlag.Trim().Contains("1") && !modifyFlag.Trim().Contains("2"))
+                        goto STEP;
 
                     var taskItemId = Convert.ToString(dataTable.Rows[i]["TaskItemId"]);
                     var messCheckItemId = CheckTaskItemId(modifyFlag, taskItemId);
                     if (!string.IsNullOrWhiteSpace(messCheckItemId))
-                    {
                         rowErrorList.Add(messCheckItemId);
-                    }
 
                     var taskItemCode = Convert.ToString(dataTable.Rows[i]["TaskItemCode"]);
                     var messCheckItemCode = CheckTaskItemCode(modifyFlag, taskItemCode);
                     if (!string.IsNullOrWhiteSpace(messCheckItemCode))
-                    {
                         rowErrorList.Add(messCheckItemCode);
-                    }
 
                     var taskItemCategory = Convert.ToString(dataTable.Rows[i]["TaskItemCategory"]);
+                    if (string.IsNullOrWhiteSpace(taskItemCategory))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業項目分類"));
                     if (taskItemCategory != null && taskItemCategory.Length > 10)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業項目分類", "10"));
 
                     var taskPrimaryItem = Convert.ToString(dataTable.Rows[i]["TaskPrimaryItem"]);
+                    if (string.IsNullOrWhiteSpace(taskPrimaryItem))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業大項目"));
                     if (taskPrimaryItem != null && taskPrimaryItem.Length > 10)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業大項目", "10"));
 
                     var taskSecondaryItem = Convert.ToString(dataTable.Rows[i]["TaskSecondaryItem"]);
+                    if (string.IsNullOrWhiteSpace(taskSecondaryItem))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業中項目"));
                     if (taskSecondaryItem != null && taskSecondaryItem.Length > 30)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業中項目", "30"));
 
                     var taskTertiaryItem = Convert.ToString(dataTable.Rows[i]["TaskTertiaryItem"]);
+                    if (string.IsNullOrWhiteSpace(taskTertiaryItem))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業小項目"));
                     if (taskTertiaryItem != null && taskTertiaryItem.Length > 30)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業小項目", "30"));
 
@@ -134,9 +142,12 @@ namespace task_sync_web.Controllers
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
 
                     var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
-                    if (string.IsNullOrWhiteSpace(isNotUse) || (!isNotUse.Equals("0") && !isNotUse.Equals("1")))
+                    if (!string.IsNullOrWhiteSpace(isNotUse) && !isNotUse.Trim().Equals("0") && !isNotUse.Trim().Equals("1"))
                         rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1"));
+                    if (string.IsNullOrWhiteSpace(isNotUse))
+                        dataTable.Rows[i]["IsNotUse"] = "0";
 
+                    STEP:
                     if (rowErrorList.Count > 0)
                         totalErrorList.Add($"{i + 1}行目 : " + string.Join(" ", rowErrorList));
                 }
@@ -147,9 +158,28 @@ namespace task_sync_web.Controllers
                     return RedirectToAction("Index", redirectParam);
                 }
 
-                var listData = dataTable.ToList<MTaskItemModel>();
-                var insertData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("1")).ToList();
-                var modifyData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("2")).ToList();
+                var queryInsert =
+                    from row in dataTable.AsEnumerable()
+                    where row.Field<string>("ModifiedFlag") != null && row.Field<string>("ModifiedFlag").Contains("1")
+                    select row;
+                DataTable insertDt;
+                if (queryInsert.Any())
+                    insertDt = queryInsert.CopyToDataTable();
+                else
+                    insertDt = dataTable.Clone();
+
+                var queryModify =
+                     from row in dataTable.AsEnumerable()
+                     where row.Field<string>("ModifiedFlag") != null && row.Field<string>("ModifiedFlag").Contains("2")
+                     select row;
+                DataTable modifyDt;
+                if (queryModify.Any())
+                    modifyDt = queryModify.CopyToDataTable();
+                else
+                    modifyDt = dataTable.Clone();
+
+                var insertData = insertDt.ToList<MTaskItemModel>();
+                var modifyData = modifyDt.ToList<MTaskItemModel>();
 
                 var resultCheck = CheckUnique(insertData, modifyData);
                 if (resultCheck.Any())
@@ -168,7 +198,7 @@ namespace task_sync_web.Controllers
                 }
                 else
                 {
-                    totalErrorList.Add(ErrorMessages.EW0502);
+                    totalErrorList.Add(ErrorMessages.EW1207);
                     TempData["ErrorMessage"] = totalErrorList;
                     return RedirectToAction("Index", redirectParam);
                 }
@@ -345,7 +375,7 @@ namespace task_sync_web.Controllers
                     foreach (var data in insertData)
                     {
                         var result = db.Query("MTaskItem")
-                            .InsertGetId<int>(new
+                            .Insert(new
                             {
                                 TaskItemCode = data.TaskItemCode,
                                 TaskItemCategory = data.TaskItemCategory,
@@ -377,8 +407,6 @@ namespace task_sync_web.Controllers
                                 TaskTertiaryItem = data.TaskTertiaryItem,
                                 Remark = data.Remark,
                                 IsNotUse = data.IsNotUse,
-                                CreateDateTime = DateTime.Now,
-                                CreateAdministratorId = LoginUser.AdministratorId,
                                 UpdateDateTime = DateTime.Now,
                                 UpdateAdministratorId = LoginUser.AdministratorId
                             }, tran);
