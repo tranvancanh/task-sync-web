@@ -51,18 +51,18 @@
                 <span class="text-danger-custom" id="MessageError">@ViewData["ErrorMessage"]</span>
             </div>
 
-            <div style="overflow-x: scroll;">
+            <div>
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonCode)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonName)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].Remark)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].IsNotUse)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateFor)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateFor)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateDateTime)</th>
+                            <th style="width: 15%">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonCode)</th>
+                            <th style="width: 15%">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonName)</th>
+                            <th style="width: 30%">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].Remark)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].IsNotUse)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateFor)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateDateTime)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateFor)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateDateTime)</th>
                         </tr>
                     </thead>
 
@@ -75,7 +75,7 @@
                                     <td class="text-right">@Html.DisplayFor(model => item.InterruptReasonCode)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.InterruptReasonName)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.Remark)</td>
-                                    <td class="text-center">@((item.IsNotUse) ? 0 : 1)</td>
+                                    <td class="text-center">@((item.IsNotUse == false) ? 0 : 1)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.CreateFor)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.CreateDateTime)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.UpdateFor)</td>
