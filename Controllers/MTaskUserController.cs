@@ -83,7 +83,7 @@ namespace task_sync_web.Controllers
                 var isFormat = FileFormatCheck(dataTable);
                 if (!isFormat)
                 {
-                    totalErrorList.Add(ErrorMessages.EW1207);
+                    totalErrorList.Add(ErrorMessages.EW1202);
                     if (totalErrorList.Any())
                     {
                         TempData["ErrorMessage"] = totalErrorList;
@@ -97,8 +97,10 @@ namespace task_sync_web.Controllers
                     var model = new MTaskUserModel();
                     var rowErrorList = new List<string>();
                     var modifyFlag = Convert.ToString(dataTable.Rows[i]["ModifiedFlag"]);
-                    if(!(string.IsNullOrWhiteSpace(modifyFlag) || modifyFlag.Trim().Contains("0") || modifyFlag.Trim().Contains("1")))
+                    if(!(string.IsNullOrWhiteSpace(modifyFlag) || modifyFlag.Trim().Contains("1") || modifyFlag.Trim().Contains("2")))
                         rowErrorList.Add(string.Format(ErrorMessages.EW1201, "登録修正フラグ"));
+                    if (!modifyFlag.Trim().Contains("1") && !modifyFlag.Trim().Contains("2"))
+                        goto STEP;
 
                     var taskUserLoginId = Convert.ToString(dataTable.Rows[i]["TaskUserLoginId"]);
                     if(string.IsNullOrWhiteSpace(taskUserLoginId))
@@ -135,9 +137,12 @@ namespace task_sync_web.Controllers
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
 
                     var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
-                    if (string.IsNullOrWhiteSpace(isNotUse) || (!isNotUse.Equals("0") && !isNotUse.Equals("1")))
+                    if (!string.IsNullOrWhiteSpace(isNotUse) && !isNotUse.Trim().Equals("0") && !isNotUse.Trim().Equals("1"))
                         rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1"));
+                    if(string.IsNullOrWhiteSpace(isNotUse))
+                        dataTable.Rows[i]["IsNotUse"] = "0";
 
+                    STEP:
                     if (rowErrorList.Count > 0)
                         totalErrorList.Add($"{i + 1}行目 : " + string.Join(" ", rowErrorList));
                 }
@@ -148,12 +153,31 @@ namespace task_sync_web.Controllers
                     return RedirectToAction("Index", redirectParam);
                 }
 
-                var listData = dataTable.ToList<MTaskUserModel>();
-                var insertData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("1")).ToList();
-                var modifyData = listData.Where(x => x.ModifiedFlag.ToString().Trim().Equals("2")).ToList();
+                var queryInsert =
+                     from row in dataTable.AsEnumerable()
+                     where row.Field<string>("ModifiedFlag") != null && row.Field<string>("ModifiedFlag").Contains("1")
+                     select row;
+                DataTable insertDt;
+                if(queryInsert.Any())
+                    insertDt = queryInsert.CopyToDataTable();
+                else
+                    insertDt = dataTable.Clone();
+
+                var queryModify =
+                     from row in dataTable.AsEnumerable()
+                     where row.Field<string>("ModifiedFlag") != null && row.Field<string>("ModifiedFlag").Contains("2")
+                     select row;
+                DataTable modifyDt;
+                if(queryModify.Any())
+                    modifyDt = queryModify.CopyToDataTable();
+                else
+                    modifyDt = dataTable.Clone();
+
+                var insertData = insertDt.ToList<MTaskUserModel>();
+                var modifyData = modifyDt.ToList<MTaskUserModel>();
 
                 var result = CheckUnique(insertData, modifyData);
-                if(result.Any())
+                if (result.Any())
                     totalErrorList.AddRange(result);
 
                 if (totalErrorList.Any())
@@ -169,7 +193,7 @@ namespace task_sync_web.Controllers
                 }
                 else
                 {
-                    totalErrorList.Add(ErrorMessages.EW0502);
+                    totalErrorList.Add(ErrorMessages.EW1207);
                     TempData["ErrorMessage"] = totalErrorList;
                     return RedirectToAction("Index", redirectParam);
                 }
@@ -295,7 +319,7 @@ namespace task_sync_web.Controllers
                     foreach (var data in insertData)
                     {
                         var result = db.Query("MTaskUser")
-                            .InsertGetId<int>(new
+                            .Insert(new
                             {
                                 TaskUserLoginId = data.TaskUserLoginId,
                                 TaskUserName = data.TaskUserName,

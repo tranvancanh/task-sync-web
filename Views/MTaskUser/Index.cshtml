@@ -50,6 +50,7 @@
         }
     }
 
+
 </style>
 
 <div class="h4 mb-3">
@@ -68,7 +69,7 @@
                 <div class="container-fluid px-0">
                     <div class="row">
                         <div class="col-6">
-                            <button class="btn btn-custom" type="button" data-toggle="collapse" data-target="#collapseShow" aria-expanded="false" aria-controls="collapseShow"
+                            <button class="btn btn-custom btn-lg" type="button" data-toggle="collapse" data-target="#collapseShow" aria-expanded="false" aria-controls="collapseShow"
                                     onclick="ChangeIconUpDow(this)" id="btnCollapseShow">
                                 <i class="fas fa-chevron-down fa-lg" id="iconUpDow"></i>新規登録・修正
                             </button>
@@ -84,21 +85,21 @@
                                     <p class="my-1">
                                         出力したExcelファイルの値を変更してファイル保存し、Excel取込をしてデータの新規登録・修正を行います。
                                     </p>
-                                    <li>新規登録・・・新しい行を追加し、対家行の登録修正フラグに1を入力します。</li>
-                                    <li>修正・・・値を変更し、対家行の登録修正フラグに2を入力します。作業者コードをキーに、行の値がへんこうされます。</li>
+                                    <li>登録・・・新しい行を追加し、《登録修正フラグ》に半角数字の <b>1</b> を入力します。</li>
+                                    <li>修正・・・値を変更し、《登録修正フラグ》に半角数字の <b>2</b> を入力します。作業者ログインIDをキーにして、対象行の値が上書きされます。</li>
                                 </div>
                                 <div class="form-group text-center p-2">
-                                    <div class="form-inline p-2 rounded col-5 mr-3" style="background-color: #CDFAF1; ">
+                                    <div class="form-inline p-2 rounded mr-3" style="background-color: #CDFAF1; ">
                                         <label id="file-label" class="btn btn-selection">
                                             <input style="display:none;" type="file" name="File" id="inputFile"
                                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
                                             取込ファイル選択
                                         </label>
-                                        <label class="file-name-view ml-2"></label>
+                                        <label class="file-name-view mx-2"></label>
 
                                     </div>
                                     <div class="mx-3">
-                                        <button class="btn btn-custom" name="Action" value="ImportOutput" type="submit">
+                                        <button class="btn btn-custom btn-lg" name="Action" value="ImportOutput" type="submit">
                                             <span class="p-2">
                                                 <i class="fas fa-upload mr-2"></i>Excel取込
                                             </span>
@@ -156,35 +157,35 @@
                 <div class="row">
                     <div class="form-group col-auto p-2">
                         <div class="input-group">
-                            <input class="form-control" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                            <button class="btn btn-search" name="Command" value="2" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            <input class="form-control btn-lg" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                            <button class="btn btn-search btn-lg" name="Command" value="2" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                             @* @Html.HiddenFor(model => model.IsState) *@
                         </div>
                     </div>
                     <div class="form-group col-auto p-2">
                         <!--ExcelTest-->
-                        <button class="btn btn-custom" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
+                        <button class="btn btn-custom btn-lg" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
                     </div>
                 </div>
             </form>
             <div class="col-auto">
                 <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
             </div>
-            <div style="overflow-x: scroll;">
+            <div style="">
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserLoginId)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserName)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserNameKana)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserDepartmentName)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserGroupName)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserLoginId)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserName)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserNameKana)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserDepartmentName)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].TaskUserGroupName)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].Remark)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].IsNotUse)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].CreateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].CreateFor)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].UpdateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskUserModelModels[0].UpdateFor)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].CreateDateTime)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].CreateFor)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].UpdateDateTime)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.TaskUserModelModels[0].UpdateFor)</th>
                         </tr>
                     </thead>
 
@@ -200,7 +201,7 @@
                                     <td class="">@Html.DisplayFor(model => item.TaskUserDepartmentName)</td>
                                     <td class="">@Html.DisplayFor(model => item.TaskUserGroupName)</td>
                                     <td class="">@Html.DisplayFor(model => item.Remark)</td>
-                                    <td class="text-center">@((item.IsNotUse) ? 0 : 1)</td>
+                                    <td class="text-center">@((item.IsNotUse == false) ? 0 : 1)</td>
                                     <td class="">@Html.DisplayFor(model => item.CreateDateTime)</td>
                                     <td class="">@Html.DisplayFor(model => item.CreateFor)</td>
                                     <td class="">@Html.DisplayFor(model => item.UpdateDateTime)</td>
