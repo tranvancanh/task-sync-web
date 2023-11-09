@@ -92,7 +92,9 @@ namespace task_sync_web.Controllers
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
                     // DBからデータ一覧を取得
-                    var administratorList = db.Query("MAdministrator").Get<MAdministratorModel>().ToList();
+                    var administratorList = db.Query("MAdministrator")
+                        .OrderBy("AdministratorLoginId")
+                        .Get<MAdministratorModel>().ToList();
                     if (administratorList.Count == 0)
                     {
                         throw new CustomExtention(ErrorMessages.EW0101);
@@ -154,7 +156,7 @@ namespace task_sync_web.Controllers
                             sl.SetCellValue(col, ++row, data[_col].AdministratorLoginId);
                             sl.SetCellValue(col, ++row, data[_col].AdministratorName);
                             sl.SetCellValue(col, ++row, data[_col].AdministratorNameKana);
-                            sl.SetCellValue(col, ++row, data[_col].IsNotUse);
+                            sl.SetCellValue(col, ++row, data[_col].IsNotUse == false ? 0 : 1);
                         }
                     }
 

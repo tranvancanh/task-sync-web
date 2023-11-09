@@ -37,14 +37,14 @@
                 <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
                 <span class="text-success-custom">@ViewData["Message"] </span>
             </div>
-            <div style="overflow-x: scroll;">
+            <div>
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
-                            <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
-                            <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
-                            <th>@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
+                            <th style="width: 30%">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
+                            <th style="width: 30%">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
+                            <th style="width: 30%">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
+                            <th style="width: 300px">@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
                         </tr>
                     </thead>
 
@@ -57,7 +57,7 @@
                                     <td class="">@Html.DisplayFor(model => item.AdministratorLoginId)</td>
                                     <td class="">@Html.DisplayFor(model => item.AdministratorName)</td>
                                     <td class="">@Html.DisplayFor(model => item.AdministratorNameKana)</td>
-                                    <td class="text-center">@((item.IsNotUse) ? 0 : 1)</td>
+                                    <td class="text-center">@((item.IsNotUse == false) ? 0 : 1)</td>
                                 </tr>
 
                             }
