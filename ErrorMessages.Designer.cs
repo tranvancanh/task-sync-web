@@ -331,7 +331,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ファイルのフォーマットが正しくない。.
+        ///   Looks up a localized string similar to 登録・修正の対象のデータが存在しません。.
         /// </summary>
         public static string EW1207 {
             get {

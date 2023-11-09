@@ -147,9 +147,9 @@ namespace task_sync_web.Commons
 
         private static bool ConvertToBoolean(object value)
         {
-            if (Convert.ToString(value).Equals("0"))
+            if (Convert.ToString(value).Trim().Equals("0"))
                 value = false;
-            else if (Convert.ToString(value).Equals("1"))
+            else if (Convert.ToString(value).Trim().Equals("1"))
                 value = true;
             else
                 throw new ArgumentException();
