@@ -351,8 +351,6 @@ namespace task_sync_web.Controllers
                                 TaskUserGroupName = data.TaskUserGroupName,
                                 Remark = data.Remark,
                                 IsNotUse = data.IsNotUse,
-                                CreateDateTime = DateTime.Now,
-                                CreateAdministratorId = LoginUser.AdministratorId,
                                 UpdateDateTime = DateTime.Now,
                                 UpdateAdministratorId = LoginUser.AdministratorId,
                             }, tran);
