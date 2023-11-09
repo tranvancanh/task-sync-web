@@ -56,6 +56,11 @@ namespace task_sync_web.Commons
                             propertyInfos.SetValue
                             (classObj, ConvertToInt(dataRow[dtField.Name]), null);
                         }
+                        else if (propertyInfos.PropertyType == typeof(int?))
+                        {
+                            propertyInfos.SetValue
+                            (classObj, ConvertToIntAllowNull(dataRow[dtField.Name]), null);
+                        }
                         else if (propertyInfos.PropertyType == typeof(long))
                         {
                             propertyInfos.SetValue
@@ -103,10 +108,19 @@ namespace task_sync_web.Commons
         {
             return Convert.ToString(value);
         }
-
-        private static int ConvertToInt(object value)
+        
+        private static object ConvertToInt(object value)
         {
             return Convert.ToInt32(value);
+        }
+
+        private static object ConvertToIntAllowNull(object value)
+        {
+            if (int.TryParse(Convert.ToString(value), out int val))
+            {
+                return val;
+            }
+            return null;
         }
 
         private static long ConvertToLong(object value)
@@ -133,9 +147,9 @@ namespace task_sync_web.Commons
 
         private static bool ConvertToBoolean(object value)
         {
-            if (Convert.ToString(value).Equals("0"))
+            if (Convert.ToString(value).Trim().Equals("0"))
                 value = false;
-            else if (Convert.ToString(value).Equals("1"))
+            else if (Convert.ToString(value).Trim().Equals("1"))
                 value = true;
             else
                 throw new ArgumentException();

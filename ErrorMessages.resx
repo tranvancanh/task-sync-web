@@ -170,7 +170,7 @@
     <comment>SERVER</comment>
   </data>
   <data name="EW1207" xml:space="preserve">
-    <value>ファイルのフォーマットが正しくない。</value>
+    <value>登録・修正の対象のデータが存在しません。</value>
     <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1001" xml:space="preserve">
