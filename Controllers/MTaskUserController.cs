@@ -22,11 +22,11 @@ namespace task_sync_web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(MTaskUserViewModel viewModel, Enums.GetState command = Enums.GetState.Default)
+        public async Task<IActionResult> Index(MTaskUserViewModel viewModel, Enums.GetState command = Enums.GetState.Default)
         {
             try
             {
-                var taskUserViewModel = GetListMTaskUserModel(viewModel.SearchKeyWord);
+                var taskUserViewModel = await GetListMTaskUserModel(viewModel.SearchKeyWord);
                 switch (command)
                 {
                     //検索処理
@@ -77,7 +77,7 @@ namespace task_sync_web.Controllers
             };
             try
             {
-                var taskUserViewModel = GetListMTaskUserModel(viewModel.SearchKeyWord);
+                var taskUserViewModel = await GetListMTaskUserModel(viewModel.SearchKeyWord);
                 var listPaged = taskUserViewModel.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
                 // page the list
                 viewModel.TaskUserModelModels = listPaged;
@@ -123,7 +123,7 @@ namespace task_sync_web.Controllers
 
                     var taskUserId = Convert.ToString(dataTable.Rows[i]["TaskUserId"]);
                     var taskUserLoginId = Convert.ToString(dataTable.Rows[i]["TaskUserLoginId"]);
-                    var resultCheck = CheckTaskUserIdAndTaskUserLoginId(modifyFlag, taskUserId, taskUserLoginId);
+                    var resultCheck = await CheckTaskUserIdAndTaskUserLoginId(modifyFlag, taskUserId, taskUserLoginId);
                     if (resultCheck.Any())
                         rowErrorList.AddRange(resultCheck);
 
@@ -295,7 +295,7 @@ namespace task_sync_web.Controllers
             return true;
         }
 
-        private List<string> CheckTaskUserIdAndTaskUserLoginId(string flag, string taskUserId, string taskUserLoginId)
+        private async Task<List<string>> CheckTaskUserIdAndTaskUserLoginId(string flag, string taskUserId, string taskUserLoginId)
         {
             var errorList = new List<string>();
             if (!(string.IsNullOrWhiteSpace(flag) || flag.Contains("1") || flag.Contains("2")))
@@ -330,9 +330,9 @@ namespace task_sync_web.Controllers
             {
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                    var result = db.Query("MTaskUser")
+                    var result = (await db.Query("MTaskUser")
                         .WhereIn("TaskUserLoginId", taskUserLoginId)
-                        .Get<MTaskUserModel>()
+                        .GetAsync<MTaskUserModel>())
                         .FirstOrDefault();
                     if (result != null)
                         errorList.Add(string.Format(ErrorMessages.EW1204, "作業者ログインID"));
@@ -343,13 +343,13 @@ namespace task_sync_web.Controllers
             {
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
-                    var result = db.Query("MTaskUser")
+                    var result = (await db.Query("MTaskUser")
                     .Where(new
                     {
                         TaskUserId = taskUserId,
                         TaskUserLoginId = taskUserLoginId
                     })
-                    .Get<MTaskUserModel>()
+                    .GetAsync<MTaskUserModel>())
                     .FirstOrDefault();
                     if (result == null)
                         errorList.Add(string.Format(ErrorMessages.EW1205, "作業者及び作業者ログインID"));
@@ -427,12 +427,12 @@ namespace task_sync_web.Controllers
             }
         }
 
-        private List<MTaskUserModel> GetListMTaskUserModel(string searchKey)
+        private async Task<List<MTaskUserModel>> GetListMTaskUserModel(string searchKey)
         {
             var listMTaskUserModel = new List<MTaskUserModel>();
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
-                listMTaskUserModel = db.Query("MTaskUser as a")
+                listMTaskUserModel = (await db.Query("MTaskUser as a")
                 .Select(
                         "a.TaskUserId",
                         "a.TaskUserLoginId",
@@ -452,8 +452,8 @@ namespace task_sync_web.Controllers
                 .LeftJoin("MAdministrator as b", "a.CreateAdministratorId", "b.AdministratorId")
                 .LeftJoin("MAdministrator as c", "a.UpdateAdministratorId", "c.AdministratorId")
                 .OrderBy("a.TaskUserLoginId")
-                .Get<MTaskUserModel>()
-                .ToList(); ;
+                .GetAsync<MTaskUserModel>())
+                .ToList();
             }
 
             if (listMTaskUserModel.Count == 0)
