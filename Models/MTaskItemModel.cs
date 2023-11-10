@@ -12,9 +12,6 @@ namespace task_sync_web.Models
         [DefaultValue("")]
         public string ModifiedFlag { get; set; }
 
-        [Display(Name = "作業項目ID(自動連番)")]
-        public int? TaskItemId { get; set; }
-
         [Display(Name = "作業項目コード")]
         public int TaskItemCode { get; set; }
 
@@ -41,6 +38,9 @@ namespace task_sync_web.Models
         [Display(Name = "利用停止フラグ")]
         [JsonConverter(typeof(BoolFormatConverter))]
         public bool IsNotUse { get; set; }
+
+        [Display(Name = "作業項目ID(自動連番)")]
+        public int? TaskItemId { get; set; }
 
         [Display(Name = "登録日時")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm")]

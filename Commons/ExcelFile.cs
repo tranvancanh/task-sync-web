@@ -256,10 +256,10 @@ namespace task_sync_web.Commons
             return dataTable;
         }
 
-        public static async Task SaveFileImportAndDelete(IFormFile file, string webRootPath)
+        public static async Task SaveFileImportAndDelete(IFormFile file, string webRootPath, string displayName = null)
         {
             if (file == null || file.Length <= 0) return;
-            string uploads = Path.Combine(webRootPath, "uploads");
+            string uploads = Path.Combine(webRootPath, "uploads", displayName);
             // If directory does not exist, create it
             if (!Directory.Exists(uploads))
                 Directory.CreateDirectory(uploads);

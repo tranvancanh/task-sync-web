@@ -1,4 +1,5 @@
-﻿@using X.PagedList.Mvc.Core;
+﻿@using Newtonsoft.Json;
+@using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @using X.PagedList.Web.Common;
 
@@ -105,43 +106,88 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-group text-left p-2 message-area">
+                                <div class="form-group text-left message-error-area">
                                     @{
+                                        var dictListError = TempData["DictErrorMessage"] as Dictionary<string, string> ?? new Dictionary<string, string>();
+                                        if (dictListError != null && dictListError.Any())
+                                        {
+                                            var first = dictListError.First();
+                                            var errors = JsonConvert.DeserializeObject<List<string>>(first.Value);
+                                            <div class="container-fluid container-custom">
+                                                <div class="row">
+                                                    <div class="col-lg-1 px-1">
+                                                        <li class="text-danger px-2">@first.Key</li>
+                                                    </div>
+                                                    <div class="col-lg-7 text-danger px-0">@errors[0]</div>
+                                                </div>
+                                                @for (var index = 1; index < errors.Count; index++)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-lg-1 px-1"></div>
+                                                        <div class="col-lg-7 text-danger px-0">@errors[index]</div>
+                                                    </div>
+                                                }
+                                                @for (int index = 1; index < dictListError.Count; index++)
+                                                {
+                                                    KeyValuePair<string, string> dict = dictListError.ElementAt(index);
+                                                    var value = errors = JsonConvert.DeserializeObject<List<string>>(dict.Value);
+                                                    <tr>
+                                                        <div class="row">
+                                                            <div class="col-lg-1 px-1">
+                                                                <li class="text-danger px-2">@dict.Key</li>
+                                                            </div>
+                                                            <div class="col-lg-7 text-danger px-0">@errors[0]</div>
+                                                        </div>
+                                                    </tr>
+                                                    @for (var i = 1; i < errors.Count; i++)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-lg-1 px-1"></div>
+                                                            <div class="col-lg-7 text-danger px-0">@errors[i]</div>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        }
                                         var errorList = ViewData["ErrorMessage"] as List<string>;
                                         var errorMessagesTemp = TempData["ErrorMessage"] as IEnumerable<string>;
-                                        var successMessage = ViewData["SuccessMessage"] as string;
-                                        var successMessageTemp = TempData["SuccessMessage"] as string;
                                         if (errorList != null && errorList.Any())
                                         {
-                                            <ul>
+                                            <ul class="mt-3">
                                                 @foreach (var mess in errorList)
                                                 {
                                                     <li class="text-danger-custom error-text">@mess</li>
                                                 }
                                             </ul>
                                         }
-                                        else
-                                        {
-                                            if (!string.IsNullOrWhiteSpace(successMessage))
-                                            {
-                                                <li class="text-success-custom msg-text">@successMessage</li>
-                                            }
-                                        }
+
                                         if (errorMessagesTemp != null && errorMessagesTemp.Any())
                                         {
-                                            <ul>
+                                            <ul class="mt-3">
                                                 @foreach (var mess in errorMessagesTemp)
                                                 {
                                                     <li class="text-danger error-text">@mess</li>
                                                 }
                                             </ul>
                                         }
-                                        else
+                                    }
+                                </div>
+
+                                <div class="form-group text-left message-success-area">
+                                    @{
+                                        var successMessage = ViewData["SuccessMessage"] as string;
+                                        var successMessageTemp = TempData["SuccessMessage"] as string;
+                                        @if (!string.IsNullOrWhiteSpace(successMessage))
                                         {
-                                            if (!string.IsNullOrWhiteSpace(successMessageTemp))
-                                            {
+                                            <ul class="mt-3">
+                                                <li class="text-success-custom msg-text">@successMessage</li>
+                                            </ul>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(successMessageTemp))
+                                        {
+                                            <ul class="mt-3">
                                                 <li class="text-success msg-text">@successMessageTemp</li>
-                                            }
+                                            </ul>
                                         }
                                     }
                                 </div>
@@ -277,7 +323,7 @@
             $('.file-name-view').text(fileNameDefault);
             const form = document.querySelector("#m-import-form");
             form.reset();
-            $('.message-area').append(`<label class="text-danger-custom error-text2">${mess}</label>`);
+            $('.message-error-area').append(`<label class="text-danger-custom error-text2">${mess}</label>`);
         }
 
         function FormDataCheck() {
@@ -285,7 +331,8 @@
             $('.error-text').text('');
             $('.error-text2').text('');
             $('.msg-text').text('');
-            $('.message-area').html('');
+            $('.message-error-area').html('');
+            $('.message-success-area').html('');
 
             let mess = '';
             // FormData オブジェクトの利用
