@@ -42,7 +42,7 @@ namespace task_sync_web.Controllers
                             excelHeaderStyle.SecondColorBackgroundColorColumnNumber = new int[7] { 2, 3, 4, 5, 6, 7, 8 };
                             var memoryStream = ExcelFile<MTaskUserModel>.ExcelCreate(taskUserViewModel, true, 1, 1, excelHeaderStyle);
                             // ファイル名
-                            var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
+                            var fileName = viewModel.DisplayName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
                         }
                     default:
