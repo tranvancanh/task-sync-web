@@ -256,6 +256,51 @@ namespace task_sync_web.Commons
             return dataTable;
         }
 
+        public static async Task SaveFileImportAndDelete(IFormFile file, string webRootPath)
+        {
+            if (file == null || file.Length <= 0) return;
+            string uploads = Path.Combine(webRootPath, "uploads");
+            // If directory does not exist, create it
+            if (!Directory.Exists(uploads))
+                Directory.CreateDirectory(uploads);
+            string filePath = Path.Combine(uploads, file.FileName);
+            var newFilePath = CreateFileName(filePath);
+            using (Stream fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            DeleteFileName(uploads);
+        }
+
+        private static string CreateFileName(string pathFullFile)
+        {
+            string extension = Path.GetExtension(pathFullFile);
+            string pathName = Path.GetDirectoryName(pathFullFile);
+            string fileNameOnly = Path.Combine(pathName, Path.GetFileNameWithoutExtension(pathFullFile));
+            int i = 0;
+            // If the file exists, keep trying until it doesn't
+            while (File.Exists(pathFullFile))
+            {
+                i += 1;
+                pathFullFile = string.Format("{0}({1}){2}", fileNameOnly, i, extension);
+            }
+            return pathFullFile;
+        }
+
+        private static void DeleteFileName(string uploads)
+        {
+            string[] filePaths = Directory.GetFiles(uploads, "*.xlsx");
+            Dictionary<string, DateTime> allFiles = new Dictionary<string, DateTime>();
+            foreach (string file in filePaths)
+            {
+                allFiles.Add(file, File.GetCreationTime(file));
+            }
+            var deleteFiles = allFiles.OrderByDescending(key => key.Value).Skip(20);
+            foreach(var file in deleteFiles)
+            {
+                File.Delete(file.Key);
+            }
+        }
     }
 
 

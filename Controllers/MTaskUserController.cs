@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using SqlKata.Execution;
+using System;
 using System.Data;
 using task_sync_web.Commons;
 using task_sync_web.Models;
@@ -10,6 +13,14 @@ namespace task_sync_web.Controllers
 {
     public class MTaskUserController : BaseController
     {
+        private IWebHostEnvironment _environment;
+        private static readonly bool _isCreateUpload = false;
+
+        public MTaskUserController(IWebHostEnvironment environment)
+        {
+            _environment = environment;
+        }
+
         [HttpGet]
         public IActionResult Index(MTaskUserViewModel viewModel, Enums.GetState command = Enums.GetState.Default)
         {
@@ -70,6 +81,7 @@ namespace task_sync_web.Controllers
                 var listPaged = taskUserViewModel.ToPagedList(viewModel.PageNumber, viewModel.PageRowCount);
                 // page the list
                 viewModel.TaskUserModelModels = listPaged;
+                await ExcelFile<bool>.SaveFileImportAndDelete(viewModel.File, _environment.WebRootPath);
 
                 // 妥当性チェック
                 totalErrorList = ValidateCheck(viewModel.File);
@@ -118,7 +130,7 @@ namespace task_sync_web.Controllers
                     var taskUserName = Convert.ToString(dataTable.Rows[i]["TaskUserName"]);
                     if (string.IsNullOrWhiteSpace(taskUserName))
                         rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業者名"));
-                    else if(taskUserName.Length > 10)
+                    else if (taskUserName.Length > 10)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者名", "10"));
 
                     var taskUserNameKana = Convert.ToString(dataTable.Rows[i]["TaskUserNameKana"]);
@@ -150,7 +162,7 @@ namespace task_sync_web.Controllers
                     else
                         isNotUse = isNotUse.Trim();
                     if (!string.IsNullOrWhiteSpace(isNotUse) && !isNotUse.Equals("0") && !isNotUse.Equals("1"))
-                        rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1")); 
+                        rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1"));
 
                     STEP:
                     if (rowErrorList.Count > 0)
@@ -196,7 +208,7 @@ namespace task_sync_web.Controllers
                     return RedirectToAction("Index", redirectParam);
                 }
 
-                var efftedRows = SaveChangeData(insertData, modifyData);
+                var efftedRows = await SaveChangeDataAsync(insertData, modifyData);
                 if (efftedRows > 0)
                 {
                     TempData["SuccessMessage"] = SuccessMessages.SW002;
@@ -306,13 +318,11 @@ namespace task_sync_web.Controllers
                 if (!int.TryParse(taskUserId, out int val))
                     errorList.Add(string.Format(ErrorMessages.EW0009, "作業者ID"));
             }
+
             if (taskUserLoginId.Length > 8)
                 errorList.Add(string.Format(ErrorMessages.EW0002, "作業者ログインID", "8"));
-            
-            if (errorList.Any())
-                return errorList;
 
-            if(errorList.Any())
+            if (errorList.Any())
                 return errorList;
 
             // 新規登録チェック
@@ -350,7 +360,7 @@ namespace task_sync_web.Controllers
         }
 
 
-        private int SaveChangeData(List<MTaskUserModel> insertData, List<MTaskUserModel> modifyData)
+        private async Task<int> SaveChangeDataAsync(List<MTaskUserModel> insertData, List<MTaskUserModel> modifyData)
         {
             var efftedRows = -1;
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
@@ -362,8 +372,8 @@ namespace task_sync_web.Controllers
                     // 新規登録処理
                     foreach (var data in insertData)
                     {
-                        var result = db.Query("MTaskUser")
-                            .Insert(new
+                        var result = await db.Query("MTaskUser")
+                            .InsertAsync(new
                             {
                                 TaskUserLoginId = data.TaskUserLoginId,
                                 TaskUserName = data.TaskUserName,
@@ -384,13 +394,13 @@ namespace task_sync_web.Controllers
                     // 更新処理
                     foreach (var data in modifyData)
                     {
-                        var result = db.Query("MTaskUser")
+                        var result = await db.Query("MTaskUser")
                             .Where(new
                             {
                                 TaskUserId = data.TaskUserId,
                                 TaskUserLoginId = data.TaskUserLoginId
                             })
-                            .Update(new
+                            .UpdateAsync(new
                             {
                                 TaskUserName = data.TaskUserName,
                                 TaskUserNameKana = data.TaskUserNameKana,
