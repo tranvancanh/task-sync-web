@@ -40,6 +40,9 @@ namespace task_sync_web.Models
         [JsonConverter(typeof(BoolFormatConverter))]
         public bool IsNotUse { get; set; }
 
+        [Display(Name = "作業者ID")]
+        public int TaskUserId { get; set; }
+
         [Display(Name = "登録日時")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]

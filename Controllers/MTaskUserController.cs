@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SqlKata.Execution;
 using System.Data;
 using task_sync_web.Commons;
@@ -90,42 +91,46 @@ namespace task_sync_web.Controllers
                         return RedirectToAction("Index", redirectParam);
                     }
                 }
-
+                var listErrDataCheck = new Dictionary<string, string>();
                 dataTable = ExcelFile<MTaskUserModel>.ToWithFormat(dataTable);
                 for (var i = 0; i < dataTable.Rows.Count; i++)
                 {
                     var model = new MTaskUserModel();
                     var rowErrorList = new List<string>();
                     var modifyFlag = Convert.ToString(dataTable.Rows[i]["ModifiedFlag"]);
-                    if(!(string.IsNullOrWhiteSpace(modifyFlag) || modifyFlag.Trim().Contains("1") || modifyFlag.Trim().Contains("2")))
+                    if (string.IsNullOrWhiteSpace(modifyFlag))
+                        modifyFlag = string.Empty;
+                    else
+                        modifyFlag = modifyFlag.Trim();
+
+                    dataTable.Rows[i]["ModifiedFlag"] = modifyFlag;
+                    if (!(string.IsNullOrWhiteSpace(modifyFlag) || modifyFlag.Contains("1") || modifyFlag.Contains("2")))
                         rowErrorList.Add(string.Format(ErrorMessages.EW1201, "登録修正フラグ"));
-                    if (!modifyFlag.Trim().Contains("1") && !modifyFlag.Trim().Contains("2"))
+                    if (!modifyFlag.Contains("1") && !modifyFlag.Contains("2"))
                         goto STEP;
 
+                    var taskUserId = Convert.ToString(dataTable.Rows[i]["TaskUserId"]);
                     var taskUserLoginId = Convert.ToString(dataTable.Rows[i]["TaskUserLoginId"]);
-                    if(string.IsNullOrWhiteSpace(taskUserLoginId))
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業者ログインID"));
-                    if (taskUserLoginId != null && taskUserLoginId.Length > 8)
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者ログインID", "8"));
-                    if (!string.IsNullOrWhiteSpace(CheckTaskUserLoginId(modifyFlag, taskUserLoginId)))
-                        rowErrorList.Add(CheckTaskUserLoginId(modifyFlag, taskUserLoginId));
+                    var resultCheck = CheckTaskUserIdAndTaskUserLoginId(modifyFlag, taskUserId, taskUserLoginId);
+                    if (resultCheck.Any())
+                        rowErrorList.AddRange(resultCheck);
 
                     var taskUserName = Convert.ToString(dataTable.Rows[i]["TaskUserName"]);
-                    if(string.IsNullOrWhiteSpace(taskUserName))
+                    if (string.IsNullOrWhiteSpace(taskUserName))
                         rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業者名"));
-                    if (taskUserName != null && taskUserName.Length > 10)
+                    else if(taskUserName.Length > 10)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者名", "10"));
 
                     var taskUserNameKana = Convert.ToString(dataTable.Rows[i]["TaskUserNameKana"]);
                     if (string.IsNullOrWhiteSpace(taskUserNameKana))
                         rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業者名かな"));
-                    if (taskUserNameKana != null && taskUserNameKana.Length > 50)
+                    else if (taskUserNameKana.Length > 50)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業者名かな", "50"));
 
                     var taskUserDepartmentName = Convert.ToString(dataTable.Rows[i]["TaskUserDepartmentName"]);
                     if (string.IsNullOrWhiteSpace(taskUserDepartmentName))
                         rowErrorList.Add(string.Format(ErrorMessages.EW0001, "所属名"));
-                    if (taskUserDepartmentName != null && taskUserDepartmentName.Length > 10)
+                    else if (taskUserDepartmentName.Length > 10)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "所属名", "10"));
 
                     var taskUserGroupName = Convert.ToString(dataTable.Rows[i]["TaskUserGroupName"]);
@@ -137,38 +142,43 @@ namespace task_sync_web.Controllers
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
 
                     var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
-                    if (!string.IsNullOrWhiteSpace(isNotUse) && !isNotUse.Trim().Equals("0") && !isNotUse.Trim().Equals("1"))
-                        rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1"));
-                    if(string.IsNullOrWhiteSpace(isNotUse))
-                        dataTable.Rows[i]["IsNotUse"] = "0";
+                    if (string.IsNullOrWhiteSpace(isNotUse))
+                    {
+                        isNotUse = "0";
+                        dataTable.Rows[i]["IsNotUse"] = isNotUse;
+                    }
+                    else
+                        isNotUse = isNotUse.Trim();
+                    if (!string.IsNullOrWhiteSpace(isNotUse) && !isNotUse.Equals("0") && !isNotUse.Equals("1"))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1")); 
 
                     STEP:
                     if (rowErrorList.Count > 0)
-                        totalErrorList.Add($"{i + 1}行目 : " + string.Join(" ", rowErrorList));
+                        listErrDataCheck.Add($"{i + 2}行目", JsonConvert.SerializeObject(rowErrorList));
                 }
 
-                if (totalErrorList.Any())
+                if (listErrDataCheck.Any())
                 {
-                    TempData["ErrorMessage"] = totalErrorList;
+                    TempData["DictErrorMessage"] = listErrDataCheck;
                     return RedirectToAction("Index", redirectParam);
                 }
 
                 var queryInsert =
                      from row in dataTable.AsEnumerable()
-                     where row.Field<string>("ModifiedFlag") != null && row.Field<string>("ModifiedFlag").Contains("1")
+                     where row.Field<string>("ModifiedFlag").Contains("1")
                      select row;
                 DataTable insertDt;
-                if(queryInsert.Any())
+                if (queryInsert.Any())
                     insertDt = queryInsert.CopyToDataTable();
                 else
                     insertDt = dataTable.Clone();
 
                 var queryModify =
                      from row in dataTable.AsEnumerable()
-                     where row.Field<string>("ModifiedFlag") != null && row.Field<string>("ModifiedFlag").Contains("2")
+                     where row.Field<string>("ModifiedFlag").Contains("2")
                      select row;
                 DataTable modifyDt;
-                if(queryModify.Any())
+                if (queryModify.Any())
                     modifyDt = queryModify.CopyToDataTable();
                 else
                     modifyDt = dataTable.Clone();
@@ -262,7 +272,7 @@ namespace task_sync_web.Controllers
                     var propertie = properties[i];
                     if (propertie.DisplayName == Convert.ToString(columnNames[i]))
                         continue;
-                     else
+                    else
                         return false;
                 }
             }
@@ -270,12 +280,41 @@ namespace task_sync_web.Controllers
             {
                 return false;
             }
-             return true;
+            return true;
         }
 
-        private string CheckTaskUserLoginId(string flag, string taskUserLoginId)
+        private List<string> CheckTaskUserIdAndTaskUserLoginId(string flag, string taskUserId, string taskUserLoginId)
         {
-            flag = (flag ?? "").Trim();
+            var errorList = new List<string>();
+            if (!(string.IsNullOrWhiteSpace(flag) || flag.Contains("1") || flag.Contains("2")))
+                return errorList;
+            if (string.IsNullOrWhiteSpace(taskUserId))
+            {
+                errorList.Add(string.Format(ErrorMessages.EW0001, "作業者ID"));
+                return errorList;
+            }
+            if (string.IsNullOrWhiteSpace(taskUserLoginId))
+            {
+                errorList.Add(string.Format(ErrorMessages.EW0001, "作業者ログインID"));
+                return errorList;
+            }
+
+            if (taskUserId.Length > 8)
+                errorList.Add(string.Format(ErrorMessages.EW0002, "作業者ID", "8"));
+            else
+            {
+                if (!int.TryParse(taskUserId, out int val))
+                    errorList.Add(string.Format(ErrorMessages.EW0009, "作業者ID"));
+            }
+            if (taskUserLoginId.Length > 8)
+                errorList.Add(string.Format(ErrorMessages.EW0002, "作業者ログインID", "8"));
+            
+            if (errorList.Any())
+                return errorList;
+
+            if(errorList.Any())
+                return errorList;
+
             // 新規登録チェック
             if (flag.Equals("1"))
             {
@@ -286,25 +325,30 @@ namespace task_sync_web.Controllers
                         .Get<MTaskUserModel>()
                         .FirstOrDefault();
                     if (result != null)
-                        return string.Format(ErrorMessages.EW1204, "作業者ログインID");
+                        errorList.Add(string.Format(ErrorMessages.EW1204, "作業者ログインID"));
                 }
             }
             // 更新チェック
-            else if (flag.Equals("2"))
+            else if (flag.Contains("2"))
             {
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
                     var result = db.Query("MTaskUser")
-                        .WhereIn("TaskUserLoginId", taskUserLoginId)
-                        .Get<MTaskUserModel>()
-                        .FirstOrDefault();
+                    .Where(new
+                    {
+                        TaskUserId = taskUserId,
+                        TaskUserLoginId = taskUserLoginId
+                    })
+                    .Get<MTaskUserModel>()
+                    .FirstOrDefault();
                     if (result == null)
-                        return string.Format(ErrorMessages.EW1205, "作業者ログインID");
+                        errorList.Add(string.Format(ErrorMessages.EW1205, "作業者及び作業者ログインID"));
                 }
             }
 
-            return string.Empty;
+            return errorList;
         }
+
 
         private int SaveChangeData(List<MTaskUserModel> insertData, List<MTaskUserModel> modifyData)
         {
@@ -341,10 +385,13 @@ namespace task_sync_web.Controllers
                     foreach (var data in modifyData)
                     {
                         var result = db.Query("MTaskUser")
-                            .Where("TaskUserLoginId", data.TaskUserLoginId)
+                            .Where(new
+                            {
+                                TaskUserId = data.TaskUserId,
+                                TaskUserLoginId = data.TaskUserLoginId
+                            })
                             .Update(new
                             {
-                                TaskUserLoginId = data.TaskUserLoginId,
                                 TaskUserName = data.TaskUserName,
                                 TaskUserNameKana = data.TaskUserNameKana,
                                 TaskUserDepartmentName = data.TaskUserDepartmentName,
@@ -377,6 +424,7 @@ namespace task_sync_web.Controllers
             {
                 listMTaskUserModel = db.Query("MTaskUser as a")
                 .Select(
+                        "a.TaskUserId",
                         "a.TaskUserLoginId",
                         "a.TaskUserName",
                         "a.TaskUserNameKana",

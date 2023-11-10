@@ -383,3 +383,20 @@ table.sticky_table {
     padding-left: 0;
     padding-top: 0;
 }
+
+.container-custom {
+    color: #842029;
+    width: 70%;
+    margin-left: 0px;
+}
+
+.message-error-area {
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+.message-success-area {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
