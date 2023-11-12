@@ -64,6 +64,16 @@ namespace task_sync_web.Commons
             return table;
         }
 
+        public IEnumerable<T> ExecQueryData<T>(string T_SQL, object parametter = null)
+        {
+            return Connection.Query<T>(T_SQL, parametter, _transaction, commandType: CommandType.Text);
+        }
+
+        public Task<IEnumerable<T>> ExecQueryDataAsync<T>(string T_SQL, object parametter = null)
+        {
+            return Connection.QueryAsync<T>(T_SQL, parametter, _transaction, commandType: CommandType.Text);
+        }
+
         public IDbTransaction Begin()
         {
             if (this.Connection is not null)

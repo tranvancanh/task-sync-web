@@ -367,11 +367,65 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 作業日付(始)を日付形式に変更できません。.
+        /// </summary>
+        public static string EW1300 {
+            get {
+                return ResourceManager.GetString("EW1300", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 作業日付(終)を日付形式に変更できません。.
+        /// </summary>
+        public static string EW1301 {
+            get {
+                return ResourceManager.GetString("EW1301", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 予期せぬエラーが発生しました。.
         /// </summary>
         public static string EW9000 {
             get {
                 return ResourceManager.GetString("EW9000", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string EW90003 {
+            get {
+                return ResourceManager.GetString("EW90003", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string EW9001 {
+            get {
+                return ResourceManager.GetString("EW9001", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String {
+            get {
+                return ResourceManager.GetString("String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

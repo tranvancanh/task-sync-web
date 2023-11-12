@@ -1,0 +1,424 @@
+﻿@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
+@using X.PagedList; @*import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@using X.PagedList.Mvc.Core.Fluent
+@using X.PagedList.Web.Common
+
+@model DTaskRecordViewModel;
+
+
+@{
+    var pagedList = Model.TaskRecordModels;
+}
+
+
+<style>
+
+    .radioChecked td {
+        background-color: #ff9;
+        color: red !important;
+        font-weight: 600;
+        /*border-block-color: var(--imagecolor1)!important;*/
+    }
+
+    .dropdown-item:hover {
+        font-weight: bold;
+    }
+
+    .dropleft .dropdown-toggle::before {
+        display: none;
+    }
+
+    .detail-input-mark::after {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        content: ' *\f303';
+        color: red;
+    }
+
+    /* ////////////////////////////////////////////////////////////////////////// */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+</style>
+
+<div class="h4 mb-3">
+    @{
+        ViewData["Title"] = @Model.DisplayName;
+    }
+</div>
+<div class="card shadow m-4">
+    <div class="card-header">
+        <h3 class="pt-2">@Model.DisplayName</h3>
+    </div>
+    <div class="card-body">
+        <div class="p-2">
+            <div class="form-group text-left message-error-area">
+                
+            </div>
+            <form class="c-dialog-area" method="get" asp-controller="DTaskRecord" asp-action="Index" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <label>@Html.DisplayNameFor(m => m.TaskStartDateTime)</label>
+                        <input type="text" asp-for="TaskStartDateTime" class="form-control col-xl-10 datepicker" />
+                    </div>
+                    <div class="col-xl-2">
+                        <label>@Html.DisplayNameFor(m => m.TaskEndDateTime)</label>
+                        <input type="text" asp-for="TaskEndDateTime" class="form-control col-xl-10 datepicker" />
+                    </div>
+                    <div class="col-xl-2">
+                        <label>@Html.DisplayNameFor(m => m.TaskUserLoginIdName)</label>
+                        <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" />
+                    </div>
+                    <div class="col-xl-1 mt-xl-4 ml-xl-5">
+                        <label class="switch">
+                            <input type="checkbox" asp-for="IsDelete" class="col-xl-12">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="col-xl-2 mt-xl-3 mr-xl-5">
+                        <label>@Html.DisplayNameFor(m => m.IsDelete)</label>
+                    </div>
+
+                    <div class="col-xl-3"></div>
+                </div>
+
+                <div class="row row mt-xl-3">
+                    <div class="col-xl-6"></div>
+                    <div class="col-xl-6">
+                        <button class="btn btn-search btn-lg mx-4" name="Command" value="2" id="btnSearch" type="submit"><i class="fas fa-search"></i></button>
+                        <button class="btn btn-custom btn-lg mx-2" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
+                    </div>
+                </div>
+
+
+                <div class="valid-area">
+                    @{
+                        var errMess = ViewData["Error"] as List<string>;
+                        if (errMess != null)
+                        {
+                            <ul>
+                                @foreach (var err in errMess)
+                                {
+                                    <li class="text-danger">@err</li>
+                                }
+                            </ul>
+                        }
+
+                        var messages = ViewData["Message"] as List<string>;
+                        if (messages != null)
+                        {
+                            <ul>
+                                @foreach (var mess in messages)
+                                {
+                                    <li class="text-success">@mess</li>
+                                }
+                            </ul>
+                        }
+                    }
+                </div>
+
+            </form>
+
+            <div class="col-auto">
+                <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
+            </div>
+            <div class="form-control mt-4">
+                <table id="d-delivery-table" class="sticky_table" data-resizable-column-id="d-delivery-table">
+                    <thead>
+                        <tr>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel"></th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskRecordId)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].LoginDateTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskDate)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserDepartmentName)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserGroupName)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserLoginId)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserName)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemId)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCode)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskPrimaryItem)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskSecondaryItem)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTertiaryItem)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCategory)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTrackTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTrackTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTrackTotalTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTotalTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].SagyoJikan)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].JunSagyoJikan)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].SagyoJikanMinute)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].JunSagyoJikanMinute)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskMemo)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsDelete)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateDateTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateAdministratorId)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserId)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateDateTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateAdministratorId)</th>
+                        </tr>
+                    </thead>
+
+                    @if (Model != null && Model.TaskRecordModels != null & Model.TaskRecordModels.Count > 0)
+                    {
+                        <tbody>
+                            @foreach (var item in Model.TaskRecordModels)
+                            {
+                                <tr>
+                                    <td class="table-detail-link text-center">
+                                        <a class="btn btn-light btn-sm" href="@Url.Action("Details", "SagyoJisseki", item)"><i class="fas fa-list-ul"></i></a>
+                                    </td>
+                                    <td class="table-vhdate text-center">
+                                        @Html.DisplayFor(modelItem => item.TaskRecordId)
+                                    </td>
+                                    <td class="table-vhdate text-center">
+                                        @Html.DisplayFor(modelItem => item.LoginDateTime)
+                                    </td>
+                                    <td class="table-bin  text-center">
+                                        @Html.DisplayFor(modelItem => item.TaskDate)
+                                    </td>
+                                    <td class="table-deno1 text-center">
+                                        @Html.DisplayFor(modelItem => item.TaskUserDepartmentName)
+                                    </td>
+                                    <td class="table-deno2 text-center">
+                                        @Html.DisplayFor(modelItem => item.TaskUserGroupName)
+                                    </td>
+                                    <td class="table-deno3 text-center">
+                                        @Html.DisplayFor(modelItem => item.TaskUserLoginId)
+                                    </td>
+                                    <td class="table-denoline text-right">
+                                        @Html.DisplayFor(modelItem => item.TaskUserName)
+                                    </td>
+                                    <td class="table-torihikisaki-cd">
+                                        @Html.DisplayFor(modelItem => item.TaskItemId)
+                                    </td>
+                                    <td class="table-torihikisaki-nm">
+                                        @Html.DisplayFor(modelItem => item.TaskItemCode)
+                                    </td>
+                                    <td class="table-productcd">
+                                        @Html.DisplayFor(modelItem => item.TaskPrimaryItem)
+                                    </td>
+                                    <td class="table-other-productcd">
+                                        @Html.DisplayFor(modelItem => item.TaskSecondaryItem)
+                                    </td>
+                                    <td class="table-product-name">
+                                        @Html.DisplayFor(modelItem => item.TaskTertiaryItem)
+                                    </td>
+                                    <td class="table-nounyusaki-cd">
+                                        @Html.DisplayFor(modelItem => item.TaskItemCategory)
+                                    </td>
+
+                                    <td class="table-nounyusaki-nm">
+                                        @Html.DisplayFor(modelItem => item.TaskStartDateTrackTime)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.TaskEndDateTrackTime)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptTrackTotalTime)
+                                    </td>
+
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.TaskStartDateTime)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.TaskEndDateTime)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptTotalTime)
+                                    </td>
+
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.SagyoJikan)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.JunSagyoJikan)
+                                    </td>
+
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.SagyoJikanMinute)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.JunSagyoJikanMinute)
+                                    </td>
+
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.TaskMemo)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @((item.IsDelete == false) ? 0 : 1)
+                                    </td>
+
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.CreateDateTime)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.CreateAdministratorId)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.CreateTaskUserId)
+                                    </td>
+
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.UpdateDateTime)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.UpdateAdministratorId)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.UpdateTaskUserId)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                </table>
+            </div>
+
+            @if (pagedList != null)
+            {
+                @(
+                    Html.Pager(pagedList)
+                    .Url(page => Url.Action("Index", new 
+                    {
+                        TaskStartDateTime = Model.TaskStartDateTime,
+                        TaskEndDateTime = Model.TaskEndDateTime,
+                        TaskUserLoginIdName = Model.TaskUserLoginIdName,
+                        IsDelete = Model.IsDelete,
+                        pageNumber = page
+                    }))
+                    .DisplayLinkToPreviousPage()
+                    .DisplayLinkToNextPage()
+                    .DisplayLinkToLastPage()
+                    .MaximumPageNumbersToDisplay(5)
+                    .Build(new PagedListRenderOptions()
+                    {
+                        UlElementClasses = new string[] { "pagination", "mb-2" },
+                        LiElementClasses = new string[] { "page-item" },
+                        PageClasses = new string[] { "page-link" }
+                    })
+                    )
+                <span class="page-no-label">
+                    @pagedList.FirstItemOnPage - @pagedList.LastItemOnPage 件 / @pagedList.TotalItemCount 件中
+                </span>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+<!--親jsファイル呼び出し-->
+@* <script type="text/javascript" src="~/js/stock.js"></script> *@
+
+
+
+@section scripts{
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            console.log('作業実績 開始');
+
+            // 画面開いたら最初のInput要素にフォーカス
+            //$('input[type!=hidden]:first').focus();
+
+            // カレンダー
+            $('.datepicker').on('click', function () {
+                Datepicker(this);
+            });
+            // ブラウザのオートコンプリートをオフにする
+            $('.datepicker').attr('autocomplete', 'off');
+            // 数字が8文字なら日付形式に変換
+            $('.datepicker').on('change blur', function () {
+                var date = $.trim($(this).val());
+                if (date.length === 8) {
+                    var year = date.substr(0, 4);
+                    var month = date.substr(4, 2);
+                    var day = date.substr(6, 2);
+                    var setDate = year + "/" + month + "/" + day;
+                    $(this).val(setDate);
+                }
+            });
+        });
+
+        function Datepicker(textBox) {
+            //datepickerオプション 参考：https://www.sejuku.net/blog/44165
+            $(textBox).datepicker({
+                showAnim: 'fadeIn',
+                dateFormat: 'yy/mm/dd'
+            })
+            $(textBox).trigger('focus');
+        }
+
+    </script>
+}
+
+
+
+
+
+
+
