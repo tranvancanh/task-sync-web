@@ -41,7 +41,9 @@
                 <div class="form-group my-3 row">
                     <div class="col-xl-4">
                         <label class="small fw-bold">@Html.DisplayNameFor(model => model.TaskInterruptTotalTime)</label>
-                        <input asp-for="TaskInterruptTotalTime" class="form-control form-control-lg" id="TaskInterruptTotalTime" type="number" />
+                        <input asp-for="TaskInterruptTotalTime" class="form-control form-control-lg" id="TaskInterruptTotalTime" type="number"
+                               onkeypress="return onlyNumberKey(event)"
+                               onchange="change_viewport_0(this.id)" />
                     </div>
                 </div>
 

@@ -115,15 +115,13 @@ namespace task_sync_web.Controllers
                 // 作業大項目を取得
                 recordList = (await db.Query("MTaskUser")
                 .Select(
-                        "TaskUserLoginId",      // 作業項目コード
-                        "TaskUserName"   // 作業大項目
+                        "TaskUserLoginId", // 作業者ログインID
+                        "TaskUserName"     // 作業者名
                     )
-                .WhereLike("TaskUserLoginId", $"'%{userInfor}%'")
-                .OrWhereLike("TaskUserName", $"'%{userInfor}%'")
-                .GroupBy("TaskUserLoginId",
-                        "TaskUserName")
-                .OrderBy("TaskUserLoginId",
-                        "TaskUserName")
+                .WhereContains("TaskUserLoginId", $"{userInfor}")
+                .OrWhereContains("TaskUserName", $"{userInfor}")
+                .GroupBy("TaskUserLoginId", "TaskUserName")
+                .OrderBy("TaskUserLoginId", "TaskUserName")
                 .GetAsync<dynamic>())
                 .ToList();
             }
@@ -259,14 +257,15 @@ namespace task_sync_web.Controllers
 
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
-                    // 作業大項目を取得
-                    recordList = (await db.Query("MTaskItem")
+                // 作業大項目を取得
+                recordList = (await db.Query("MTaskItem")
                     .Select(
                             "TaskItemCode",      // 作業項目コード
                             "TaskPrimaryItem",   // 作業大項目
                             "TaskSecondaryItem", // 作業中項目 
                             "TaskTertiaryItem"   // 作業小項目
-                        ) 
+                        )
+                    .WhereLike("TaskItemCode", $"%{taskItemCode}%")
                     .GroupBy("TaskItemCode",
                             "TaskPrimaryItem",
                             "TaskSecondaryItem",
@@ -276,15 +275,8 @@ namespace task_sync_web.Controllers
                             "TaskSecondaryItem",
                             "TaskTertiaryItem")
                     .GetAsync<dynamic>())
-                    .Take(10)
                     .ToList();
                     ;
-            }
-
-            var listString = new List<string>();
-            foreach (var obj in recordList)
-            {
-                listString.Add(obj.TaskItemCode + "-" + obj.TaskPrimaryItem + "-" + obj.TaskSecondaryItem + "-" + obj.TaskTertiaryItem);
             }
 
             return recordList;
