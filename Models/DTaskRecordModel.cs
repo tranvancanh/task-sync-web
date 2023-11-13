@@ -79,7 +79,7 @@ namespace task_sync_web.Models
 
 
         [Display(Name = "メモ")]
-        public string TaskMemo { get; set; }
+        public string Remark { get; set; }
 
         [Display(Name = "修正フラグ")]
         public bool IsDelete {  get; set; }

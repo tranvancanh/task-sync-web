@@ -1,0 +1,49 @@
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+
+namespace task_sync_web.Models
+{
+    public class DTaskInterruptModalEditViewModel
+    {
+        public int TaskRecordId { get; set; }
+        public int TaskUserId { get; set; }
+        public string TaskUserLoginId { get; set; }
+        public string TaskUserName { get; set; }
+        public bool IsAdmin { get; set; } = false;
+
+        public DateTime TaskStartDateTrackTime { get; set; }
+        public DateTime TaskEndDateTrackTime { get; set; }
+        public int TaskTrackTotalTime { get; set; }
+        public int TaskInterruptTrackTotalTime { get; set; } // 単位：分
+
+        [Display(Name = "作業開始時刻")]
+        public string TaskStartDate { get; set; }
+        public TimeSpan TaskStartTime { get; set; }
+
+        [Display(Name = "作業終了時刻")]
+        public string TaskEndDate { get; set; }
+        public TimeSpan TaskEndTime { get; set; }
+
+        [Display(Name = "中断時間(分)")]
+        public int TaskInterruptTime { get; set; } // 単位：分
+
+        [Display(Name = "作業大項目")]
+        public string TaskPrimaryItem {  get; set; }
+        public List<SelectListItem> ListItemTaskPrimaryItem { get; set; } = new List<SelectListItem>();
+
+        [Display(Name = "作業中項目")]
+        public string TaskSecondaryItem {  get; set; }
+        public List<SelectListItem> ListItemTaskSecondaryItem { get; set; } = new List<SelectListItem>();
+
+        [Display(Name = "作業小項目")]
+        public string TaskTertiaryItem {  get; set; }
+        public List<SelectListItem> ListItemTaskTertiaryItem { get; set; } = new List<SelectListItem>();
+
+        [Display(Name = "備考")]
+        [StringLength(200, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
+        public string Remark {  get; set; }
+
+        [Display(Name = "削除")]
+        public bool IsDelete { get; set; }
+    }
+}
