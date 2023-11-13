@@ -147,8 +147,8 @@
                             <span class="slider round"></span>
                         </label>
                     </div>
-                    <div class="col-xl-2 mt-xl-3 mr-xl-5">
-                        <label>@Html.DisplayNameFor(m => m.IsDelete)</label>
+                    <div class="col-xl-2 mt-xl-0 mr-xl-5">
+                        <label role="button" id="IsDeleteLabel">@Html.DisplayNameFor(m => m.IsDelete)</label>
                     </div>
 
                     <div class="col-xl-3"></div>
@@ -165,14 +165,14 @@
                     var errorList = ViewData["ErrorMessage"] as List<string>;
                     if (errorList != null && errorList.Any())
                     {
-                        <div class="form-group text-left message-error-area mx-3">
-                            <ul class="mt-3">
-                                @foreach (var mess in errorList)
+                            <div class="form-group text-left message-error-area mx-3">
+                                <ul class="mt-3">
+                                    @foreach (var mess in errorList)
                                 {
-                                    <li class="text-danger-custom error-text">@mess</li>
+                                        <li class="text-danger-custom error-text">@mess</li>
                                 }
-                            </ul>
-                        </div>
+                                </ul>
+                            </div>
                     }
                 }
             </form>
@@ -368,13 +368,13 @@
 
 @section scripts{
 
-    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css" rel="Stylesheet" type="text/css" /> 
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css" rel="Stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
-     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
 
     <script type="text/javascript">
         let ROOT = '@Url.Content("~")';
@@ -383,10 +383,15 @@
             DatepickerRun();
         });
 
+        $("#IsDeleteLabel").click(function () {
+            let val = $("#IsDelete").prop("checked")
+            console.log({ val });
+            $("#IsDelete").prop('checked', !val);
+        });
+
         function DatepickerRun() {
             // カレンダー
             $('.datepicker').on('click', function () {
-                console.log('作業実績 開始123');
                 Datepicker(this);
             });
             // ブラウザのオートコンプリートをオフにする

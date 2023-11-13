@@ -30,8 +30,8 @@ namespace task_sync_web.Controllers
                 switch (command)
                 {
                     //検索処理
-                    case Enums.GetState.Default:
-                    case Enums.GetState.Search:
+                    case GetState.Default:
+                    case GetState.Search:
                         {
                             var listPaged = await taskUserViewModel.ToPagedListAsync(viewModel.PageNumber, viewModel.PageRowCount);
 
@@ -39,7 +39,7 @@ namespace task_sync_web.Controllers
                             viewModel.TaskRecordModels = listPaged;
                             return View(viewModel);
                         }
-                    case Enums.GetState.ExcelOutput:
+                    case GetState.ExcelOutput:
                         {
                             var excelHeaderStyle = new ExcelHeaderStyleModel();
                             excelHeaderStyle.FirstColorBackgroundColorColumnNumber = new int[1] { 1 };
@@ -92,6 +92,10 @@ namespace task_sync_web.Controllers
                 return errorList;
             else
             {
+                var userIdOrName = (viewModel.TaskUserLoginIdName ?? string.Empty).Split(':');
+                if (userIdOrName.Length > 1)
+                    viewModel.TaskUserLoginIdName = userIdOrName[0];
+
                 viewModel.TaskStartDateTime = taskStartDateTime.ToString("yyyy/MM/dd");
                 viewModel.TaskEndDateTime = taskEndDateTime.ToString("yyyy/MM/dd");
             }
@@ -105,31 +109,23 @@ namespace task_sync_web.Controllers
         {
             var recordList = new List<dynamic>();
             userInfor = (userInfor ?? string.Empty).Trim();
-            if ((userInfor.Length > 8) || !int.TryParse(userInfor, out int val))
-            {
-                return recordList;
-            }
 
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
                 // 作業大項目を取得
-                recordList = (await db.Query("MTaskUser")
+                var query = db.Query("MTaskUser")
                 .Select(
                         "TaskUserLoginId", // 作業者ログインID
                         "TaskUserName"     // 作業者名
                     )
-                .WhereContains("TaskUserLoginId", $"{userInfor}")
-                .OrWhereContains("TaskUserName", $"{userInfor}")
-                .GroupBy("TaskUserLoginId", "TaskUserName")
-                .OrderBy("TaskUserLoginId", "TaskUserName")
-                .GetAsync<dynamic>())
-                .ToList();
-            }
-
-            var listString = new List<string>();
-            foreach (var obj in recordList)
-            {
-                listString.Add(obj.TaskUserLoginId + "-" + obj.TaskUserName);
+                .WhereContains("TaskUserName", $"{userInfor}");
+                if ((userInfor.Length <= 8) && int.TryParse(userInfor, out int val))
+                {
+                    query = query.OrWhereContains("TaskUserLoginId", $"{userInfor}");
+                }
+                query = query.GroupBy("TaskUserLoginId", "TaskUserName")
+                             .OrderBy("TaskUserLoginId", "TaskUserName");
+                recordList = (await query.GetAsync<dynamic>()).ToList();
             }
 
             return recordList;
