@@ -145,7 +145,7 @@ namespace task_sync_web.Controllers
                         "taskUser.TaskUserName",              // 作業者名   
                         "taskrecord.TaskStartDateTrackTime",      // 作業開始時刻(実績)
                         "taskrecord.TaskEndDateTrackTime",         // 作業終了時刻(実績)
-                        "taskrecord.TaskInterruptTrackTotalTime"   // 中断記録(実績)
+                        "taskrecord.TaskInterruptTrackTotalTime"   // 中断時間(実績)
                     )
                 .LeftJoin("MTaskUser as taskUser", "taskrecord.TaskUserId", "taskUser.TaskUserId")
                 .Where("taskrecord.TaskRecordId", taskRecordId)
@@ -252,6 +252,7 @@ namespace task_sync_web.Controllers
                     throw new CustomExtention(ErrorMessages.EW0500);
                 }
             }
+
             var listItemTask = new List<SelectListItem>();
             foreach(var item in recordList)
             {

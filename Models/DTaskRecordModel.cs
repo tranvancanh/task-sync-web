@@ -50,7 +50,7 @@ namespace task_sync_web.Models
         [Display(Name = "作業終了時刻(記録)")]
         public DateTime TaskEndDateTrackTime { get; set; }
 
-        [Display(Name = "中断記録(記録)")]
+        [Display(Name = "中断時間(記録)")]
         public int TaskInterruptTrackTotalTime { get; set; }
 
 
@@ -60,22 +60,22 @@ namespace task_sync_web.Models
         [Display(Name = "作業終了時刻(実績)")]
         public DateTime TaskEndDateTime { get; set; }
 
-        [Display(Name = "中断記録(実績)")]
+        [Display(Name = "中断時間(実績)")]
         public int TaskInterruptTotalTime { get; set; }
 
 
         [Display(Name = "作業時間")]
-        public TimeSpan SagyoJikan {  get; set; }
+        public TimeSpan TaskTime {  get; set; } //
 
         [Display(Name = "純作業時間")]
-        public TimeSpan JunSagyoJikan {  get; set; }
+        public TimeSpan PureTaskTime {  get; set; }
 
 
         [Display(Name = "作業時間(分)")]
-        public int SagyoJikanMinute { get; set; }
+        public int TaskTimeMinute { get; set; }
 
         [Display(Name = "純作業時間(分)")]
-        public int JunSagyoJikanMinute { get; set; }
+        public int PureTaskTimeMinute { get; set; }
 
 
         [Display(Name = "メモ")]

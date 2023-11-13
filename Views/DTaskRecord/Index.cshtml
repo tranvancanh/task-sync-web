@@ -172,7 +172,7 @@
             </form>
             
             <div class="form-control mt-4">
-                <table id="d-delivery-table" class="sticky_table" data-resizable-column-id="d-delivery-table">
+                <table id="d-delivery-table" class="table sticky_table table-hover-evant mt-3" data-resizable-column-id="d-delivery-table">
                     <thead>
                         <tr>
                             <th data-resizable-column-id="table-iscancel" class="table-iscancel"></th>
@@ -195,10 +195,10 @@
                             <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTime)</th>
                             <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTime)</th>
                             <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTotalTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].SagyoJikan)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].JunSagyoJikan)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].SagyoJikanMinute)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].JunSagyoJikanMinute)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTimeMinute)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTimeMinute)</th>
                             <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].Remark)</th>
                             <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsDelete)</th>
                             <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateDateTime)</th>
@@ -215,108 +215,109 @@
                         <tbody>
                             @foreach (var item in Model.TaskRecordModels)
                             {
-                                <tr>
+                                <tr role="button">
                                     <td class="table-detail-link text-center">
-                                        <a class="btn btn-light btn-sm" onclick="GetInterrupt('@item.TaskRecordId')"><i class="fas fa-list-ul"></i></a>
+                                        <a class="btn btn-light btn-sm" onclick="GetEdit('@item.TaskRecordId')"><i class="fas fa-edit"></i></a>
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-vhdate text-center">
+                                    <td class="table-vhdate text-center">
                                         @Html.DisplayFor(modelItem => item.TaskRecordId)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-vhdate text-center">
+                                    <td class="table-vhdate text-center">
                                         @Html.DisplayFor(modelItem => item.LoginDateTime)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-bin  text-center">
+                                    <td class="table-bin  text-center">
                                         @Html.DisplayFor(modelItem => item.TaskDate)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-deno1 text-center">
+                                    <td class="table-deno1 text-center">
                                         @Html.DisplayFor(modelItem => item.TaskUserDepartmentName)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-deno2 text-center">
+                                    <td class="table-deno2 text-center">
                                         @Html.DisplayFor(modelItem => item.TaskUserGroupName)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-deno3 text-center">
+                                    <td class="table-deno3 text-center">
                                         @Html.DisplayFor(modelItem => item.TaskUserLoginId)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-denoline text-right">
+                                    <td class="table-denoline text-right">
                                         @Html.DisplayFor(modelItem => item.TaskUserName)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-torihikisaki-cd">
+                                    <td class="table-torihikisaki-cd">
                                         @Html.DisplayFor(modelItem => item.TaskItemId)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-torihikisaki-nm">
+                                    <td class="table-torihikisaki-nm">
                                         @Html.DisplayFor(modelItem => item.TaskItemCode)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-productcd">
+                                    <td class="table-productcd">
                                         @Html.DisplayFor(modelItem => item.TaskPrimaryItem)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-other-productcd">
+                                    <td class="table-other-productcd">
                                         @Html.DisplayFor(modelItem => item.TaskSecondaryItem)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-product-name">
+                                    <td class="table-product-name">
                                         @Html.DisplayFor(modelItem => item.TaskTertiaryItem)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-cd">
+                                    <td class="table-nounyusaki-cd">
                                         @Html.DisplayFor(modelItem => item.TaskItemCategory)
                                     </td>
 
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-nm">
+                                    <td class="table-nounyusaki-nm">
                                         @Html.DisplayFor(modelItem => item.TaskStartDateTrackTime)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.TaskEndDateTrackTime)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.TaskInterruptTrackTotalTime)
+                                        <a class="btn btn-light btn-sm" onclick="GetInterrupt('@item.TaskRecordId')"><i class="fas fa-list-ul"></i></a>
                                     </td>
 
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.TaskStartDateTime)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.TaskEndDateTime)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.TaskInterruptTotalTime)
                                     </td>
 
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
-                                        @Html.DisplayFor(modelItem => item.SagyoJikan)
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.TaskTime)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
-                                        @Html.DisplayFor(modelItem => item.JunSagyoJikan)
-                                    </td>
-
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
-                                        @Html.DisplayFor(modelItem => item.SagyoJikanMinute)
-                                    </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
-                                        @Html.DisplayFor(modelItem => item.JunSagyoJikanMinute)
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.PureTaskTime)
                                     </td>
 
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.TaskTimeMinute)
+                                    </td>
+                                    <td class="table-nounyusaki-syo">
+                                        @Html.DisplayFor(modelItem => item.PureTaskTimeMinute)
+                                    </td>
+
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.Remark)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @((item.IsDelete == false) ? 0 : 1)
                                     </td>
 
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.CreateDateTime)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.CreateAdministratorId)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.CreateTaskUserId)
                                     </td>
 
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.UpdateDateTime)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.UpdateAdministratorId)
                                     </td>
-                                    <td role="button" onclick="GetEdit('@item.TaskRecordId')" class="table-nounyusaki-syo">
+                                    <td class="table-nounyusaki-syo">
                                         @Html.DisplayFor(modelItem => item.UpdateTaskUserId)
                                     </td>
                                 </tr>

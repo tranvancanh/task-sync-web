@@ -18,8 +18,7 @@
                 </div>
             </div>
 
-            <form method="post" asp-controller="DTaskRecord" asp-action="Edit" enctype="multipart/form-data" autocomplete="on"
-                  data-ajax="true" data-ajax-update="formDetails" class="mt-3">
+            <form method="post" asp-controller="DTaskRecord" asp-action="Edit" enctype="multipart/form-data" class="mt-3">
                 @Html.AntiForgeryToken()
                 <div class="form-group my-3 row">
                     <label class="small fw-bold">@Html.DisplayNameFor(model => model.TaskStartDate)</label>

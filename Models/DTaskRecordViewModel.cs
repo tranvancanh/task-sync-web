@@ -14,7 +14,6 @@ namespace task_sync_web.Models
 
         [Display(Name = "作業者")]
         [StringLength(50, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
-        [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string TaskUserLoginIdName { get; set; }
 
         [Display(Name = "削除データを含める")]
