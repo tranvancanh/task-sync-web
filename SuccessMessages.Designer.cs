@@ -77,5 +77,14 @@ namespace task_sync_web {
                 return ResourceManager.GetString("SW002", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to データ取得が完了しました。.
+        /// </summary>
+        public static string SW003 {
+            get {
+                return ResourceManager.GetString("SW003", resourceCulture);
+            }
+        }
     }
 }

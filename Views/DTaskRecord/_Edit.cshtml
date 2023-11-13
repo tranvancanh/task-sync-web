@@ -46,22 +46,11 @@
                 </div>
 
                 <div class="form-group my-3 row">
-                    <div class="col-xl-4">
-                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.TaskPrimaryItem)</label>
-                        @Html.DropDownListFor(m => m.TaskPrimaryItem, Model.ListItemTaskPrimaryItem, new { @class = "form-select" })
+                    <div class="col-xl-8">
+                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem)</label>
+                        <input asp-for="TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem" class="form-control form-control-lg　ui-autocomplete" id="TaskItem" type="text" />
                     </div>
-                   
-                    <div class="col-xl-4">
-                        <label class="small fw-bold">@Html.DisplayNameFor(model => model.TaskSecondaryItem)</label>
-                        @Html.DropDownListFor(m => m.TaskSecondaryItem, Model.ListItemTaskSecondaryItem, new { @class = "form-select" })
-                    </div>
-                </div>
-
-                <div class="form-group my-3 row">
-                    <label class="small fw-bold">@Html.DisplayNameFor(model => model.TaskTertiaryItem)</label>
-                    <div class="col-xl-4">
-                        @Html.DropDownListFor(m => m.TaskTertiaryItem, Model.ListItemTaskTertiaryItem, new { @class = "form-select" })
-                    </div>
+                    
                 </div>
 
                 <div class="form-group my-3 row">

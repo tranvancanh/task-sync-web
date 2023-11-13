@@ -27,17 +27,8 @@ namespace task_sync_web.Models
         [Display(Name = "中断時間(分)")]
         public int TaskInterruptTotalTime { get; set; } // 単位：分
 
-        [Display(Name = "作業大項目")]
-        public string TaskPrimaryItem {  get; set; }
-        public List<SelectListItem> ListItemTaskPrimaryItem { get; set; } = new List<SelectListItem>();
-
-        [Display(Name = "作業中項目")]
-        public string TaskSecondaryItem {  get; set; }
-        public List<SelectListItem> ListItemTaskSecondaryItem { get; set; } = new List<SelectListItem>();
-
-        [Display(Name = "作業小項目")]
-        public string TaskTertiaryItem {  get; set; }
-        public List<SelectListItem> ListItemTaskTertiaryItem { get; set; } = new List<SelectListItem>();
+        [Display(Name = "作業選択項目")]
+        public string TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem {  get; set; }
 
         [Display(Name = "備考")]
         [StringLength(200, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]

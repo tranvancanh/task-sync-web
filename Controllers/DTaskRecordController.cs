@@ -100,7 +100,42 @@ namespace task_sync_web.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<List<dynamic>> GetUserAutoComplete(string userInfor)
+        {
+            var recordList = new List<dynamic>();
+            userInfor = (userInfor ?? string.Empty).Trim();
+            if ((userInfor.Length > 8) || !int.TryParse(userInfor, out int val))
+            {
+                return recordList;
+            }
 
+            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            {
+                // 作業大項目を取得
+                recordList = (await db.Query("MTaskUser")
+                .Select(
+                        "TaskUserLoginId",      // 作業項目コード
+                        "TaskUserName"   // 作業大項目
+                    )
+                .WhereLike("TaskUserLoginId", $"'%{userInfor}%'")
+                .OrWhereLike("TaskUserName", $"'%{userInfor}%'")
+                .GroupBy("TaskUserLoginId",
+                        "TaskUserName")
+                .OrderBy("TaskUserLoginId",
+                        "TaskUserName")
+                .GetAsync<dynamic>())
+                .ToList();
+            }
+
+            var listString = new List<string>();
+            foreach (var obj in recordList)
+            {
+                listString.Add(obj.TaskUserLoginId + "-" + obj.TaskUserName);
+            }
+
+            return recordList;
+        }
 
 
 
@@ -201,9 +236,6 @@ namespace task_sync_web.Controllers
             {
                 model = await GetDTaskRecord(taskRecordId);
                 model.TaskTrackTotalTime = CalculationTimeMinutesTimeByRoundupSeconds(model.TaskStartDateTrackTime, model.TaskEndDateTrackTime);
-                model.ListItemTaskPrimaryItem = await GetListItemTaskPrimaryItem(TaskStyle.PrimaryItem, model.TaskPrimaryItem);
-                model.ListItemTaskSecondaryItem = await GetListItemTaskPrimaryItem(TaskStyle.SecondaryItem, model.TaskSecondaryItem);
-                model.ListItemTaskTertiaryItem = await GetListItemTaskPrimaryItem(TaskStyle.TertiaryItem, model.TaskTertiaryItem);
 
 
             }
@@ -213,6 +245,49 @@ namespace task_sync_web.Controllers
             }
 
             return PartialView("~/Views/DTaskRecord/_Edit.cshtml", model);
+        }
+
+        [HttpGet]
+        public async Task<List<dynamic>> TaskItemAutoComplete(string taskItemCode)
+        {
+            var recordList = new List<dynamic>();
+            taskItemCode = (taskItemCode ?? string.Empty).Trim();
+            if((taskItemCode.Length > 8) || !int.TryParse(taskItemCode, out int val))
+            {
+                return recordList;
+            }
+
+            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            {
+                    // 作業大項目を取得
+                    recordList = (await db.Query("MTaskItem")
+                    .Select(
+                            "TaskItemCode",      // 作業項目コード
+                            "TaskPrimaryItem",   // 作業大項目
+                            "TaskSecondaryItem", // 作業中項目 
+                            "TaskTertiaryItem"   // 作業小項目
+                        ) 
+                    .GroupBy("TaskItemCode",
+                            "TaskPrimaryItem",
+                            "TaskSecondaryItem",
+                            "TaskTertiaryItem")
+                    .OrderBy("TaskItemCode",
+                            "TaskPrimaryItem",
+                            "TaskSecondaryItem",
+                            "TaskTertiaryItem")
+                    .GetAsync<dynamic>())
+                    .Take(10)
+                    .ToList();
+                    ;
+            }
+
+            var listString = new List<string>();
+            foreach (var obj in recordList)
+            {
+                listString.Add(obj.TaskItemCode + "-" + obj.TaskPrimaryItem + "-" + obj.TaskSecondaryItem + "-" + obj.TaskTertiaryItem);
+            }
+
+            return recordList;
         }
 
         private async Task<List<SelectListItem>> GetListItemTaskPrimaryItem(TaskStyle taskStyle, string selectedVal)
