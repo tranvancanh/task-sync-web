@@ -4,8 +4,6 @@
 @using X.PagedList.Web.Common
 
 @model DTaskRecordViewModel;
-
-
 @{
     var pagedList = Model.TaskRecordModels;
 }
@@ -17,8 +15,6 @@
         max-width: 800px !important; /* モーダルの幅を設定  */
         width: 800px !important; /* モーダルの幅を設定  */
     }
-
-
 
     .radioChecked td {
         background-color: #ff9;
@@ -159,7 +155,6 @@
                         <button class="btn btn-custom btn-lg mx-2" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
                     </div>
                 </div>
-
                 @{
                     var errorList = ViewData["ErrorMessage"] as List<string>;
                     if (errorList != null && errorList.Any())
@@ -174,9 +169,7 @@
                         </div>
                     }
                 }
-
             </form>
-            
             
             <div class="form-control mt-4">
                 <table id="d-delivery-table" class="sticky_table" data-resizable-column-id="d-delivery-table">
@@ -366,11 +359,6 @@
     </div>
 </div>
 
-<!--親jsファイル呼び出し-->
-@* <script type="text/javascript" src="~/js/stock.js"></script> *@
-
-
-
 @section scripts{
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
@@ -382,8 +370,13 @@
         $(document).ready(function () {
             console.log('作業実績 開始');
 
+            DatepickerRun();
+        });
+
+        function DatepickerRun(){
             // カレンダー
             $('.datepicker').on('click', function () {
+                console.log('作業実績 開始123');
                 Datepicker(this);
             });
             // ブラウザのオートコンプリートをオフにする
@@ -399,7 +392,7 @@
                     $(this).val(setDate);
                 }
             });
-        });
+        }
 
         function Datepicker(textBox) {
             //datepickerオプション 参考：https://www.sejuku.net/blog/44165
@@ -437,6 +430,7 @@
                 success: function (result) {
                     $('#modalarea').html(result);
                     MicroModal.show('modal-2');
+                    DatepickerRun();
                 },
                 failure: function (response) {
                     alert(response.responseText);

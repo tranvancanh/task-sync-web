@@ -18,14 +18,14 @@ namespace task_sync_web.Models
 
         [Display(Name = "作業開始時刻")]
         public string TaskStartDate { get; set; }
-        public TimeSpan TaskStartTime { get; set; }
+        public string TaskStartTime { get; set; }
 
         [Display(Name = "作業終了時刻")]
         public string TaskEndDate { get; set; }
-        public TimeSpan TaskEndTime { get; set; }
+        public string TaskEndTime { get; set; }
 
         [Display(Name = "中断時間(分)")]
-        public int TaskInterruptTime { get; set; } // 単位：分
+        public int TaskInterruptTotalTime { get; set; } // 単位：分
 
         [Display(Name = "作業大項目")]
         public string TaskPrimaryItem {  get; set; }
@@ -41,6 +41,7 @@ namespace task_sync_web.Models
 
         [Display(Name = "備考")]
         [StringLength(200, ErrorMessageResourceName = "EW0002", ErrorMessageResourceType = typeof(ErrorMessages))]
+        [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string Remark {  get; set; }
 
         [Display(Name = "削除")]

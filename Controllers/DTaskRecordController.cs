@@ -1,10 +1,12 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SqlKata.Execution;
 using task_sync_web.Commons;
 using task_sync_web.Models;
 using X.PagedList;
+using static task_sync_web.Commons.Enums;
 
 namespace task_sync_web.Controllers
 {
@@ -97,9 +99,9 @@ namespace task_sync_web.Controllers
             return errorList;
         }
 
-       
 
-      
+
+
 
 
         //////////////////////////////////////////////////////////////////////// 中断時間モダール Start  /////////////////////////////////////////////////////////////////////////////
@@ -199,8 +201,11 @@ namespace task_sync_web.Controllers
             {
                 model = await GetDTaskRecord(taskRecordId);
                 model.TaskTrackTotalTime = CalculationTimeMinutesTimeByRoundupSeconds(model.TaskStartDateTrackTime, model.TaskEndDateTrackTime);
+                model.ListItemTaskPrimaryItem = await GetListItemTaskPrimaryItem(TaskStyle.PrimaryItem, model.TaskPrimaryItem);
+                model.ListItemTaskSecondaryItem = await GetListItemTaskPrimaryItem(TaskStyle.SecondaryItem, model.TaskSecondaryItem);
+                model.ListItemTaskTertiaryItem = await GetListItemTaskPrimaryItem(TaskStyle.TertiaryItem, model.TaskTertiaryItem);
 
-                await Task.CompletedTask;
+
             }
             catch (Exception)
             {
@@ -208,6 +213,58 @@ namespace task_sync_web.Controllers
             }
 
             return PartialView("~/Views/DTaskRecord/_Edit.cshtml", model);
+        }
+
+        private async Task<List<SelectListItem>> GetListItemTaskPrimaryItem(TaskStyle taskStyle, string selectedVal)
+        {
+            var recordList = new List<string>();
+            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            {
+                if (taskStyle == TaskStyle.PrimaryItem)
+                {
+                    // 作業大項目を取得
+                    recordList = (await db.Query("MTaskItem")
+                    .Select("TaskPrimaryItem") // 作業大項目
+                    .GroupBy("TaskPrimaryItem")
+                    .GetAsync<string>())
+                    .ToList();
+                }
+                else if (taskStyle == TaskStyle.SecondaryItem)
+                {
+                    // 作業大項目を取得
+                    recordList = (await db.Query("MTaskItem")
+                    .Select("TaskSecondaryItem") // 作業大項目
+                    .GroupBy("TaskSecondaryItem")
+                    .GetAsync<string>())
+                    .ToList();
+                }
+                else if (taskStyle == TaskStyle.TertiaryItem)
+                {
+                    // 作業大項目を取得
+                    recordList = (await db.Query("MTaskItem")
+                    .Select("TaskTertiaryItem") // 作業大項目
+                    .GroupBy("TaskTertiaryItem")
+                    .GetAsync<string>())
+                    .ToList();
+                }
+                else
+                {
+                    throw new CustomExtention(ErrorMessages.EW0500);
+                }
+            }
+            var listItemTask = new List<SelectListItem>();
+            foreach(var item in recordList)
+            {
+                var isCheckSelectedVal = item.Equals(selectedVal);
+                listItemTask.Add(new SelectListItem()
+                {
+                    Text = item,
+                    Value = item,
+                    Selected = isCheckSelectedVal
+                });
+            }
+
+            return listItemTask;
         }
 
         [HttpPost]
@@ -232,17 +289,24 @@ namespace task_sync_web.Controllers
             var recordViewModel = new DTaskInterruptModalEditViewModel();
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
-                // 作業日付(始)"), 作業日付(終)")が存在する場合
                 recordViewModel = (await db.Query("DTaskRecord as taskrecord")
                 .Select(
                         "taskrecord.TaskRecordId",            // 作業実績ID
                         "taskrecord.TaskUserId",              // 作業者ID
-                        "taskUser.TaskUserLoginId",           // 作業者ログインID   
-                        "taskUser.TaskUserName",              // 作業者名   
-                        "taskrecord.TaskStartDateTrackTime",      // 作業開始時刻(記録)
-                        "taskrecord.TaskEndDateTrackTime",        // 作業終了時刻(記録)
-                        "taskrecord.TaskInterruptTrackTotalTime"  // 中断記録(記録)
-                    )
+                        "taskUser.TaskUserLoginId",           // 作業者ログインID
+                        "taskUser.TaskUserName",              // 作業者名
+                        "taskrecord.TaskStartDateTrackTime",       // 作業開始時刻(記録)
+                        "taskrecord.TaskEndDateTrackTime",         // 作業終了時刻(記録)
+                        "taskrecord.TaskInterruptTrackTotalTime",  // 中断記録(記録)
+                        "taskrecord.TaskPrimaryItem",              // 作業大項目
+                        "taskrecord.TaskSecondaryItem",            // 作業中項目
+                        "taskrecord.TaskTertiaryItem"              // 作業小項目
+                        )
+                .SelectRaw("FORMAT([taskrecord].[TaskStartDateTime], 'yyyy/MM/dd') as TaskStartDate") // 作業開始日付(実績)
+                .SelectRaw("FORMAT([taskrecord].[TaskStartDateTime], 'hh:mm:ss') as TaskStartTime")   // 作業開始時間(実績)
+                .SelectRaw("FORMAT([taskrecord].[TaskEndDateTime], 'yyyy/MM/dd') as TaskEndDate")     // 作業終了日付(実績)
+                .SelectRaw("FORMAT([taskrecord].[TaskEndDateTime], 'hh:mm:ss') as TaskEndTime")       // 作業終了時間(実績)
+                .Select("taskrecord.TaskInterruptTotalTime")                                          // 中断記録(実績)(分)
                 .LeftJoin("MTaskUser as taskUser", "taskrecord.TaskUserId", "taskUser.TaskUserId")
                 .Where("taskrecord.TaskRecordId", taskRecordId)
                 .WhereNotNull("taskUser.TaskUserName")
