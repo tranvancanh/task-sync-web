@@ -253,8 +253,9 @@
     <value>修正リストと登録リストは{0}重複できません。</value>
     <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
-  <data name="EW90003" xml:space="preserve">
-    <value />
+  <data name="EW1303" xml:space="preserve">
+    <value>{0}の時間の形式が正しくありません。hh:mm:ssで入力してください。</value>
+    <comment>作業事績</comment>
   </data>
   <data name="EW1300" xml:space="preserve">
     <value>作業日付(始)を日付形式に変更できません。</value>
@@ -264,17 +265,18 @@
     <value>作業日付(終)を日付形式に変更できません。</value>
     <comment>作業事績</comment>
   </data>
-  <data name="EW9000" xml:space="preserve">
-    <value>予期せぬエラーが発生しました。</value>
-    <comment>その他</comment>
+  <data name="EW1302" xml:space="preserve">
+    <value>{0}の日付形式が正しくありません。yyyy/MM/ddで入力してください。</value>
+    <comment>作業事績</comment>
   </data>
-  <data name="EW9001" xml:space="preserve">
+  <data name="EW90001" xml:space="preserve">
     <value />
   </data>
   <data name="String" xml:space="preserve">
     <value />
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
+  <data name="EW9000" xml:space="preserve">
+    <value>予期せぬエラーが発生しました。</value>
+    <comment>その他</comment>
   </data>
 </root>

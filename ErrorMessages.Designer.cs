@@ -385,6 +385,24 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}の日付形式が正しくありません。yyyy/MM/ddで入力してください。.
+        /// </summary>
+        public static string EW1302 {
+            get {
+                return ResourceManager.GetString("EW1302", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}の時間の形式が正しくありません。hh:mm:ssで入力してください。.
+        /// </summary>
+        public static string EW1303 {
+            get {
+                return ResourceManager.GetString("EW1303", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 予期せぬエラーが発生しました。.
         /// </summary>
         public static string EW9000 {
@@ -396,18 +414,9 @@ namespace task_sync_web {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string EW90003 {
+        public static string EW90001 {
             get {
-                return ResourceManager.GetString("EW90003", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string EW9001 {
-            get {
-                return ResourceManager.GetString("EW9001", resourceCulture);
+                return ResourceManager.GetString("EW90001", resourceCulture);
             }
         }
         
@@ -417,15 +426,6 @@ namespace task_sync_web {
         public static string String {
             get {
                 return ResourceManager.GetString("String", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using Humanizer;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SqlKata.Execution;
 using task_sync_web.Commons;
@@ -12,7 +10,8 @@ namespace task_sync_web.Controllers
 {
     public class DTaskRecordController : BaseController
     {
-        private string[] DateTimeFormatSupport = new[] { "yyyy-MM-dd", "yyyy/MM/dd", "yyyy.MM.dd", "yyyyMMdd" };
+        private string[] DateTimeFormatSupport = new[] { "yyyy/MM/dd", "yyyy-MM-dd", "yyyy.MM.dd", "yyyyMMdd" };
+        private string[] TimeSpanFormatSupport = new[] { @"hh\:mm\:ss" };
 
         [HttpGet]
         public async Task<IActionResult> Index(DTaskRecordViewModel viewModel, Enums.GetState command = Enums.GetState.Default)
@@ -34,6 +33,16 @@ namespace task_sync_web.Controllers
                     case GetState.Search:
                         {
                             var listPaged = await taskUserViewModel.ToPagedListAsync(viewModel.PageNumber, viewModel.PageRowCount);
+                            foreach (var item in listPaged)
+                            {
+                                var startTime = Convert.ToDateTime(item.TaskStartDateTime.ToString("yyyy/MM/dd HH:mm:ss"));
+                                var stopTime = Convert.ToDateTime(item.TaskEndDateTime.ToString("yyyy/MM/dd HH:mm:ss"));
+                                item.TaskTime = stopTime - startTime; //作業時間
+                                var totalTime = TimeSpan.FromSeconds(item.TaskInterruptTotalTime);
+                                item.PureTaskTime = stopTime - startTime - totalTime; //純作業時間
+                                item.TaskTimeMinute = item.TaskTime.Minutes; //作業時間(分)
+                                item.PureTaskTimeMinute = item.PureTaskTime.Minutes; //純作業時間(分)
+                            }
 
                             // page the list
                             viewModel.TaskRecordModels = listPaged;
@@ -231,7 +240,6 @@ namespace task_sync_web.Controllers
                 model = await GetDTaskRecord(taskRecordId);
                 model.TaskTrackTotalTime = CalculationTimeMinutesTimeByRoundupSeconds(model.TaskStartDateTrackTime, model.TaskEndDateTrackTime);
 
-
             }
             catch (Exception)
             {
@@ -246,7 +254,7 @@ namespace task_sync_web.Controllers
         {
             var recordList = new List<dynamic>();
             taskItemCode = (taskItemCode ?? string.Empty).Trim();
-            if((taskItemCode.Length > 8) || !int.TryParse(taskItemCode, out int val))
+            if ((taskItemCode.Length > 8) || !int.TryParse(taskItemCode, out int val))
             {
                 return recordList;
             }
@@ -272,80 +280,67 @@ namespace task_sync_web.Controllers
                             "TaskTertiaryItem")
                     .GetAsync<dynamic>())
                     .ToList();
-                    ;
+                ;
             }
 
             return recordList;
         }
 
-        private async Task<List<SelectListItem>> GetListItemTaskPrimaryItem(TaskStyle taskStyle, string selectedVal)
-        {
-            var recordList = new List<string>();
-            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
-            {
-                if (taskStyle == TaskStyle.PrimaryItem)
-                {
-                    // 作業大項目を取得
-                    recordList = (await db.Query("MTaskItem")
-                    .Select("TaskPrimaryItem") // 作業大項目
-                    .GroupBy("TaskPrimaryItem")
-                    .GetAsync<string>())
-                    .ToList();
-                }
-                else if (taskStyle == TaskStyle.SecondaryItem)
-                {
-                    // 作業大項目を取得
-                    recordList = (await db.Query("MTaskItem")
-                    .Select("TaskSecondaryItem") // 作業大項目
-                    .GroupBy("TaskSecondaryItem")
-                    .GetAsync<string>())
-                    .ToList();
-                }
-                else if (taskStyle == TaskStyle.TertiaryItem)
-                {
-                    // 作業大項目を取得
-                    recordList = (await db.Query("MTaskItem")
-                    .Select("TaskTertiaryItem") // 作業大項目
-                    .GroupBy("TaskTertiaryItem")
-                    .GetAsync<string>())
-                    .ToList();
-                }
-                else
-                {
-                    throw new CustomExtention(ErrorMessages.EW0500);
-                }
-            }
-
-            var listItemTask = new List<SelectListItem>();
-            foreach(var item in recordList)
-            {
-                var isCheckSelectedVal = item.Equals(selectedVal);
-                listItemTask.Add(new SelectListItem()
-                {
-                    Text = item,
-                    Value = item,
-                    Selected = isCheckSelectedVal
-                });
-            }
-
-            return listItemTask;
-        }
 
         [HttpPost]
         public async Task<IActionResult> Edit(DTaskInterruptModalEditViewModel editViewModel)
         {
-            var model = new DTaskInterruptModalEditViewModel();
+            var errorList = new List<string>();
+            var taskStartDate = editViewModel.TaskStartDate;
+            var taskStartTime = editViewModel.TaskStartTime;
+            var taskEndDate = editViewModel.TaskEndDate;
+            var taskEndTime = editViewModel.TaskEndTime;
+            var taskInterruptTotalTime = editViewModel.TaskInterruptTotalTime;
+            var taskItem = editViewModel.TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem;
             try
             {
-
-                await Task.CompletedTask;
+                taskStartDate = DateTime.ParseExact(taskStartDate, DateTimeFormatSupport, System.Globalization.CultureInfo.InvariantCulture).ToString(DateTimeFormatSupport[0]);
             }
             catch (Exception)
             {
-                throw;
+                errorList.Add(string.Format(ErrorMessages.EW1302, "作業開始日付"));
+            }
+            try
+            {
+                taskStartTime = TimeSpan.ParseExact(taskStartTime, TimeSpanFormatSupport, System.Globalization.CultureInfo.InvariantCulture).ToString(TimeSpanFormatSupport[0]);
+            }
+            catch (Exception)
+            {
+                errorList.Add(string.Format(ErrorMessages.EW1303, "作業開始時間"));
             }
 
-            return Json(new { Result = "NG", Mess = "" });
+            try
+            {
+                taskEndDate = DateTime.ParseExact(taskEndDate, DateTimeFormatSupport, System.Globalization.CultureInfo.InvariantCulture).ToString(DateTimeFormatSupport[0]);
+            }
+            catch (Exception)
+            {
+                errorList.Add(string.Format(ErrorMessages.EW1302, "作業終了日付"));
+            }
+            try
+            {
+                taskEndTime = TimeSpan.ParseExact(taskEndTime, TimeSpanFormatSupport, System.Globalization.CultureInfo.InvariantCulture).ToString(TimeSpanFormatSupport[0]);
+            }
+            catch (Exception)
+            {
+                errorList.Add(string.Format(ErrorMessages.EW1303, "作業終了時間"));
+            }
+            if(taskInterruptTotalTime < 0)
+                errorList.Add(string.Format(ErrorMessages.EW0009, "中断時間(分)"));
+            if(string.IsNullOrWhiteSpace(taskItem))
+                errorList.Add(string.Format(ErrorMessages.EW0001, "作業項目"));
+
+            await Task.CompletedTask;
+
+            if(errorList.Any())
+                return Json(new { Result = "NG", Mess = errorList });
+            else
+                return Json(new { Result = "OK", Mess = SuccessMessages.SW002 });
         }
 
         private async Task<DTaskInterruptModalEditViewModel> GetDTaskRecord(int taskRecordId)
@@ -463,34 +458,35 @@ namespace task_sync_web.Controllers
                         "taskrecord.TaskMemo",                // 作業メモ
                         "taskrecord.IsDelete",                // 削除フラグ
 
-                        "taskrecord.CreateDateTime",          // 作成日時
-                        "taskrecord.CreateAdministratorId",   // 作成管理者
-                        "taskrecord.CreateTaskUserId",        // 作成作業者
-                        "taskrecord.UpdateDateTime",          // 更新日時
-                        "taskrecord.UpdateAdministratorId",   // 更新管理者
-                        "taskrecord.UpdateTaskUserId",        // 更新作業者
-
                         "taskrecord.CreateDateTime",
-                        "b.AdministratorLoginId as CreateAdministratorId",
-                        "b.AdministratorName as CreateAdministratorName",
+                        "b.AdministratorLoginId as CreateAdministratorId", // 作成管理者ログインID
+                        "b.AdministratorName as CreateAdministratorName", // 作成管理者名
                         "taskrecord.UpdateDateTime",
-                        "c.AdministratorLoginId as UpdateAdministratorLoginId",
-                        "c.AdministratorName as UpdateAdministratorName"
+                        "c.AdministratorLoginId as UpdateAdministratorId", // 更新管理者ログインID
+                        "c.AdministratorName as UpdateAdministratorName", // 更新管理者名
+                        "e.TaskUserLoginId as CreateTaskUserId", // 作成作業者ログインID
+                        "e.TaskUserName as CreateTaskUserName", // 作成作業者名
+                        "f.TaskUserLoginId as UpdateTaskUserId", // 更新作業者ログインID
+                        "f.TaskUserName as UpdateCreateTaskUserName" // 更新作業者名
                     )
                 .LeftJoin("DLoginTaskUserRecord as login", "taskrecord.LoginTaskUserRecordId", "login.LoginTaskUserRecordId")
                 .LeftJoin("MTaskUser as taskUser", "taskrecord.TaskUserId", "taskUser.TaskUserId")
                 .LeftJoin("MTaskItem as taskItem", "taskrecord.TaskItemId", "taskItem.TaskItemId")
                 .LeftJoin("MAdministrator as b", "taskrecord.CreateAdministratorId", "b.AdministratorId")
                 .LeftJoin("MAdministrator as c", "taskrecord.UpdateAdministratorId", "c.AdministratorId")
+                .LeftJoin("MTaskUser as e", "taskrecord.CreateTaskUserId", "e.TaskUserId")
+                .LeftJoin("MTaskUser as f", "taskrecord.UpdateTaskUserId", "f.TaskUserId")
                 .Where("TaskStartDateTime", ">=", taskStartDateTime)
                 .Where("TaskEndDateTime", "<", taskEndDateTime);
                 if (!string.IsNullOrWhiteSpace(taskUserLoginId))
                     query = query.Where("TaskUserLoginId", taskUserLoginId);
-                if (!viewModel.IsDelete)
-                    query = query.Where("IsDelete", isDelete);
+                if (!isDelete)
+                    query = query.WhereIn("IsDelete", new[] { false });
+                else
+                    query = query.WhereIn("IsDelete", new[] { true, false });
                 query = query.WhereNotNull("login.LoginDateTime");
                 query = query.OrderByDesc("login.LoginDateTime");
-
+                var sql = db.Compiler.Compile(query).Sql;
                 listDTaskRecordModel = (await query.GetAsync<DTaskRecordModel>()).ToList();
             }
 

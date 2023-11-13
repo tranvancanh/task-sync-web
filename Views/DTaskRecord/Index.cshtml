@@ -118,7 +118,7 @@
         ViewData["Title"] = @Model.DisplayName;
     }
 </div>
-<div id="modalarea"></div>
+
 <div class="card shadow m-4">
     <div class="card-header">
         <h3 class="pt-2">@Model.DisplayName</h3>
@@ -162,17 +162,14 @@
                     </div>
                 </div>
                 @{
-                    var errorList = ViewData["ErrorMessage"] as List<string>;
+                    var errorList = ViewData["ErrorMessage"] as string;
                     if (errorList != null && errorList.Any())
                     {
-                            <div class="form-group text-left message-error-area mx-3">
-                                <ul class="mt-3">
-                                    @foreach (var mess in errorList)
-                                {
-                                        <li class="text-danger-custom error-text">@mess</li>
-                                }
-                                </ul>
-                            </div>
+                        <div class="form-group text-left message-error-area mx-3">
+                            <ul class="mt-3">
+                                <li class="text-danger-custom error-text">@errorList</li>
+                            </ul>
+                        </div>
                     }
                 }
             </form>
@@ -272,7 +269,9 @@
                                         @Html.DisplayFor(modelItem => item.TaskEndDateTrackTime)
                                     </td>
                                     <td class="table-nounyusaki-syo">
-                                        @Html.DisplayFor(modelItem => item.TaskInterruptTrackTotalTime)
+                                        @{
+                                            @TimeSpan.FromSeconds(item.TaskInterruptTrackTotalTime)
+                                        }
                                         <a class="btn btn-light btn-sm" onclick="GetInterrupt('@item.TaskRecordId')"><i class="fas fa-list-ul"></i></a>
                                     </td>
 
@@ -283,7 +282,9 @@
                                         @Html.DisplayFor(modelItem => item.TaskEndDateTime)
                                     </td>
                                     <td class="table-nounyusaki-syo">
-                                        @Html.DisplayFor(modelItem => item.TaskInterruptTotalTime)
+                                        @{
+                                            @TimeSpan.FromSeconds(item.TaskInterruptTotalTime)
+                                        }
                                     </td>
 
                                     <td class="table-nounyusaki-syo">
@@ -365,6 +366,7 @@
 
     </div>
 </div>
+<div id="modalarea"></div>
 
 @section scripts{
 
@@ -377,15 +379,46 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
 
     <script type="text/javascript">
-        let ROOT = '@Url.Content("~")';
+        const ROOT = '@Url.Content("~")';
         $(document).ready(function () {
             console.log('作業実績 開始');
             DatepickerRun();
         });
 
+        function SubmitForm() {
+            console.log('Serialize the form datas');
+            //Serialize the form datas.
+            const valdata = $("#editform").serialize();
+            //to get alert popup
+            $.ajax({
+                url: ROOT + "/DTaskRecord/Edit",
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: valdata,
+                success: function (data) {
+                    console.log({ data });
+                    if (data.result == "OK") {
+                        console.log('success');
+                    }
+                    else {
+                        console.log('false');
+                        let html = '<ul class="mt-3">';
+                        data.mess.forEach((element) => {
+                            html += '<li class="text-danger-custom error-text">' + element + '</li>';
+                        });
+                        html += '</ul>';
+                        $('.modale-rror').html(html);
+                    }
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+        }
+
         $("#IsDeleteLabel").click(function () {
             let val = $("#IsDelete").prop("checked")
-            console.log({ val });
             $("#IsDelete").prop('checked', !val);
         });
 
@@ -398,12 +431,12 @@
             $('.datepicker').attr('autocomplete', 'off');
             // 数字が8文字なら日付形式に変換
             $('.datepicker').on('change blur', function () {
-                var date = $.trim($(this).val());
+                let date = $.trim($(this).val());
                 if (date.length === 8) {
-                    var year = date.substr(0, 4);
-                    var month = date.substr(4, 2);
-                    var day = date.substr(6, 2);
-                    var setDate = year + "/" + month + "/" + day;
+                    let year = date.substr(0, 4);
+                    let month = date.substr(4, 2);
+                    let day = date.substr(6, 2);
+                    let setDate = year + "/" + month + "/" + day;
                     $(this).val(setDate);
                 }
             });
@@ -468,9 +501,7 @@
                             contentType: "application/json; charset=utf-8",
                             dataType: "json",
                             success: function (data) {
-                                console.log({ data });
                                 response($.map(data, function (item) {
-                                    console.log({ item });
                                     return {
                                         label: item.TaskUserLoginId + " : " + item.TaskUserName,
                                         value: item.TaskUserLoginId,
@@ -509,9 +540,7 @@
                             contentType: "application/json; charset=utf-8",
                             dataType: "json",
                             success: function (data) {
-                                console.log({ data });
                                 response($.map(data, function (item) {
-                                    console.log({ item });
                                     return {
                                         label: item.TaskItemCode + " - " + item.TaskPrimaryItem + " - " + item.TaskSecondaryItem + " - " + item.TaskTertiaryItem,
                                         value: item.TaskItemCode,
@@ -526,12 +555,12 @@
                         });
                     },
                     focus: function (event, ui) {
-                        var a = ui.item.label;
+                        let a = ui.item.label;
                         // $("#TaskItem").val(a);
                         return false;
                     },
                     select: function (event, ui) {
-                        var b = ui.item.label;
+                        let b = ui.item.label;
                         $("#TaskItem").val(b);
                         return false;
                     },
@@ -540,7 +569,7 @@
         });
 
         function onlyNumberKey(evt) {
-            var ch = String.fromCharCode(evt.which);
+            let ch = String.fromCharCode(evt.which);
             if (!(/[0-9]/.test(ch))) {
                 evt.preventDefault();
             }

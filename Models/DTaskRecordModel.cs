@@ -87,21 +87,32 @@ namespace task_sync_web.Models
 
 
         [Display(Name = "作成日時")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime CreateDateTime { get; set; }
 
         [Display(Name = "作成管理者")]
-        public int CreateAdministratorId { get; set; }
+        public string CreateAdministratorId { get; set; }
+
+        public string CreateAdministratorName {  get; set; }
 
         [Display(Name = "作成作業者")]
         public int CreateTaskUserId { get; set; }
 
+        public string CreateTaskUserName { get; set; }
+
         [Display(Name = "更新日時")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime UpdateDateTime { get; set; }
 
         [Display(Name = "更新管理者")]
-        public int UpdateAdministratorId { get; set; }
+        public string UpdateAdministratorId { get; set; }
 
-        [Display(Name = "更新作業者")]
+        public string UpdateAdministratorName { get; set; }
+
+
+       [Display(Name = "更新作業者")]
         public int UpdateTaskUserId { get; set; }
+
+        public string UpdateTaskUserName { get; set; }
     }
 }
