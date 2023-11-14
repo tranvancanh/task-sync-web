@@ -60,3 +60,23 @@ public class DefalultFlagConverter : JsonConverter
     }
 }
 
+public class TimeSpanConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType) => objectType == typeof(bool);
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        var tag = new bool();
+
+        //tag.Name = reader.Value.ToString();
+
+        return tag;
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        var taskStartTime = TimeSpan.ParseExact(Convert.ToString(value), @"hh\:mm\:ss", System.Globalization.CultureInfo.InvariantCulture).ToString(@"hh\:mm\:ss");
+        writer.WriteValue(taskStartTime);
+    }
+}
+

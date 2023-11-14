@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using SqlKata.Execution;
 using task_sync_web.Commons;
 using task_sync_web.Models;
@@ -10,8 +9,8 @@ namespace task_sync_web.Controllers
 {
     public class DTaskRecordController : BaseController
     {
-        private string[] DateTimeFormatSupport = new[] { "yyyy/MM/dd", "yyyy-MM-dd", "yyyy.MM.dd", "yyyyMMdd" };
-        private string[] TimeSpanFormatSupport = new[] { @"hh\:mm\:ss" };
+        public string[] DateTimeFormatSupport = new[] { "yyyy/MM/dd", "yyyy-MM-dd", "yyyy.MM.dd", "yyyyMMdd" };
+        public string[] TimeSpanFormatSupport = new[] { @"hh\:mm\:ss" };
 
         [HttpGet]
         public async Task<IActionResult> Index(DTaskRecordViewModel viewModel, Enums.GetState command = Enums.GetState.Default)
@@ -52,7 +51,7 @@ namespace task_sync_web.Controllers
                         {
                             var excelHeaderStyle = new ExcelHeaderStyleModel();
                             excelHeaderStyle.FirstColorBackgroundColorColumnNumber = new int[1] { 1 };
-                            excelHeaderStyle.SecondColorBackgroundColorColumnNumber = new int[7] { 2, 3, 4, 5, 6, 7, 8 };
+                            excelHeaderStyle.SecondColorBackgroundColorColumnNumber = new int[23] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,19, 20, 21, 22, 23, 24 };
                             var memoryStream = ExcelFile<DTaskRecordModel>.ExcelCreate(taskUserViewModel, true, 1, 1, excelHeaderStyle);
                             // ファイル名
                             var fileName = viewModel.DisplayName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
