@@ -31,7 +31,6 @@
                     <div class="form-group col-auto">
                         <div class="input-group">
                             <input class="form-control form-control-lg" asp-for="SearchKeyWord" name="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                            <input type="hidden" asp-for="PageNumber" name="PageNumber" />
                             <button class="btn btn-search btn-lg" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
@@ -42,17 +41,17 @@
                 <span class="text-danger-custom">@ViewData["ErrorMessage"]</span>
             </div>
 
-            <div style="overflow-x: scroll;">
+            <div>
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingDetail)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingValue)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateLoginInfor)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</th>
+                            <th style="width: 20%">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</th>
+                            <th style="width: 10%">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingDetail)</th>
+                            <th style="width: 8%">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingValue)</th>
+                            <th style="width: 30%">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</th>
+                            <th style="width: 15%">@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateDateTime)</th>
+                            <th style="width: 20%">@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateLoginInfor)</th>
                         </tr>
                     </thead>
 
