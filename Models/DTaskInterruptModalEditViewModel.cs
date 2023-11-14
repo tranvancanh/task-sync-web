@@ -31,6 +31,11 @@ namespace task_sync_web.Models
         [DefaultValue(0)]
         public int TaskInterruptTotalTime { get; set; } // 単位：分
 
+        public int TaskItemCode { get; set; }
+        public string TaskPrimaryItem { get; set; }
+        public string TaskSecondaryItem { get; set; }
+        public string TaskTertiaryItem { get; set; }
+
         [Display(Name = "作業選択項目")]
         [DefaultValue("")]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]

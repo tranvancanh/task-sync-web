@@ -11,10 +11,12 @@ namespace task_sync_web.Models
 
         [Display(Name = "ログイン日時")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
+        [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm:ss")]
         public DateTime LoginDateTime { get; set; } // DLoginTaskUserRecordを参照
 
         [Display(Name = "作業日付")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd}")]
+        [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd")]
         public DateTime TaskDate {  get; set; }
 
         [Display(Name = "所得名")]
@@ -85,7 +87,7 @@ namespace task_sync_web.Models
         public int PureTaskTimeMinute { get; set; }
 
 
-        [Display(Name = "メモ")]
+        [Display(Name = "備考")]
         public string Remark { get; set; }
 
         [Display(Name = "修正フラグ")]

@@ -438,10 +438,13 @@ namespace task_sync_web.Controllers
                         "taskrecord.TaskStartDateTrackTime",       // 作業開始時刻(記録)
                         "taskrecord.TaskEndDateTrackTime",         // 作業終了時刻(記録)
                         "taskrecord.TaskInterruptTrackTotalTime",  // 中断記録(記録)
+                        "taskrecord.TaskItemCode",                 //作業項目コード
                         "taskrecord.TaskPrimaryItem",              // 作業大項目
                         "taskrecord.TaskSecondaryItem",            // 作業中項目
-                        "taskrecord.TaskTertiaryItem"              // 作業小項目
+                        "taskrecord.TaskTertiaryItem",             // 作業小項目
+                        "taskrecord.Remark"                       // 備考
                         )
+                //.SelectRaw("CONCAT(CAST([taskrecord].[TaskItemCode] AS varchar), '-', [taskrecord].[TaskPrimaryItem], '-', [taskrecord].[TaskSecondaryItem], '-' [taskrecord].[TaskTertiaryItem]) as TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem") // 作業項目選択
                 .SelectRaw("FORMAT([taskrecord].[TaskStartDateTime], 'yyyy/MM/dd') as TaskStartDate") // 作業開始日付(実績)
                 .SelectRaw("FORMAT([taskrecord].[TaskStartDateTime], 'hh:mm:ss') as TaskStartTime")   // 作業開始時間(実績)
                 .SelectRaw("FORMAT([taskrecord].[TaskEndDateTime], 'yyyy/MM/dd') as TaskEndDate")     // 作業終了日付(実績)
@@ -455,6 +458,8 @@ namespace task_sync_web.Controllers
             }
             if (recordViewModel == null)
                 throw new CustomExtention(ErrorMessages.EW0101);
+            else
+                recordViewModel.TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem = recordViewModel.TaskItemCode + "-" + recordViewModel.TaskPrimaryItem + "-" + recordViewModel.TaskSecondaryItem + "-" + recordViewModel.TaskTertiaryItem;
             return recordViewModel;
         }
 
