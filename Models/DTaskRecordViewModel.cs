@@ -6,10 +6,10 @@ namespace task_sync_web.Models
 {
     public class DTaskRecordViewModel : BaseViewModel
     {
-        [Display(Name = "作業日付(始)")]
+        [Display(Name = "作業開始日付(実績)")]
         public string TaskStartDateTime { get; set; }
 
-        [Display(Name = "作業日付(終)")]
+        [Display(Name = "作業終了日付(実績)")]
         public string TaskEndDateTime { get; set; }
 
         [Display(Name = "作業者")]

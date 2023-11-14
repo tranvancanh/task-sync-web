@@ -385,7 +385,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}の日付形式が正しくありません。yyyy/MM/ddで入力してください。.
+        ///   Looks up a localized string similar to {0}の形式が正しくありません。.
         /// </summary>
         public static string EW1302 {
             get {
@@ -394,7 +394,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}の時間の形式が正しくありません。hh:mm:ssで入力してください。.
+        ///   Looks up a localized string similar to {0}の形式が正しくありません。.
         /// </summary>
         public static string EW1303 {
             get {
@@ -412,20 +412,29 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 作業終了時刻は、作業開始時刻以上でなければいけません。.
+        /// </summary>
+        public static string EW1305 {
+            get {
+                return ResourceManager.GetString("EW1305", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 中断時間は0以上で入力してください。.
+        /// </summary>
+        public static string EW1306 {
+            get {
+                return ResourceManager.GetString("EW1306", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 予期せぬエラーが発生しました。.
         /// </summary>
         public static string EW9000 {
             get {
                 return ResourceManager.GetString("EW9000", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string EW90001 {
-            get {
-                return ResourceManager.GetString("EW90001", resourceCulture);
             }
         }
     }

@@ -139,25 +139,22 @@
                     </div>
                     <div class="col-xl-2">
                         <label>@Html.DisplayNameFor(m => m.TaskUserLoginIdName)</label>
-                        <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" />
+                        <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" placeholder="コードOr名前" />
                     </div>
-                    <div class="col-xl-1 mt-xl-4 mr-xl-5">
+                    <div class="col-xl-3 mt-xl-4 mr-xl-5 text-left">
                         <label class="switch">
-                            <input type="checkbox" asp-for="IsDelete" class="col-xl-12">
+                            <input type="checkbox" asp-for="IsDelete" class="col-xl-12" >
                             <span class="slider round"></span>
                         </label>
+                        <label class="mx-3" role="button" id="IsDeleteLabel">@Html.DisplayNameFor(m => m.IsDelete)</label>
                     </div>
-                    <div class="col-xl-2 mt-xl-3 mr-xl-5">
-                        <label class="my-2" role="button" id="IsDeleteLabel">@Html.DisplayNameFor(m => m.IsDelete)</label>
-                    </div>
-
                     <div class="col-xl-3"></div>
                 </div>
 
                 <div class="row row mt-xl-3">
                     <div class="col-xl-6"></div>
                     <div class="col-xl-6">
-                        <button class="btn btn-search btn-lg mx-4" name="Command" value="2" id="btnSearch" type="submit"><i class="fas fa-search"></i></button>
+                        <button class="btn btn-custom btn-lg mx-4" name="Command" value="2" id="btnSearch" type="submit"><span class="p-2"><i class="fas fa-search"></i>検索</span></button>
                         <button class="btn btn-custom btn-lg mx-2" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
                     </div>
                 </div>
@@ -189,7 +186,7 @@
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskDate)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserDepartmentName)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserGroupName)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserLoginId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserID)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserName)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemId)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCode)</th>
@@ -243,7 +240,7 @@
                                         @Html.DisplayFor(modelItem => item.TaskUserGroupName)
                                     </td>
                                     <td class="text-left">
-                                        @Html.DisplayFor(modelItem => item.TaskUserLoginId)
+                                        @Html.DisplayFor(modelItem => item.CreateTaskUserID)
                                     </td>
                                     <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskUserName)
@@ -275,7 +272,7 @@
                                     </td>
                                     <td class="text-left">
                                         @{
-                                            @TimeSpan.FromSeconds(item.TaskInterruptTrackTotalTime)
+                                            @Html.DisplayFor(modelItem => item.TaskInterruptTrackTotalTime)
                                             @if (item.IsDisplayTaskInterruptTrack)
                                             {
                                                 <a class="btn btn-light btn-sm" onclick="GetInterrupt('@item.TaskRecordId')"><i class="fas fa-list-ul"></i></a>
@@ -290,9 +287,7 @@
                                         @Html.DisplayFor(modelItem => item.TaskEndDateTime)
                                     </td>
                                     <td class="text-left">
-                                        @{
-                                            @TimeSpan.FromSeconds(item.TaskInterruptTotalTime)
-                                        }
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptTotalTime)
                                     </td>
 
                                     <td class="text-left">

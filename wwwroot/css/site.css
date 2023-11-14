@@ -404,3 +404,8 @@ table.sticky_table {
 .no-scroll {
     overflow: hidden;
 }
+
+.fa, .fas {
+    font-weight: 900;
+    margin-right: 8px;
+}

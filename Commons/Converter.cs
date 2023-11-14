@@ -75,8 +75,21 @@ public class TimeSpanConverter : JsonConverter
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
-        var taskStartTime = TimeSpan.ParseExact(Convert.ToString(value), @"hh\:mm\:ss", System.Globalization.CultureInfo.InvariantCulture).ToString(@"hh\:mm\:ss");
-        writer.WriteValue(taskStartTime);
+        try
+        {
+            var timespan = TimeSpan.Parse(value.ToString());
+            var taskStartTime = "";
+            if (timespan < TimeSpan.Zero)
+                taskStartTime =  "-" + timespan.ToString(@"hh\:mm");
+           else
+                taskStartTime = timespan.ToString(@"hh\:mm");
+            writer.WriteValue(taskStartTime);
+        }
+        catch (Exception)
+        {
+            writer.WriteValue("undefined");
+        }
+       
     }
 }
 
