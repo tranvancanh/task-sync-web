@@ -123,7 +123,7 @@ namespace task_sync_web.Controllers
                         dataTable.Rows[i]["TaskItemId"] = taskItemId;
 
                     var taskItemCode = Convert.ToString(dataTable.Rows[i]["TaskItemCode"]);
-                    var messCheckItemCode = CheckTaskItemCode(modifyFlag, taskItemCode);
+                    var messCheckItemCode = CheckTaskItemCode(taskItemCode);
                     if (!string.IsNullOrWhiteSpace(messCheckItemCode))
                         rowErrorList.Add(messCheckItemCode);
 
@@ -326,47 +326,14 @@ namespace task_sync_web.Controllers
             return string.Empty;
         }
 
-        private string CheckTaskItemCode(string flag, string taskItemCode)
+        private string CheckTaskItemCode(string taskItemCode)
         {
-            flag = (flag ?? "").Trim();
-
             if (string.IsNullOrWhiteSpace(taskItemCode))
-            {
                 return string.Format(ErrorMessages.EW0001, "作業項目コード");
-            }
             if (!int.TryParse(taskItemCode, out int val))
-            {
                 return string.Format(ErrorMessages.EW0009, "作業項目コード");
-            }
-
-            //// 新規登録チェック
-            //if (flag.Equals("1"))
-            //{
-            //    using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
-            //    {
-            //        var result = db.Query("MTaskItem")
-            //            .WhereIn("TaskItemCode", taskItemCode)
-            //            .Get<MTaskItemModel>()
-            //            .FirstOrDefault();
-            //        if (result != null)
-            //            return string.Format(ErrorMessages.EW1204, "作業項目コード");
-            //    }
-            //}
-            //// 更新チェック
-            //else if (flag.Equals("2"))
-            //{
-            //    using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
-            //    {
-            //        var result = db.Query("MTaskItem")
-            //            .WhereIn("TaskItemCode", taskItemCode)
-            //            .Get<MTaskItemModel>()
-            //            .FirstOrDefault();
-            //        if (result == null)
-            //            return string.Format(ErrorMessages.EW1205, "作業項目コード");
-            //    }
-            //}
-
-            return string.Empty;
+            else
+                return string.Format(ErrorMessages.EW0002, "作業項目コード", "8");
         }
 
         private async Task<int> SaveChangeDataAsync(List<MTaskItemModel> insertData, List<MTaskItemModel> modifyData)
