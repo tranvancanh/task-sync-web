@@ -21,5 +21,10 @@
         {
             PrimaryItem = 1, SecondaryItem = 2, TertiaryItem
         }
+
+        public enum ActionStyle
+        {
+            Index = 1, InterruptModal = 2
+        }
     }
 }

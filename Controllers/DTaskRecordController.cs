@@ -15,16 +15,17 @@ namespace task_sync_web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(DTaskRecordViewModel viewModel, Enums.GetState command = Enums.GetState.Default)
         {
+            var validateInputForm = new List<string>();
             try
             {
-                var validateInputForm = ValidateInputForm(viewModel);
+                validateInputForm = ValidateInputForm(viewModel);
                 if (validateInputForm.Any())
                 {
                     ViewData["ErrorMessage"] = validateInputForm;
                     return View(viewModel);
                 }
 
-                var taskUserViewModel = await GetListTaskRecordModel(viewModel);
+                var taskUserViewModel = await SearchListTaskRecordModel(viewModel);
                 switch (command)
                 {
                     //検索処理
@@ -37,10 +38,14 @@ namespace task_sync_web.Controllers
                                 var startTime = Convert.ToDateTime(item.TaskStartDateTime.ToString("yyyy/MM/dd HH:mm:ss"));
                                 var stopTime = Convert.ToDateTime(item.TaskEndDateTime.ToString("yyyy/MM/dd HH:mm:ss"));
                                 item.TaskTime = stopTime - startTime; //作業時間
-                                var totalTime = TimeSpan.FromSeconds(item.TaskInterruptTotalTime);
+                                var totalTime = TimeSpan.FromMinutes(item.TaskInterruptTotalTime);
                                 item.PureTaskTime = stopTime - startTime - totalTime; //純作業時間
                                 item.TaskTimeMinute = item.TaskTime.Minutes; //作業時間(分)
                                 item.PureTaskTimeMinute = item.PureTaskTime.Minutes; //純作業時間(分)
+                                // 中断時間(記録)のボタン表示、非表示
+                                var listInterruptRecord = await GetDTaskInterruptRecords(item.TaskRecordId);
+                                if(listInterruptRecord.Any()) item.IsDisplayTaskInterruptTrack = true;
+                                else item.IsDisplayTaskInterruptTrack = false;
                             }
 
                             // page the list
@@ -49,10 +54,7 @@ namespace task_sync_web.Controllers
                         }
                     case GetState.ExcelOutput:
                         {
-                            var excelHeaderStyle = new ExcelHeaderStyleModel();
-                            excelHeaderStyle.FirstColorBackgroundColorColumnNumber = new int[1] { 1 };
-                            excelHeaderStyle.SecondColorBackgroundColorColumnNumber = new int[23] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,19, 20, 21, 22, 23, 24 };
-                            var memoryStream = ExcelFile<DTaskRecordModel>.ExcelCreate(taskUserViewModel, true, 1, 1, excelHeaderStyle);
+                            var memoryStream = ExcelFile<DTaskRecordModel>.ExcelCreate(taskUserViewModel, true);
                             // ファイル名
                             var fileName = viewModel.DisplayName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
@@ -67,9 +69,10 @@ namespace task_sync_web.Controllers
             catch (Exception ex)
             {
                 if (ex is CustomExtention)
-                    ViewData["ErrorMessage"] = ex.Message;
+                    validateInputForm.Add(ex.Message);
                 else
-                    ViewData["ErrorMessage"] = ErrorMessages.EW9000;
+                    validateInputForm.Add(ErrorMessages.EW9000);
+                ViewData["ErrorMessage"] = validateInputForm;
                 return View("Index", viewModel);
             }
         }
@@ -154,8 +157,8 @@ namespace task_sync_web.Controllers
                 var listInterruptRecord = await GetDTaskInterruptRecords(taskRecordId);
                 foreach (var item in listInterruptRecord)
                 {
-                    var startTime = Convert.ToDateTime(item.TaskInterruptEndDateTrackTime.ToString("yyyy/MM/dd HH:mm:ss"));
-                    var stopTime = Convert.ToDateTime(item.TaskInterruptStartDateTrackTime.ToString("yyyy/MM/dd HH:mm:ss"));
+                    var startTime = Convert.ToDateTime(item.TaskInterruptStartDateTrackTime.ToString("yyyy/MM/dd HH:mm:ss"));
+                    var stopTime = Convert.ToDateTime(item.TaskInterruptEndDateTrackTime.ToString("yyyy/MM/dd HH:mm:ss"));
                     item.TaskInterruptTime = CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime);
                 }
                 recordViewModel.InterruptRecords.AddRange(listInterruptRecord);
@@ -204,13 +207,11 @@ namespace task_sync_web.Controllers
                 recordModel = (await db.Query("DTaskInterruptRecord as interruptRecord")
                 .Select(
                         "interruptRecord.TaskInterruptRecordId",                 // 作業中断実績ID
-
                         "interruptRecord.TaskRecordId",                          //作業実績ID
                         "interruptRecord.TaskInterruptStartDateTrackTime",       // 作業中断開始時間
                         "interruptRecord.TaskInterruptEndDateTrackTime",         // 作業中断終了時間
                         "interruptRecord.TaskInterruptReasonCode",               // 作業中断理由コード
                         "interruptRecord.TaskInterruptReasonName",               // 作業中断理由名
-
                         "interruptRecord.CreateDateTime",        // 作成日時
                         "interruptRecord.CreateTaskUserId",      // 作成作業者ID
                         "interruptRecord.UpdateDateTime",        // 更新日時
@@ -253,7 +254,7 @@ namespace task_sync_web.Controllers
         {
             var recordList = new List<dynamic>();
             taskItemCode = (taskItemCode ?? string.Empty).Trim();
-            if ((taskItemCode.Length > 8) || !int.TryParse(taskItemCode, out int val))
+            if (string.IsNullOrWhiteSpace(taskItemCode))
             {
                 return recordList;
             }
@@ -269,6 +270,9 @@ namespace task_sync_web.Controllers
                             "TaskTertiaryItem"   // 作業小項目
                         )
                     .WhereLike("TaskItemCode", $"%{taskItemCode}%")
+                    .OrWhereLike("TaskPrimaryItem", $"%{taskItemCode}%")
+                    .OrWhereLike("TaskSecondaryItem", $"%{taskItemCode}%")
+                    .OrWhereLike("TaskTertiaryItem", $"%{taskItemCode}%")
                     .GroupBy("TaskItemCode",
                             "TaskPrimaryItem",
                             "TaskSecondaryItem",
@@ -361,13 +365,35 @@ namespace task_sync_web.Controllers
                 errorList.Add(string.Format(ErrorMessages.EW0001, "作業項目"));
             else
             {
-                if (taskItem.Split('-').Length != 4)
+                var taskItems = taskItem.Split('-');
+                if (taskItems.Length != 4)
                     errorList.Add(string.Format(ErrorMessages.EW1304));
+                else
+                {
+                    if(!IsCheckTaskItem(taskItems))
+                        errorList.Add(string.Format(ErrorMessages.EW1304));
+                }
             }
             if (remark.Length > 200)
                 errorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
 
             return errorList;
+        }
+
+        private bool IsCheckTaskItem(string[] taskItems)
+        {
+            MTaskItemModel mTaskItem;
+            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            {
+                mTaskItem = db.Query("MTaskItem")
+                     .Where("TaskItemCode", taskItems[0])
+                     .Where("TaskPrimaryItem", taskItems[1])
+                     .Where("TaskSecondaryItem", taskItems[2])
+                     .Where("TaskTertiaryItem", taskItems[3])
+                     .Get<MTaskItemModel>()
+                     .FirstOrDefault();
+            }
+            return mTaskItem != null;
         }
 
         private async Task<int> SaveChangeData(DTaskInterruptModalEditViewModel editViewModel)
@@ -442,7 +468,8 @@ namespace task_sync_web.Controllers
                         "taskrecord.TaskPrimaryItem",              // 作業大項目
                         "taskrecord.TaskSecondaryItem",            // 作業中項目
                         "taskrecord.TaskTertiaryItem",             // 作業小項目
-                        "taskrecord.Remark"                       // 備考
+                        "taskrecord.Remark",                       // 備考
+                        "taskrecord.IsDelete"                      // 削除フラグ
                         )
                 //.SelectRaw("CONCAT(CAST([taskrecord].[TaskItemCode] AS varchar), '-', [taskrecord].[TaskPrimaryItem], '-', [taskrecord].[TaskSecondaryItem], '-' [taskrecord].[TaskTertiaryItem]) as TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem") // 作業項目選択
                 .SelectRaw("FORMAT([taskrecord].[TaskStartDateTime], 'yyyy/MM/dd') as TaskStartDate") // 作業開始日付(実績)
@@ -505,12 +532,12 @@ namespace task_sync_web.Controllers
         }
 
 
-        private async Task<List<DTaskRecordModel>> GetListTaskRecordModel(DTaskRecordViewModel viewModel, bool command = true)
+        private async Task<List<DTaskRecordModel>> SearchListTaskRecordModel(DTaskRecordViewModel viewModel, bool command = true)
         {
             var listDTaskRecordModel = new List<DTaskRecordModel>();
             var taskStartDateTime = Convert.ToDateTime(viewModel.TaskStartDateTime).Date;
             var taskEndDateTime = Convert.ToDateTime(viewModel.TaskEndDateTime).AddDays(1).Date;
-            var taskUserLoginId = viewModel.TaskUserLoginIdName;
+            var taskUserLogin = (viewModel.TaskUserLoginIdName ?? string.Empty).Trim();
             var isDelete = viewModel.IsDelete;
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
@@ -563,8 +590,11 @@ namespace task_sync_web.Controllers
                 .LeftJoin("MTaskUser as f", "taskrecord.UpdateTaskUserId", "f.TaskUserId")
                 .Where("TaskStartDateTime", ">=", taskStartDateTime)
                 .Where("TaskEndDateTime", "<", taskEndDateTime);
-                if (!string.IsNullOrWhiteSpace(taskUserLoginId))
-                    query = query.Where("TaskUserLoginId", taskUserLoginId);
+                if (!string.IsNullOrWhiteSpace(taskUserLogin))
+                {
+                    query = query.WhereContains("taskUser.TaskUserLoginId", taskUserLogin);
+                    query = query.OrWhereContains("taskUser.TaskUserName", taskUserLogin);
+                }
                 if (!isDelete)
                     query = query.WhereIn("IsDelete", new[] { false });
                 else

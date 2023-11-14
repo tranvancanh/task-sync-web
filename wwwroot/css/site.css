@@ -400,3 +400,7 @@ table.sticky_table {
     background-color: #d1e7dd;
     border-color: #badbcc;
 }
+
+.no-scroll {
+    overflow: hidden;
+}

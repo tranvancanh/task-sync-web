@@ -77,7 +77,7 @@
         }
 
     input:checked + .slider {
-        background-color: #2196F3;
+        background-color: var(--maincolor);
     }
 
     input:focus + .slider {
@@ -127,7 +127,7 @@
         <div class="p-2">
             <div class="form-group text-left message-error-area">
             </div>
-            <form class="c-dialog-area" method="get" asp-controller="DTaskRecord" asp-action="Index" enctype="multipart/form-data">
+            <form class="c-dialog-area" method="get" asp-controller="DTaskRecord" asp-action="Index" id=searchform enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-xl-2">
                         <label>@Html.DisplayNameFor(m => m.TaskStartDateTime)</label>
@@ -141,14 +141,14 @@
                         <label>@Html.DisplayNameFor(m => m.TaskUserLoginIdName)</label>
                         <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" />
                     </div>
-                    <div class="col-xl-1 mt-xl-4 ml-xl-5">
+                    <div class="col-xl-1 mt-xl-4 mr-xl-5">
                         <label class="switch">
                             <input type="checkbox" asp-for="IsDelete" class="col-xl-12">
                             <span class="slider round"></span>
                         </label>
                     </div>
-                    <div class="col-xl-2 mt-xl-0 mr-xl-5">
-                        <label role="button" id="IsDeleteLabel">@Html.DisplayNameFor(m => m.IsDelete)</label>
+                    <div class="col-xl-2 mt-xl-3 mr-xl-5">
+                        <label class="my-2" role="button" id="IsDeleteLabel">@Html.DisplayNameFor(m => m.IsDelete)</label>
                     </div>
 
                     <div class="col-xl-3"></div>
@@ -161,55 +161,60 @@
                         <button class="btn btn-custom btn-lg mx-2" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
                     </div>
                 </div>
-                @{
-                    var errorList = ViewData["ErrorMessage"] as string;
-                    if (errorList != null && errorList.Any())
-                    {
-                            <div class="form-group text-left message-error-area mx-3">
-                                <ul class="mt-3">
-                                    <li class="text-danger-custom error-text">@errorList</li>
-                                </ul>
-                            </div>
+
+                <div class="form-group text-left message-error-area mx-3 col-xl-6">
+                    @{
+                        var errorList = ViewData["ErrorMessage"] as List<string>;
+                        if (errorList != null && errorList.Any())
+                        {
+                            <ul class="mt-3">
+                                @foreach (var mess in errorList)
+                                {
+                                    <li class="text-danger-custom error-text">@mess</li>
+                                }
+                            </ul>
+                        }
                     }
-                }
+                </div>
+
             </form>
             @Html.HiddenFor(model => model.PageNumber)
-            <div class="form-control mt-4">
+            <div class="form-control">
                 <table id="d-delivery-table" class="table sticky_table table-hover-evant mt-3" data-resizable-column-id="d-delivery-table">
                     <thead>
                         <tr>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel"></th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel" style="display: none">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskRecordId)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].LoginDateTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskDate)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserDepartmentName)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserGroupName)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserLoginId)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserName)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemId)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCode)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskPrimaryItem)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskSecondaryItem)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTertiaryItem)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCategory)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTrackTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTrackTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTrackTotalTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTotalTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTimeMinute)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTimeMinute)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].Remark)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsDelete)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateDateTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateAdministratorId)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserId)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateDateTime)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateAdministratorId)</th>
-                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateTaskUserId)</th>
+                            <th></th>
+                            <th style="display: none">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskRecordId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].LoginDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskDate)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserDepartmentName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserGroupName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserLoginId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCode)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskPrimaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskSecondaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTertiaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCategory)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTrackTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTrackTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTrackTotalTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTotalTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTimeMinute)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTimeMinute)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].Remark)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsDelete)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateAdministratorId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateAdministratorId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateTaskUserId)</th>
                         </tr>
                     </thead>
 
@@ -222,109 +227,112 @@
                                     <td class="table-detail-link text-center">
                                         <a class="btn btn-light btn-sm" onclick="GetEdit('@item.TaskRecordId')"><i class="fas fa-edit"></i></a>
                                     </td>
-                                    <td class="table-vhdate text-center" style="display: none">
+                                    <td class="text-center" style="display: none">
                                         @Html.DisplayFor(modelItem => item.TaskRecordId)
                                     </td>
-                                    <td class="table-vhdate text-center">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.LoginDateTime)
                                     </td>
-                                    <td class="table-bin  text-center">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskDate)
                                     </td>
-                                    <td class="table-deno1 text-center">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskUserDepartmentName)
                                     </td>
-                                    <td class="table-deno2 text-center">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskUserGroupName)
                                     </td>
-                                    <td class="table-deno3 text-center">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskUserLoginId)
                                     </td>
-                                    <td class="table-denoline text-right">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskUserName)
                                     </td>
-                                    <td class="table-torihikisaki-cd">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskItemId)
                                     </td>
-                                    <td class="table-torihikisaki-nm">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskItemCode)
                                     </td>
-                                    <td class="table-productcd">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskPrimaryItem)
                                     </td>
-                                    <td class="table-other-productcd">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskSecondaryItem)
                                     </td>
-                                    <td class="table-product-name">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskTertiaryItem)
                                     </td>
-                                    <td class="table-nounyusaki-cd">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskItemCategory)
                                     </td>
 
-                                    <td class="table-nounyusaki-nm">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskStartDateTrackTime)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskEndDateTrackTime)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @{
-                                                @TimeSpan.FromSeconds(item.TaskInterruptTrackTotalTime)
+                                            @TimeSpan.FromSeconds(item.TaskInterruptTrackTotalTime)
+                                            @if (item.IsDisplayTaskInterruptTrack)
+                                            {
+                                                <a class="btn btn-light btn-sm" onclick="GetInterrupt('@item.TaskRecordId')"><i class="fas fa-list-ul"></i></a>
+                                            }
                                         }
-                                        <a class="btn btn-light btn-sm" onclick="GetInterrupt('@item.TaskRecordId')"><i class="fas fa-list-ul"></i></a>
                                     </td>
 
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskStartDateTime)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskEndDateTime)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @{
-                                                @TimeSpan.FromSeconds(item.TaskInterruptTotalTime)
+                                            @TimeSpan.FromSeconds(item.TaskInterruptTotalTime)
                                         }
                                     </td>
 
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskTime)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.PureTaskTime)
                                     </td>
 
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-right">
                                         @Html.DisplayFor(modelItem => item.TaskTimeMinute)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-right">
                                         @Html.DisplayFor(modelItem => item.PureTaskTimeMinute)
                                     </td>
 
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.Remark)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-center">
                                         @((item.IsDelete == false) ? 0 : 1)
                                     </td>
 
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.CreateDateTime)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.CreateAdministratorId)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.CreateTaskUserId)
                                     </td>
 
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.UpdateDateTime)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.UpdateAdministratorId)
                                     </td>
-                                    <td class="table-nounyusaki-syo">
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.UpdateTaskUserId)
                                     </td>
                                 </tr>
@@ -405,9 +413,8 @@
                 success: function (data) {
                     console.log({ data });
                     if (data.result == "OK") {
-                        console.log('success');
                         //モーダルを閉じる
-                        MicroModal.close('modal-2');
+                        closeModal();
                         window.location.href = ROOT + `/DTaskRecord/Index?TaskStartDateTime=${taskStartDateTime}&TaskEndDateTime=${taskEndDateTime}&TaskUserLoginIdName=${taskUserLoginIdName}&IsDelete=${isDelete}&PageNumber=${pageNumber}`;
                     }
                     else {
@@ -467,7 +474,7 @@
                 data: { taskRecordId },
                 success: function (result) {
                     $('#modalarea').html(result);
-                    MicroModal.show('modal-2');
+                    modalShow();
                 },
                 failure: function (response) {
                     alert(response.responseText);
@@ -486,8 +493,7 @@
                 data: { taskRecordId },
                 success: function (result) {
                     $('#modalarea').html(result);
-                    //モーダルを開く
-                    MicroModal.show('modal-2');
+                    modalShow();
                     DatepickerRun();
                 },
                 failure: function (response) {
@@ -526,12 +532,12 @@
                         });
                     },
                     focus: function (event, ui) {
-                        var a = ui.item.label;
+                        let a = ui.item.label;
                         // $("#TaskUserLoginIdName").val(a);
                         return false;
                     },
                     select: function (event, ui) {
-                        var b = ui.item.label;
+                        let b = ui.item.label;
                         $("#TaskUserLoginIdName").val(b);
                         return false;
                     },
@@ -552,11 +558,10 @@
                             success: function (data) {
                                 response($.map(data, function (item) {
                                     return {
-                                        label: item.TaskItemCode + " - " + item.TaskPrimaryItem + " - " + item.TaskSecondaryItem + " - " + item.TaskTertiaryItem,
+                                        label: item.TaskItemCode + "-" + item.TaskPrimaryItem + "-" + item.TaskSecondaryItem + "-" + item.TaskTertiaryItem,
                                         value: item.TaskItemCode,
                                         displayname: item.TaskItemCode
                                     };
-
                                 }))
                             },
                             error: function (result) {
@@ -572,6 +577,7 @@
                     select: function (event, ui) {
                         let b = ui.item.label;
                         $("#TaskItem").val(b);
+                        $("#TaskItemHinden").val(b);
                         return false;
                     },
                 });

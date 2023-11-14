@@ -10,7 +10,7 @@ namespace task_sync_web.Models
         public int TaskRecordId { get; set; }
 
         [Display(Name = "ログイン日時")]
-        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm:ss}")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm:ss")]
         public DateTime LoginDateTime { get; set; } // DLoginTaskUserRecordを参照
 
@@ -50,22 +50,28 @@ namespace task_sync_web.Models
         public string TaskItemCategory { get; set; } // MTaskItemを参照
 
         [Display(Name = "作業開始時刻(記録)")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm:ss}")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm:ss")]
         public DateTime TaskStartDateTrackTime { get; set; }
 
         [Display(Name = "作業終了時刻(記録)")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm:ss}")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm:ss")]
         public DateTime TaskEndDateTrackTime { get; set; }
 
         [Display(Name = "中断時間(記録)")]
         public int TaskInterruptTrackTotalTime { get; set; }
 
+        [JsonIgnore]
+        public bool IsDisplayTaskInterruptTrack { get; set; }
 
         [Display(Name = "作業開始時刻(実績)")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm:ss}")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm:ss")]
         public DateTime TaskStartDateTime { get; set; }
 
         [Display(Name = "作業終了時刻(実績)")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm:ss}")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm:ss")]
         public DateTime TaskEndDateTime { get; set; }
 
@@ -90,7 +96,7 @@ namespace task_sync_web.Models
         [Display(Name = "備考")]
         public string Remark { get; set; }
 
-        [Display(Name = "修正フラグ")]
+        [Display(Name = "削除フラグ")]
         [JsonConverter(typeof(BoolFormatConverter))]
         public bool IsDelete {  get; set; }
 
