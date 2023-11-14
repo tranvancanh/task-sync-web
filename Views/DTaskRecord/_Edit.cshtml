@@ -5,7 +5,7 @@
         <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
             <header class="modal__header">
                 <h3 id="modal-1-title" class="fw-bold">修正</h3>
-                <button class="btn btn-custom btn-lg" aria-label="Close modal" data-micromodal-close><i class="fas fa-times"></i></button>
+                <button class="btn btn-custom btn-lg" aria-label="Close modal" id="btnmodalclose" onclick="closeModal()" data-micromodal-close><i class="fas fa-times"></i></button>
             </header>
             <div class="form-group text-left message-error-area mx-3 modale-rror">
 
@@ -56,7 +56,6 @@
                         <label class="small fw-bold">@Html.DisplayNameFor(model => model.TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem)</label>
                         <input asp-for="TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem" class="form-control form-control-lg　ui-autocomplete" id="TaskItem" type="text" />
                     </div>
-                    
                 </div>
 
                 <div class="form-group my-3 row">
@@ -83,10 +82,3 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"
-        integrity="sha256-F6h55Qw6sweK+t7SiOJX+2bpSAa3b/fnlrVCJvmEj1A="
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.9/jquery.validate.unobtrusive.min.js"
-        integrity="sha256-paoxpct33kY9fpQlvgC8IokjGq8iqYaVFawgFPg8oz0="
-        crossorigin="anonymous"></script>

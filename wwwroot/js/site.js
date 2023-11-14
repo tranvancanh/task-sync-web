@@ -3,6 +3,19 @@
 
 // Write your JavaScript code.
 $(document).ready(function () {
-
-
+   
 });
+
+function modalShow() {
+    //モーダルを開く
+    MicroModal.show('modal-2');
+    document.body.classList.add("no-scroll");
+}
+
+function closeModal() {
+    //モーダルを閉じる
+    document.body.classList.remove("no-scroll");
+}
+
+
+
