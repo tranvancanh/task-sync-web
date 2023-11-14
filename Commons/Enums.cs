@@ -16,5 +16,10 @@
         {
             Default = 1, Search = 2, ExcelOutput
         }
+
+        public enum TaskStyle
+        {
+            PrimaryItem = 1, SecondaryItem = 2, TertiaryItem
+        }
     }
 }

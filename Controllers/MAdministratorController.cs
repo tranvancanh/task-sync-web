@@ -42,7 +42,7 @@ namespace task_sync_web.Controllers
                 ViewData["ErrorMessage"] = ex.Message;
                 return View(viewModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ViewData["ErrorMessage"] = ErrorMessages.EW0500;
                 return View(viewModel);
@@ -63,7 +63,7 @@ namespace task_sync_web.Controllers
                 var memoryStream = this.ExcelCreate(administratorModels);
 
                 // ファイル名
-                var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
+                var fileName = viewModel.DisplayName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                 return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
             }
             catch (CustomExtention ex)
@@ -71,7 +71,7 @@ namespace task_sync_web.Controllers
                 ViewData["ErrorMessage"] = ex.Message;
                 return View("Index", viewModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ViewData["ErrorMessage"] = ErrorMessages.EW0500;
                 return View("Index", viewModel);

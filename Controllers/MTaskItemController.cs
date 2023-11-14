@@ -156,14 +156,14 @@ namespace task_sync_web.Controllers
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
 
                     var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
-                    isNotUse = (isNotUse ?? "0").Trim();
+                    isNotUse = (string.IsNullOrWhiteSpace(isNotUse) ? "0" : isNotUse).Trim();
                     dataTable.Rows[i]["IsNotUse"] = isNotUse;
                     if (!string.IsNullOrWhiteSpace(isNotUse) && !isNotUse.Equals("0") && !isNotUse.Equals("1"))
                         rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1"));
 
                     STEP:
                     if (rowErrorList.Count > 0)
-                        listErrDataCheck.Add($"{i + 1}行目", JsonConvert.SerializeObject(rowErrorList));
+                        listErrDataCheck.Add($"{i + 2}行目", JsonConvert.SerializeObject(rowErrorList));
                 }
 
                 if (listErrDataCheck.Any())

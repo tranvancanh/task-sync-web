@@ -146,11 +146,8 @@ namespace task_sync_web.Controllers
                     if (remark != null && remark.Length > 200)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
 
-                    var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
-                    if (string.IsNullOrWhiteSpace(isNotUse))
-                        isNotUse = "0";
-                    else
-                        isNotUse = isNotUse.Trim();
+                     var isNotUse = Convert.ToString(dataTable.Rows[i]["IsNotUse"]);
+                    isNotUse = (string.IsNullOrWhiteSpace(isNotUse) ? "0" : isNotUse).Trim();
                     dataTable.Rows[i]["IsNotUse"] = isNotUse;
                     if (!string.IsNullOrWhiteSpace(isNotUse) && !isNotUse.Equals("0") && !isNotUse.Equals("1"))
                         rowErrorList.Add(string.Format(ErrorMessages.EW1206, "利用停止フラグ", "0", "1"));
