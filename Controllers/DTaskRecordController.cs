@@ -10,7 +10,7 @@ namespace task_sync_web.Controllers
     public class DTaskRecordController : BaseController
     {
         public string[] DateTimeFormatSupport = new[] { "yyyy/MM/dd", "yyyy-MM-dd", "yyyy.MM.dd", "yyyyMMdd" };
-        public string[] TimeSpanFormatSupport = new[] { @"hh\:mm\:ss" };
+        public string[] TimeSpanFormatSupport = new[] { @"hh\:mm\:ss", @"hh\:mm" };
 
         [HttpGet]
         public async Task<IActionResult> Index(DTaskRecordViewModel viewModel, Enums.GetState command = Enums.GetState.Default)
@@ -290,12 +290,38 @@ namespace task_sync_web.Controllers
         public async Task<IActionResult> Edit(DTaskInterruptModalEditViewModel editViewModel)
         {
             var errorList = new List<string>();
+            try
+            {
+                errorList = ValidateForm(editViewModel);
+                if (errorList.Any())
+                    return Json(new { Result = "NG", Mess = errorList });
+
+                var efftedRows = await SaveChangeData(editViewModel);
+                if(efftedRows > 0)
+                    return Json(new { Result = "OK", Mess = SuccessMessages.SW002 });
+                else
+                {
+                    errorList.Add(ErrorMessages.EW1207);
+                    return Json(new { Result = "NG", Mess = errorList });
+                }
+            }
+            catch(Exception ex)
+            {
+                errorList.Add(ex.Message);
+                return Json(new { Result = "NG", Mess = errorList });
+            }
+        }
+
+        private List<string> ValidateForm(DTaskInterruptModalEditViewModel editViewModel)
+        {
+            var errorList = new List<string>();
             var taskStartDate = editViewModel.TaskStartDate;
             var taskStartTime = editViewModel.TaskStartTime;
             var taskEndDate = editViewModel.TaskEndDate;
             var taskEndTime = editViewModel.TaskEndTime;
             var taskInterruptTotalTime = editViewModel.TaskInterruptTotalTime;
             var taskItem = editViewModel.TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem;
+            var remark = (editViewModel.Remark ?? string.Empty).Trim();
             try
             {
                 taskStartDate = DateTime.ParseExact(taskStartDate, DateTimeFormatSupport, System.Globalization.CultureInfo.InvariantCulture).ToString(DateTimeFormatSupport[0]);
@@ -329,17 +355,73 @@ namespace task_sync_web.Controllers
             {
                 errorList.Add(string.Format(ErrorMessages.EW1303, "作業終了時間"));
             }
-            if(taskInterruptTotalTime < 0)
+            if (taskInterruptTotalTime < 0)
                 errorList.Add(string.Format(ErrorMessages.EW0009, "中断時間(分)"));
-            if(string.IsNullOrWhiteSpace(taskItem))
+            if (string.IsNullOrWhiteSpace(taskItem))
                 errorList.Add(string.Format(ErrorMessages.EW0001, "作業項目"));
-
-            await Task.CompletedTask;
-
-            if(errorList.Any())
-                return Json(new { Result = "NG", Mess = errorList });
             else
-                return Json(new { Result = "OK", Mess = SuccessMessages.SW002 });
+            {
+                if (taskItem.Split('-').Length != 4)
+                    errorList.Add(string.Format(ErrorMessages.EW1304));
+            }
+            if (remark.Length > 200)
+                errorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
+
+            return errorList;
+        }
+
+        private async Task<int> SaveChangeData(DTaskInterruptModalEditViewModel editViewModel)
+        {
+            var efftedRows = -1;
+            using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
+            {
+                var tran = db.Begin();
+                try
+                {
+                    var taskRecordId = editViewModel.TaskRecordId;
+                    var taskStartDate = Convert.ToDateTime(editViewModel.TaskStartDate).Date;
+                    var taskStartTime = TimeSpan.ParseExact(editViewModel.TaskStartTime, TimeSpanFormatSupport, System.Globalization.CultureInfo.InvariantCulture).ToString(@"hh\:mm");
+                    var taskEndDate = Convert.ToDateTime(editViewModel.TaskEndDate).Date;
+                    var taskEndTime = TimeSpan.ParseExact(editViewModel.TaskEndTime, TimeSpanFormatSupport, System.Globalization.CultureInfo.InvariantCulture).ToString(@"hh\:mm");
+                    var taskInterruptTotalTime = editViewModel.TaskInterruptTotalTime;
+                    var taskItem = editViewModel.TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem.Split('-');
+                    var taskItemCode = taskItem[0];
+                    var taskPrimaryItem = taskItem[1];
+                    var taskSecondaryItem = taskItem[2];
+                    var taskTertiaryItem = taskItem[3];
+                    var remark = (editViewModel.Remark ?? string.Empty).Trim();
+                    var isDelete = editViewModel.IsDelete;
+
+                    efftedRows = 0;
+                    // 更新処理
+                    var result = await db.Query("DTaskRecord")
+                        .Where("TaskRecordId", taskRecordId)
+                        .UpdateAsync(new
+                        {
+                            TaskItemCode = taskItemCode,
+                            TaskPrimaryItem = taskPrimaryItem,
+                            TaskSecondaryItem = taskSecondaryItem,
+                            TaskTertiaryItem = taskTertiaryItem,
+                            TaskStartDateTime = taskStartDate.Add(TimeSpan.Parse(taskStartTime)),
+                            TaskEndDateTime = taskEndDate.Add(TimeSpan.Parse(taskEndTime)),
+                            TaskInterruptTotalTime = taskInterruptTotalTime,
+                            Remark = remark,
+                            IsDelete = isDelete,
+                            UpdateDateTime = DateTime.Now,
+                            UpdateAdministratorId = LoginUser.AdministratorId
+                        }, tran);
+                    if (result > 0)
+                        efftedRows = efftedRows + result;
+
+                    db.Commit();
+                }
+                catch (Exception)
+                {
+                    db.Rollback();
+                    throw;
+                }
+            }
+            return efftedRows;
         }
 
         private async Task<DTaskInterruptModalEditViewModel> GetDTaskRecord(int taskRecordId)
@@ -418,7 +500,6 @@ namespace task_sync_web.Controllers
         }
 
 
-
         private async Task<List<DTaskRecordModel>> GetListTaskRecordModel(DTaskRecordViewModel viewModel, bool command = true)
         {
             var listDTaskRecordModel = new List<DTaskRecordModel>();
@@ -454,7 +535,7 @@ namespace task_sync_web.Controllers
                         "taskrecord.TaskEndDateTime",         // 作業終了時刻(実績)
                         "taskrecord.TaskInterruptTotalTime",  // 中断記録(実績)
 
-                        "taskrecord.TaskMemo",                // 作業メモ
+                        "taskrecord.Remark",                  // 備考
                         "taskrecord.IsDelete",                // 削除フラグ
 
                         "taskrecord.CreateDateTime",

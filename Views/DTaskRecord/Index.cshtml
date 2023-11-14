@@ -386,7 +386,8 @@
         });
 
         function SubmitForm() {
-            console.log('Serialize the form datas');
+            $('.message-error-area').html('');
+            $('.message-success-area').html('');
             //Serialize the form datas.
             const valdata = $("#editform").serialize();
             //to get alert popup
@@ -400,6 +401,8 @@
                     console.log({ data });
                     if (data.result == "OK") {
                         console.log('success');
+                        //モーダルを閉じる
+                        MicroModal.close('modal-2');
                     }
                     else {
                         console.log('false');
@@ -477,6 +480,7 @@
                 data: { taskRecordId },
                 success: function (result) {
                     $('#modalarea').html(result);
+                    //モーダルを開く
                     MicroModal.show('modal-2');
                     DatepickerRun();
                 },

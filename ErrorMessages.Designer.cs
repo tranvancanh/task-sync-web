@@ -403,6 +403,15 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 作業項目選択が正しくありません。再選択してください。.
+        /// </summary>
+        public static string EW1304 {
+            get {
+                return ResourceManager.GetString("EW1304", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 予期せぬエラーが発生しました。.
         /// </summary>
         public static string EW9000 {
@@ -417,15 +426,6 @@ namespace task_sync_web {
         public static string EW90001 {
             get {
                 return ResourceManager.GetString("EW90001", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String {
-            get {
-                return ResourceManager.GetString("String", resourceCulture);
             }
         }
     }
