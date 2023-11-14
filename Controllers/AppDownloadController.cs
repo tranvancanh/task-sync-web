@@ -92,7 +92,7 @@ namespace task_sync_web.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = "データの取得に失敗しました。";
+                ViewData["Error"] = "データの取得に失敗しました。"+ ex.Message;
                 return View();
             }
 
