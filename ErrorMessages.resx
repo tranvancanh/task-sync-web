@@ -277,7 +277,7 @@
     <value>作業終了時刻は、作業開始時刻以上でなければいけません。</value>
   </data>
   <data name="EW1304" xml:space="preserve">
-    <value>作業項目選択が正しくありません。再選択してください。</value>
+    <value>作業項目が存在しません。再選択してください。</value>
     <comment>作業事績</comment>
   </data>
   <data name="EW1306" xml:space="preserve">

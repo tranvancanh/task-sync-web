@@ -18,7 +18,14 @@
     <link rel="stylesheet" href="~/css/micromodal.css" />
 
 </head>
-<body class="sb-nav-fixed">
+@{
+    var cookie = Context.Request.Cookies["Sidebar"];
+    if (string.IsNullOrWhiteSpace(cookie))
+    {
+        cookie = "sb-nav-fixed";
+    }
+}
+<body class="@cookie">
     <nav class="sb-topnav navbar navbar-expand navbar-dark">
         <!-- Navbar Brand-->
         <a class="navbar-brand ps-3" asp-controller="Home" asp-action="Index">TaskSync</a>
@@ -140,10 +147,24 @@
 </body>
 </html>
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <script>
     MicroModal.init({
         disableFocus: true,
         awaitOpenAnimation: true,
         awaitCloseAnimation: true
     });
+
+    $(document).ready(function () {
+        $('#sidebarToggle').click(function () {
+            $.removeCookie('Sidebar', { path: '/' });
+            document.body.classList.toggle('sb-sidenav-toggled');
+            let expDate = new Date();
+            expDate.setTime(expDate.getTime() + (30 * 60 * 1000)); // add 30 minutes
+            let className = $('body').attr('class');
+            $.cookie('Sidebar', className);
+            console.log({className});
+        });
+    })
+
 </script>

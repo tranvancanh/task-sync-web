@@ -403,7 +403,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 作業項目選択が正しくありません。再選択してください。.
+        ///   Looks up a localized string similar to 作業項目が存在しません。再選択してください。.
         /// </summary>
         public static string EW1304 {
             get {
