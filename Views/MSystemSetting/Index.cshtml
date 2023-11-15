@@ -98,6 +98,7 @@
                     @Html.PagedListPager((IPagedList)pagedList, pageNumber => Url.Action("Index", new {searchKeyWord = Model.SearchKeyWord, pageNumber = pageNumber }),
                 new PagedListRenderOptions
                 {
+                UlElementClasses = new string [] {"pagination flex-wrap"},
                 LiElementClasses = new string[] { "page-item" },
                 PageClasses = new string[] { "page-link" },
                 MaximumPageNumbersToDisplay = 10, //表示するページャーの数

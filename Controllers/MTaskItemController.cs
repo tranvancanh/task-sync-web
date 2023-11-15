@@ -103,6 +103,7 @@ namespace task_sync_web.Controllers
 
                 var listErrDataCheck = new Dictionary<string, string>();
                 dataTable = ExcelFile<MTaskItemModel>.ToWithFormat(dataTable);
+                Utils.WhitespaceNotTake(dataTable);
                 for (var i = 0; i < dataTable.Rows.Count; i++)
                 {
                     var model = new MTaskItemModel();
@@ -333,7 +334,11 @@ namespace task_sync_web.Controllers
             if (!int.TryParse(taskItemCode, out int val))
                 return string.Format(ErrorMessages.EW0009, "作業項目コード");
             else
-                return string.Format(ErrorMessages.EW0002, "作業項目コード", "8");
+            {
+                if(taskItemCode.Length > 8)
+                    return string.Format(ErrorMessages.EW0002, "作業項目コード", "8");
+            }
+            return string.Empty;
         }
 
         private async Task<int> SaveChangeDataAsync(List<MTaskItemModel> insertData, List<MTaskItemModel> modifyData)

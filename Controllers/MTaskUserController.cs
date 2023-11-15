@@ -102,6 +102,7 @@ namespace task_sync_web.Controllers
                 }
                 var listErrDataCheck = new Dictionary<string, string>();
                 dataTable = ExcelFile<MTaskUserModel>.ToWithFormat(dataTable);
+                Utils.WhitespaceNotTake(dataTable);
                 for (var i = 0; i < dataTable.Rows.Count; i++)
                 {
                     var model = new MTaskUserModel();

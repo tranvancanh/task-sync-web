@@ -93,7 +93,7 @@
                                         <label class="file-name-view mx-2"></label>
 
                                     </div>
-                                    <div class="mx-3">
+                                    <div class="mx-3 my-1">
                                         <button class="btn btn-custom btn-lg" name="Action" value="ImportOutput" type="submit">
                                             <span class="p-2">
                                                 <i class="fas fa-upload mr-2"></i>Excel取込
@@ -264,6 +264,7 @@
                     @Html.PagedListPager((IPagedList)pagedList, pageNumber => Url.Action("Index", new { searchKeyWord = Model.SearchKeyWord, pageNumber = pageNumber }),
                 new PagedListRenderOptions
                 {
+                UlElementClasses = new string [] {"pagination flex-wrap"},
                 LiElementClasses = new string[] { "page-item" },
                 PageClasses = new string[] { "page-link" },
                 MaximumPageNumbersToDisplay = 10, //表示するページャーの数
