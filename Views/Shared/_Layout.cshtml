@@ -159,8 +159,6 @@
         $('#sidebarToggle').click(function () {
             $.removeCookie('Sidebar', { path: '/' });
             document.body.classList.toggle('sb-sidenav-toggled');
-            let expDate = new Date();
-            expDate.setTime(expDate.getTime() + (30 * 60 * 1000)); // add 30 minutes
             let className = $('body').attr('class');
             $.cookie('Sidebar', className);
             console.log({className});
