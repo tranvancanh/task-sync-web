@@ -49,7 +49,7 @@
                 <span class="text-success-custom" id="MessageSuccess">@ViewData["SuccessMessage"]</span>
                 <span class="text-danger-custom" id="MessageError">@ViewData["ErrorMessage"]</span>
             </div>
-
+            @Html.HiddenFor(model => model.PageNumber)
             <div>
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
@@ -122,10 +122,13 @@
 
         function SubmitForm(interruptReasonId, modalState) {
             let form = $(document).find('#interrupt-reason-form');
+            let pageNumber = $('#PageNumber').val();
             let inputInterruptReasonId = $("<input>").attr("type", "hidden").attr("name", "ModalModel.InterruptReasonId").val(interruptReasonId);
             let inputModalStatus = $("<input>").attr("type", "hidden").attr("name", "ModalType").val(modalState);
+            let input2 = $("<input>").attr("type", "hidden").attr("name", "pageNumber").val(pageNumber);
             $(form).append($(inputInterruptReasonId));
             $(form).append($(inputModalStatus));
+            $(form).append($(input2));
             form.submit();
         }
 

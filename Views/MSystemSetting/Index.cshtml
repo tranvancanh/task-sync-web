@@ -40,7 +40,7 @@
                 <span class="text-success-custom">@ViewData["SuccessMessage"]</span>
                 <span class="text-danger-custom">@ViewData["ErrorMessage"]</span>
             </div>
-
+            @Html.HiddenFor(model => model.PageNumber)
             <div>
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
@@ -122,9 +122,12 @@
     <script>
 
         function SystemSettingEditView(systemSettingId) {
-            var form = $(document).find('#system-setting-form');
-            var input1 = $("<input>").attr("type", "hidden").attr("name", "editSystemSettingId").val(systemSettingId);
+            let form = $(document).find('#system-setting-form');
+            let pageNumber = $('#PageNumber').val();
+            let input1 = $("<input>").attr("type", "hidden").attr("name", "editSystemSettingId").val(systemSettingId);
+            let input2 = $("<input>").attr("type", "hidden").attr("name", "pageNumber").val(pageNumber);
             $(form).append($(input1));
+            $(form).append($(input2));
             form.submit();
         }
 
