@@ -36,7 +36,7 @@ namespace task_sync_web.Models
         public string TaskSecondaryItem { get; set; }
         public string TaskTertiaryItem { get; set; }
 
-        [Display(Name = "作業選択項目")]
+        [Display(Name = "作業項目")]
         [DefaultValue("")]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
         public string TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem {  get; set; }

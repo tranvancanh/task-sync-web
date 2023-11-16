@@ -374,21 +374,22 @@ namespace task_sync_web.Controllers
             {
                 errorList.Add(string.Format(ErrorMessages.EW1303, "作業終了時間"));
             }
-
-            var startDateTime = Convert.ToDateTime(taskStartDate).Add(TimeSpan.Parse(taskStartTime));
-            var endDateTime = Convert.ToDateTime(taskEndDate).Add(TimeSpan.Parse(taskEndTime));
-            if (!errorList.Any())
-            {
-                if (startDateTime > endDateTime)
-                    errorList.Add(ErrorMessages.EW1305);
-            }
-
-            var taskTimeMinute = CalculationTimeMinutesTimeByRoundupSeconds(startDateTime, endDateTime);
             if (taskInterruptTotalTime < 0)
                 errorList.Add(ErrorMessages.EW1306);
             else
             {
-                if(taskInterruptTotalTime > taskTimeMinute)
+                if (taskInterruptTotalTime.ToString().Length > 8)
+                    errorList.Add(string.Format(ErrorMessages.EW0002, "中断時間(分)", "8"));
+            }
+
+            if (!errorList.Any())
+            {
+                var startDateTime = Convert.ToDateTime(taskStartDate).Add(TimeSpan.Parse(taskStartTime));
+                var endDateTime = Convert.ToDateTime(taskEndDate).Add(TimeSpan.Parse(taskEndTime));
+                if (startDateTime > endDateTime)
+                    errorList.Add(ErrorMessages.EW1305);
+                var taskTimeMinute = CalculationTimeMinutesTimeByRoundupSeconds(startDateTime, endDateTime);
+                if (taskInterruptTotalTime > taskTimeMinute)
                     errorList.Add(ErrorMessages.EW1307);
             }
 
