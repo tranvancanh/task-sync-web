@@ -128,17 +128,11 @@ namespace task_sync_web.Controllers
                     if (!string.IsNullOrWhiteSpace(messCheckItemCode))
                         rowErrorList.Add(messCheckItemCode);
 
-                    var taskItemCategory = Convert.ToString(dataTable.Rows[i]["TaskItemCategory"]);
-                    if (string.IsNullOrWhiteSpace(taskItemCategory))
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業項目分類"));
-                    else if (taskItemCategory.Length > 10)
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業項目分類", "10"));
-
                     var taskPrimaryItem = Convert.ToString(dataTable.Rows[i]["TaskPrimaryItem"]);
                     if (string.IsNullOrWhiteSpace(taskPrimaryItem))
                         rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業大項目"));
-                    else if (taskPrimaryItem.Length > 10)
-                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業大項目", "10"));
+                    else if (taskPrimaryItem.Length > 15)
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業大項目", "15"));
 
                     var taskSecondaryItem = Convert.ToString(dataTable.Rows[i]["TaskSecondaryItem"]);
                     if (string.IsNullOrWhiteSpace(taskSecondaryItem))
@@ -151,6 +145,12 @@ namespace task_sync_web.Controllers
                         rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業小項目"));
                     else if (taskTertiaryItem.Length > 30)
                         rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業小項目", "30"));
+
+                    var taskItemCategory = Convert.ToString(dataTable.Rows[i]["TaskItemCategory"]);
+                    if (string.IsNullOrWhiteSpace(taskItemCategory))
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0001, "作業項目分類"));
+                    else if (taskItemCategory.Length > 10)
+                        rowErrorList.Add(string.Format(ErrorMessages.EW0002, "作業項目分類", "10"));
 
                     var remark = Convert.ToString(dataTable.Rows[i]["Remark"]);
                     if (remark != null && remark.Length > 200)
