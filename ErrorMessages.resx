@@ -270,7 +270,7 @@
     <comment>作業事績</comment>
   </data>
   <data name="EW1307" xml:space="preserve">
-    <value>中断時間が作業時間をお超えています。</value>
+    <value>中断時間が作業時間を超えています。</value>
     <comment>作業事績</comment>
   </data>
   <data name="EW1305" xml:space="preserve">

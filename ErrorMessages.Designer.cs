@@ -430,7 +430,7 @@ namespace task_sync_web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 中断時間が作業時間をお超えています。.
+        ///   Looks up a localized string similar to 中断時間が作業時間を超えています。.
         /// </summary>
         public static string EW1307 {
             get {

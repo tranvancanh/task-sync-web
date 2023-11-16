@@ -600,6 +600,7 @@ namespace task_sync_web.Controllers
                         "taskrecord.TaskEndDateTime",         // 作業終了時刻(実績)
                         "taskrecord.TaskInterruptTotalTime",  // 中断記録(実績)
 
+                        "taskrecord.TaskMemo",                // 作業メモ
                         "taskrecord.Remark",                  // 備考
                         "taskrecord.IsDelete",                // 削除フラグ
 
