@@ -31,6 +31,9 @@ namespace task_sync_web.Models
         [Display(Name = "作業者名")]
         public string TaskUserName { get; set; } // MTaskUserを参照
 
+        [Display(Name = "デバイス名")]
+        public string DeviceName { get; set; }
+
         [Display(Name = "作業項目ID")]
         public int TaskItemId { get; set; }
 
@@ -102,50 +105,90 @@ namespace task_sync_web.Models
         [Display(Name = "備考")]
         public string Remark { get; set; }
 
-        [Display(Name = "削除フラグ")]
-        [JsonConverter(typeof(BoolFormatConverter))]
-        public bool IsDelete {  get; set; }
-
         [Display(Name = "送信完了フラグ")]
         [JsonConverter(typeof(BoolFormatConverter))]
         public bool IsComplete { get; set; }
+
+        [Display(Name = "削除フラグ")]
+        [JsonConverter(typeof(BoolFormatConverter))]
+        public bool IsDelete {  get; set; }
 
         [Display(Name = "作成日時")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm")]
         public DateTime CreateDateTime { get; set; }
 
-        [Display(Name = "作成管理者")]
+        [JsonIgnore]
         public string CreateAdministratorId { get; set; }
 
         [JsonIgnore]
         public string CreateAdministratorName {  get; set; }
 
-        [Display(Name = "作成作業者")]
+        [Display(Name = "作成管理者")]
+        public string CreateAdministratorFor
+        {
+            get
+            {
+                return $"{CreateAdministratorId} {CreateAdministratorName}";
+            }
+            set {; }
+        }
+
+        [JsonIgnore]
         public int CreateTaskUserId { get; set; }
 
         [JsonIgnore]
         public string CreateTaskUserName { get; set; }
+
+        [Display(Name = "作成作業者")]
+        public string CreateTaskUserFor
+        {
+            get
+            {
+                return $"{CreateTaskUserId} {CreateTaskUserName}";
+            }
+            set {; }
+        }
+
+      
 
         [Display(Name = "更新日時")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm")]
         public DateTime UpdateDateTime { get; set; }
 
-        [Display(Name = "更新管理者")]
+        [JsonIgnore]
         public string UpdateAdministratorId { get; set; }
 
         [JsonIgnore]
         public string UpdateAdministratorName { get; set; }
 
+        [Display(Name = "更新管理者")]
+        public string UpdateAdministratorFor
+        {
+            get
+            {
+                return $"{UpdateAdministratorId} {UpdateAdministratorName}";
+            }
+            set {; }
+        }
 
-        [Display(Name = "更新作業者")]
+        [JsonIgnore]
         public int UpdateTaskUserId { get; set; }
 
         [JsonIgnore]
         public string UpdateTaskUserName { get; set; }
 
-        [Display(Name = "デバイス名")]
-        public string DeviceName {  get; set; }
+        [Display(Name = "更新作業者")]
+        public string UpdateTaskUserFor
+        {
+            get
+            {
+                return $"{UpdateTaskUserId} {UpdateTaskUserName}";
+            }
+            set {; }
+        }
+
+       
     }
 }

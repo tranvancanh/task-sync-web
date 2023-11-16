@@ -583,6 +583,7 @@ namespace task_sync_web.Controllers
                         "taskUser.TaskUserGroupName",         // グループ名
                         "taskUser.TaskUserLoginId as CreateTaskUserID",   // 作業ログインID
                         "taskUser.TaskUserName",              // 作業者名
+                        "deviceStatus.DeviceName",            // デバイス名
 
                         "taskrecord.TaskItemId",              //作業項目ID
                         "taskrecord.TaskItemCode",            // 作業項目コード
@@ -604,15 +605,16 @@ namespace task_sync_web.Controllers
 
                         "taskrecord.CreateDateTime",
                         "b.AdministratorLoginId as CreateAdministratorId", // 作成管理者ログインID
-                        "b.AdministratorName as CreateAdministratorName", // 作成管理者名
-                        "taskrecord.UpdateDateTime",
+                        "b.AdministratorName as CreateAdministratorName",  // 作成管理者名
                         "c.AdministratorLoginId as UpdateAdministratorId", // 更新管理者ログインID
-                        "c.AdministratorName as UpdateAdministratorName", // 更新管理者名
+                        "c.AdministratorName as UpdateAdministratorName",  // 更新管理者名
+
+                        "taskrecord.UpdateDateTime",
                         "e.TaskUserLoginId as CreateTaskUserId", // 作成作業者ログインID
-                        "e.TaskUserName as CreateTaskUserName", // 作成作業者名
+                        "e.TaskUserName as CreateTaskUserName",  // 作成作業者名
                         "f.TaskUserLoginId as UpdateTaskUserId", // 更新作業者ログインID
-                        "f.TaskUserName as UpdateCreateTaskUserName", // 更新作業者名
-                        "deviceStatus.DeviceName"                     // デバイス名
+                        "f.TaskUserName as UpdateTaskUserName"   // 更新作業者名
+
                     )
                 .LeftJoin("DLoginTaskUserRecord as login", "taskrecord.LoginTaskUserRecordId", "login.LoginTaskUserRecordId")
                 .LeftJoin("MTaskUser as taskUser", "taskrecord.TaskUserId", "taskUser.TaskUserId")

@@ -148,7 +148,7 @@
                     </div>
                     <div class="col-xl-2">
                         <label>@Html.DisplayNameFor(m => m.TaskUserLoginIdName)</label>
-                        <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" placeholder="コードor名前" />
+                        <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" placeholder="ログインID or 作業者名" />
                     </div>
                     <div class="col-xl-6 mt-xl-4 mr-xl-5 text-left">
                         <label class="switch">
@@ -162,8 +162,8 @@
                 <div class="row row mt-xl-3">
                     <div class="col-xl-6"></div>
                     <div class="col-xl-6">
-                        <button class="btn btn-custom btn-lg mx-4" name="Command" value="2" id="btnSearch" type="submit"><span class="p-2"><i class="fas fa-search mx-1"></i>検索</span></button>
-                        <button class="btn btn-custom btn-lg mx-2" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mx-1"></i>Excel出力</span></button>
+                        <button class="btn btn-custom btn-lg mx-4" name="Command" value="2" id="btnSearch" type="submit"><span><i class="fas fa-search mx-1"></i>検索</span></button>
+                        <button class="btn btn-custom btn-lg mx-2" name="Command" value="3" type="submit"><span><i class="fas fa-download fa-fw mx-1"></i>Excel出力</span></button>
                     </div>
                 </div>
 
@@ -205,6 +205,7 @@
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserGroupName)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserID)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].DeviceName)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemId)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCode)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskPrimaryItem)</th>
@@ -223,15 +224,14 @@
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTimeMinute)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskMemo)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].Remark)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsDelete)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsComplete)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsDelete)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateAdministratorId)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserId)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].DeviceName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateAdministratorFor)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserFor)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateAdministratorId)</th>
-                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateTaskUserId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateAdministratorFor)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateTaskUserFor)</th>
                         </tr>
                     </thead>
 
@@ -261,6 +261,9 @@
                                     </td>
                                     <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskUserName)
+                                    </td>
+                                    <td class="text-right">
+                                        @Html.DisplayFor(modelItem => item.DeviceName)
                                     </td>
                                     <td class="text-right">
                                         @Html.DisplayFor(modelItem => item.TaskItemId)
@@ -330,34 +333,30 @@
                                         @Html.DisplayFor(modelItem => item.Remark)
                                     </td>
                                     <td class="text-center">
-                                        @((item.IsDelete == false) ? 0 : 1)
+                                        @((item.IsComplete == false) ? 0 : 1)
                                     </td>
                                     <td class="text-center">
-                                        @((item.IsComplete == false) ? 0 : 1)
+                                        @((item.IsDelete == false) ? 0 : 1)
                                     </td>
 
                                     <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.CreateDateTime)
                                     </td>
                                     <td class="text-left ">
-                                        @Html.DisplayFor(modelItem => item.CreateAdministratorId)
+                                        @Html.DisplayFor(modelItem => item.CreateAdministratorFor)
                                     </td>
                                     <td class="text-left">
-                                        @Html.DisplayFor(modelItem => item.CreateTaskUserId)
-                                    </td>
-
-                                    <td class="text-right">
-                                        @Html.DisplayFor(modelItem => item.DeviceName)
+                                        @Html.DisplayFor(modelItem => item.CreateTaskUserFor)
                                     </td>
 
                                     <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.UpdateDateTime)
                                     </td>
                                     <td class="text-left">
-                                        @Html.DisplayFor(modelItem => item.UpdateAdministratorId)
+                                        @Html.DisplayFor(modelItem => item.UpdateAdministratorFor)
                                     </td>
                                     <td class="text-right">
-                                        @Html.DisplayFor(modelItem => item.UpdateTaskUserId)
+                                        @Html.DisplayFor(modelItem => item.UpdateTaskUserFor)
                                     </td>
                                 </tr>
                             }
