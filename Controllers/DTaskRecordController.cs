@@ -47,11 +47,11 @@ namespace task_sync_web.Controllers
                                 if(listInterruptRecord.Any()) item.IsDisplayTaskInterruptTrack = true;
                                 else item.IsDisplayTaskInterruptTrack = false;
                             }
-                            var cookieMess = Request.Cookies["taskrecordeditsuccess"];
+                            var cookieMess = Request.Cookies[Cookies.TASKRECORDEDITSUCCESS];
                             if (!string.IsNullOrWhiteSpace(cookieMess))
                             {
                                 ViewData["SuccessMessage"] = cookieMess;
-                                Response.Cookies.Delete("taskrecordeditsuccess");
+                                Response.Cookies.Delete(Cookies.TASKRECORDEDITSUCCESS);
                             }
                             // page the list
                             viewModel.TaskRecordModels = listPaged;

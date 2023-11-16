@@ -29,6 +29,7 @@ namespace task_sync_web.Controllers
         {
             try
             {
+                this.Init();
                 // ログインチェック・会社・管理者情報の取得
                 var loginData = LoginCheck(loginViewModel);
                 var company = loginData.company;
@@ -304,5 +305,13 @@ namespace task_sync_web.Controllers
             }
         }
 
+        private void Init()
+        {
+            var cookieSidebar = Request.Cookies[Cookies.CLASSSIDEBARC];
+            if (!string.IsNullOrWhiteSpace(cookieSidebar))
+            {
+                Response.Cookies.Delete(Cookies.CLASSSIDEBARC);
+            }
+        }
     }
 }
