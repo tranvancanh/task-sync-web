@@ -269,12 +269,13 @@
     <value>{0}の形式が正しくありません。</value>
     <comment>作業事績</comment>
   </data>
-  <data name="EW9000" xml:space="preserve">
-    <value>予期せぬエラーが発生しました。</value>
-    <comment>その他</comment>
+  <data name="EW1307" xml:space="preserve">
+    <value>中断時間が作業時間をお超えています。</value>
+    <comment>作業事績</comment>
   </data>
   <data name="EW1305" xml:space="preserve">
     <value>作業終了時刻は、作業開始時刻以上でなければいけません。</value>
+    <comment>作業事績</comment>
   </data>
   <data name="EW1304" xml:space="preserve">
     <value>作業項目が存在しません。再選択してください。</value>
@@ -282,5 +283,10 @@
   </data>
   <data name="EW1306" xml:space="preserve">
     <value>中断時間は0以上で入力してください。</value>
+    <comment>作業事績</comment>
+  </data>
+  <data name="EW9000" xml:space="preserve">
+    <value>予期せぬエラーが発生しました。</value>
+    <comment>その他</comment>
   </data>
 </root>

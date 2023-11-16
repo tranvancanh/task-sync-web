@@ -65,13 +65,23 @@
                 </div>
 
                 <div class="form-group mt-4 row">
+                    <div class="d-inline-block">
+                        <label class="ECM_CheckboxInput">
+                            <input class="ECM_CheckboxInput-Input" type="checkbox" asp-for="IsDelete" id="IsDelete">
+                            <span class="ECM_CheckboxInput-DummyInput"></span>
+                            <span class="ECM_CheckboxInput-LabelText">@Html.DisplayNameFor(model => model.IsDelete)</span>
+                        </label>
+                    </div>
+                </div>
+
+                @* <div class="form-group mt-4 row">
                     <div class="col-xl-4 form-check">
                         <input asp-for="IsDelete" class="form-check-input" id="IsDelete" type="checkbox" />
                         <label class="fw-bold form-check-label">@Html.DisplayNameFor(model => model.IsDelete)</label>
                     </div>
-                </div>
+                </div> *@
 
-                <footer class="modal__footer text-right">
+                <footer class="modal__footer text-right mt-2">
                     <button class="btn btn-custom btn-lg" type="button" id="btnsubmit" onclick="SubmitForm()">
                         <span class="p-2">
                             <i class="fas fa-check fa-fw"></i> 更新

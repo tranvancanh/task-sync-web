@@ -112,6 +112,14 @@
         overflow-x: hidden;
     }
 
+    th {
+        white-space: nowrap !important;
+    }
+
+    input[type=time]::-webkit-datetime-edit-ampm-field {
+      display: none;
+    }
+
 </style>
 
 <div class="h4 mb-3">
@@ -140,7 +148,7 @@
                     </div>
                     <div class="col-xl-2">
                         <label>@Html.DisplayNameFor(m => m.TaskUserLoginIdName)</label>
-                        <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" placeholder="コードOr名前" />
+                        <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" placeholder="コードor名前" />
                     </div>
                     <div class="col-xl-6 mt-xl-4 mr-xl-5 text-left">
                         <label class="switch">
@@ -154,8 +162,8 @@
                 <div class="row row mt-xl-3">
                     <div class="col-xl-6"></div>
                     <div class="col-xl-6">
-                        <button class="btn btn-custom btn-lg mx-4" name="Command" value="2" id="btnSearch" type="submit"><span class="p-2"><i class="fas fa-search"></i>検索</span></button>
-                        <button class="btn btn-custom btn-lg mx-2" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
+                        <button class="btn btn-custom btn-lg mx-4" name="Command" value="2" id="btnSearch" type="submit"><span class="p-2"><i class="fas fa-search mx-1"></i>検索</span></button>
+                        <button class="btn btn-custom btn-lg mx-2" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mx-1"></i>Excel出力</span></button>
                     </div>
                 </div>
 
@@ -180,7 +188,6 @@
                 <table id="d-delivery-table" class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th></th>
                             <th style="display: none">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskRecordId)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].LoginDateTime)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskDate)</th>
@@ -204,11 +211,14 @@
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTime)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTimeMinute)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTimeMinute)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskMemo)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].Remark)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsDelete)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsComplete)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateDateTime)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateAdministratorId)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].DeviceName)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateDateTime)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateAdministratorId)</th>
                             <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateTaskUserId)</th>
@@ -220,15 +230,12 @@
                         <tbody>
                             @foreach (var item in Model.TaskRecordModels)
                             {
-                                <tr role="button">
-                                    <td class="table-detail-link text-center">
-                                        <a class="btn btn-light btn-sm" onclick="GetEdit('@item.TaskRecordId')"><i class="fas fa-edit"></i></a>
-                                    </td>
+                                <tr role="button" class="rowclick" taskrecordid="@item.TaskRecordId">
                                     <td class="text-center" style="display: none">
                                         @Html.DisplayFor(modelItem => item.TaskRecordId)
                                     </td>
                                     <td class="text-left">
-                                        @Html.DisplayFor(modelItem => item.LoginDateTime)
+                                        @Html.DisplayFor(modelItem => item.LoginDateTime )
                                     </td>
                                     <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.TaskDate)
@@ -272,11 +279,13 @@
                                     </td>
                                     <td class="text-right">
                                         @{
-                                            @Html.DisplayFor(modelItem => item.TaskInterruptTrackTotalTime)
                                             @if (item.IsDisplayTaskInterruptTrack)
                                             {
-                                                <a class="btn btn-light btn-sm" onclick="GetInterrupt('@item.TaskRecordId')"><i class="fas fa-list-ul"></i></a>
+                                                <a class="btn btn-light btn-sm isdisplaytaskinterrupttrack">
+                                                    <i class="fas fa-list-ul isdisplaytaskinterrupttrack"></i>
+                                                </a>
                                             }
+                                            @Html.DisplayFor(modelItem => item.TaskInterruptTrackTotalTime)
                                         }
                                     </td>
 
@@ -305,20 +314,30 @@
                                     </td>
 
                                     <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskMemo)
+                                    </td>
+                                    <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.Remark)
                                     </td>
                                     <td class="text-center">
                                         @((item.IsDelete == false) ? 0 : 1)
                                     </td>
+                                    <td class="text-center">
+                                        @((item.IsComplete == false) ? 0 : 1)
+                                    </td>
 
                                     <td class="text-left">
                                         @Html.DisplayFor(modelItem => item.CreateDateTime)
                                     </td>
-                                    <td class="text-left">
+                                    <td class="text-left ">
                                         @Html.DisplayFor(modelItem => item.CreateAdministratorId)
                                     </td>
                                     <td class="text-right">
                                         @Html.DisplayFor(modelItem => item.CreateTaskUserId)
+                                    </td>
+
+                                    <td class="text-right">
+                                        @Html.DisplayFor(modelItem => item.DeviceName)
                                     </td>
 
                                     <td class="text-left">
@@ -386,7 +405,6 @@
         const ROOT = '@Url.Content("~")';
         $(document).ready(function () {
             console.log('作業実績 開始');
-            DatepickerRun();
         });
 
         function SubmitForm() {
@@ -434,38 +452,19 @@
             $("#IsDelete").prop('checked', !val);
         });
 
-        function DatepickerRun() {
-            // カレンダー
-            $('.datepicker').on('click', function () {
-                Datepicker(this);
-            });
-            // ブラウザのオートコンプリートをオフにする
-            $('.datepicker').attr('autocomplete', 'off');
-            // 数字が8文字なら日付形式に変換
-            $('.datepicker').on('change blur', function () {
-                let date = $.trim($(this).val());
-                if (date.length === 8) {
-                    let year = date.substr(0, 4);
-                    let month = date.substr(4, 2);
-                    let day = date.substr(6, 2);
-                    let setDate = year + "/" + month + "/" + day;
-                    $(this).val(setDate);
-                }
-            });
-        }
+        $('.rowclick').bind('click', function (event) {
+            const hasClass = event.target.classList.contains('isdisplaytaskinterrupttrack');
+            const taskRecordId = $(this).attr('TaskRecordId');
+            let url = ROOT;
+            if(hasClass){
+                url = url + '/DTaskRecord/Interrupt';
+            }
+            else{
+                url = url + '/DTaskRecord/Edit';
+            }
 
-        function Datepicker(textBox) {
-            //datepickerオプション 参考：https://www.sejuku.net/blog/44165
-            $(textBox).datepicker({
-                showAnim: 'fadeIn',
-                dateFormat: 'yy/mm/dd'
-            })
-            $(textBox).trigger('focus');
-        }
-
-        function GetInterrupt(taskRecordId) {
             $.ajax({
-                url: ROOT + '/DTaskRecord/Interrupt',
+                url: url,
                 type: 'GET',
                 data: { taskRecordId },
                 success: function (result) {
@@ -480,27 +479,8 @@
                 },
                 processData: true
             });
-        }
 
-        function GetEdit(taskRecordId) {
-            $.ajax({
-                url: ROOT + '/DTaskRecord/Edit',
-                type: 'GET',
-                data: { taskRecordId },
-                success: function (result) {
-                    $('#modalarea').html(result);
-                    modalShow();
-                    DatepickerRun();
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                processData: true
-            });
-        }
+        });
 
         $(document).on('focus', '#TaskUserLoginIdName', function () {
             $(function () {
@@ -579,22 +559,6 @@
                 });
             });
         });
-
-        function onlyNumberKey(evt) {
-            let ch = String.fromCharCode(evt.which);
-            if (!(/[0-9]/.test(ch))) {
-                evt.preventDefault();
-            }
-        }
-
-        function change_viewport_0(id) {
-            //alert(id);
-            let value = document.getElementById(id).value;
-            if (value.trim().length == 0) {
-                document.getElementById(id).value = 0;
-            }
-        }
-
     </script>
 }
 

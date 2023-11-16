@@ -19,7 +19,7 @@ namespace task_sync_web.Models
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd")]
         public DateTime TaskDate {  get; set; }
 
-        [Display(Name = "所得名")]
+        [Display(Name = "所属名")]
         public string TaskUserDepartmentName { get; set; } // MTaskUserを参照
 
         [Display(Name = "グループ名")]
@@ -96,6 +96,8 @@ namespace task_sync_web.Models
         [Display(Name = "純作業時間(分)")]
         public int PureTaskTimeMinute { get; set; }
 
+        [Display(Name = "作業メモ")]
+        public string TaskMemo { get; set; }
 
         [Display(Name = "備考")]
         public string Remark { get; set; }
@@ -104,6 +106,9 @@ namespace task_sync_web.Models
         [JsonConverter(typeof(BoolFormatConverter))]
         public bool IsDelete {  get; set; }
 
+        [Display(Name = "送信完了フラグ")]
+        [JsonConverter(typeof(BoolFormatConverter))]
+        public bool IsComplete { get; set; }
 
         [Display(Name = "作成日時")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
@@ -139,5 +144,8 @@ namespace task_sync_web.Models
 
         [JsonIgnore]
         public string UpdateTaskUserName { get; set; }
+
+        [Display(Name = "デバイス名")]
+        public string DeviceName {  get; set; }
     }
 }

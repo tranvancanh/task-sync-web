@@ -24,7 +24,7 @@ namespace task_sync_web.Models
 
         public DTaskRecordViewModel()
         {
-            DisplayName = "作業事績";
+            DisplayName = "作業実績";
             TaskStartDateTime = DateTime.Today.ToString("yyyy/MM/dd");
             TaskEndDateTime = DateTime.Today.ToString("yyyy/MM/dd");
             TaskUserLoginIdName = string.Empty;

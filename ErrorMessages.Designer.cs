@@ -430,6 +430,15 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 中断時間が作業時間をお超えています。.
+        /// </summary>
+        public static string EW1307 {
+            get {
+                return ResourceManager.GetString("EW1307", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 予期せぬエラーが発生しました。.
         /// </summary>
         public static string EW9000 {
