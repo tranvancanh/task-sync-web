@@ -26,7 +26,7 @@ namespace task_sync_web.Models
         public string TaskUserGroupName { get; set; } // MTaskUserを参照
 
         [Display(Name = "作業者ログインID")]
-        public int CreateTaskUserID { get; set; } 
+        public string CreateTaskUserID { get; set; } 
 
         [Display(Name = "作業者名")]
         public string TaskUserName { get; set; } // MTaskUserを参照

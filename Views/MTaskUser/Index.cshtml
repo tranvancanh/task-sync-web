@@ -23,11 +23,6 @@
         background-color: #14dbbf;
     }
 
-    .fa, .fas {
-        font-weight: 900;
-        margin-right: 8px;
-    }
-
     .form-inline {
         display: -ms-flexbox;
         display: flex;
@@ -51,6 +46,9 @@
         }
     }
 
+    th {
+        white-space: nowrap !important;
+    }
 
 </style>
 
@@ -101,8 +99,8 @@
                                     </div>
                                     <div class="mx-3 my-1">
                                         <button class="btn btn-custom btn-lg" name="Action" value="ImportOutput" type="submit">
-                                            <span class="p-2">
-                                                <i class="fas fa-upload mr-2"></i>Excel取込
+                                            <span>
+                                                <i class="fas fa-upload mx-2"></i>Excel取込
                                             </span>
                                         </button>
                                     </div>
@@ -209,7 +207,7 @@
                     </div>
                     <div class="form-group col-auto p-2">
                         <!--ExcelTest-->
-                        <button class="btn btn-custom btn-lg" name="Command" value="3" type="submit"><span class="p-2"><i class="fas fa-download fa-fw mr-2"></i>Excel出力</span></button>
+                        <button class="btn btn-custom btn-lg" name="Command" value="3" type="submit"><span><i class="fas fa-download fa-fw mx-2"></i>Excel出力</span></button>
                     </div>
                 </div>
             </form>
@@ -299,7 +297,7 @@
         });
 
         const element = document.getElementById('btnCollapseShow');
-        $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg fa-rotate-180');
+        $('#iconUpDow').attr('class', 'fas fa-chevron-down mx-2 fa-lg fa-rotate-180');
 
         const fileNameDefault = "ここに選択したファイル名が表示されます";
 
@@ -349,27 +347,6 @@
                 FormClear(mess);
                 return false;
             }
-
-            // console.log({ formData });
-            // let IsFirst = true;
-            // for (let file of formData) {
-
-            //     if (IsFirst) {
-            //         if (file[1]["size"] <= 0) {
-            //             $('.error-text').text('ファイルが選択されていません。');
-            //             FormClear(formData);
-            //             return false;
-            //         }
-            //         else if (file[1]["name"].indexOf('.xlsx') <= 0) {
-            //             $('.error-text').text('取込対象外の拡張子です。');
-            //             FormClear(formData);
-            //             return false;
-            //         }
-            //         else {
-            //             IsFirst = false;
-            //         }
-            //     }
-            // }
             return true;
         }
 
@@ -379,20 +356,16 @@
             let ele = document.getElementById('iconUpDow');
             let className = ele.className;
             let position = className.search("fa-rotate-180");
-            let val = '';
-            if (position > 0) {
-                $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg');
-                val = 'Hide';
-            }
-            else {
-                $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg fa-rotate-180');
-                val = 'Show';
-            }
-            // $("input[name='IsState']").each(function () {
-            //     let name = $(this).attr("name");
-            //     let id = $(this).attr("id");
-            //     $(this).val(val);
-            // })
+            $('#iconUpDow').toggleClass("fa-rotate-180");
+            // let val = '';
+            // if (position > 0) {
+            //     $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg mx-2');
+            //     val = 'Hide';
+            // }
+            // else {
+            //     $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg mx-2 fa-rotate-180');
+            //     val = 'Show';
+            // }
         }
 
         $(function () {
