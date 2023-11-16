@@ -6,15 +6,26 @@ $(document).ready(function () {
     DatepickerRun();
 });
 
-function modalShow() {
+function modalShow(modalId) {
     //モーダルを開く
-    MicroModal.show('modal-2');
+    if (typeof (modalId) === "undefined") {
+        MicroModal.show('modal-2');
+    }
+    else {
+        MicroModal.show(modalId);
+    }
     document.body.classList.add("no-scroll");
     DatepickerRun();
 }
 
-function closeModal() {
+function closeModal(modalId) {
     //モーダルを閉じる
+    if (typeof (modalId) === "undefined") {
+        MicroModal.close('modal-2');
+    }
+    else {
+        MicroModal.close(modalId);
+    }
     document.body.classList.remove("no-scroll");
 }
 

@@ -47,7 +47,12 @@ namespace task_sync_web.Controllers
                                 if(listInterruptRecord.Any()) item.IsDisplayTaskInterruptTrack = true;
                                 else item.IsDisplayTaskInterruptTrack = false;
                             }
-
+                            var cookieMess = Request.Cookies["taskrecordeditsuccess"];
+                            if (!string.IsNullOrWhiteSpace(cookieMess))
+                            {
+                                ViewData["SuccessMessage"] = cookieMess;
+                                Response.Cookies.Delete("taskrecordeditsuccess");
+                            }
                             // page the list
                             viewModel.TaskRecordModels = listPaged;
                             return View(viewModel);

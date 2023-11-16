@@ -117,7 +117,7 @@
     }
 
     input[type=time]::-webkit-datetime-edit-ampm-field {
-      display: none;
+        display: none;
     }
 
 </style>
@@ -181,7 +181,17 @@
                         }
                     }
                 </div>
-
+                <div class="form-group text-left message-success-area mx-3 col-xl-6">
+                    @{
+                        var successMessage = ViewData["SuccessMessage"] as string;
+                        @if (!string.IsNullOrWhiteSpace(successMessage))
+                        {
+                            <ul class="mt-3">
+                                <li class="text-success-custom msg-text">@successMessage</li>
+                            </ul>
+                        }
+                    }
+                </div>
             </form>
             @Html.HiddenFor(model => model.PageNumber)
             <div>
@@ -429,6 +439,10 @@
                     if (data.result == "OK") {
                         //モーダルを閉じる
                         closeModal();
+                        let date = new Date();
+                        date.setTime(date.getTime() + (10 * 1000));
+                        $.removeCookie("taskrecordeditsuccess", { path: '/' });
+                        $.cookie("taskrecordeditsuccess", data.mess, { path: '/', expires: date });
                         window.location.href = ROOT + `/DTaskRecord/Index?TaskStartDateTime=${taskStartDateTime}&TaskEndDateTime=${taskEndDateTime}&TaskUserLoginIdName=${taskUserLoginIdName}&IsDelete=${isDelete}&PageNumber=${pageNumber}`;
                     }
                     else {
@@ -456,10 +470,10 @@
             const hasClass = event.target.classList.contains('isdisplaytaskinterrupttrack');
             const taskRecordId = $(this).attr('TaskRecordId');
             let url = ROOT;
-            if(hasClass){
+            if (hasClass) {
                 url = url + '/DTaskRecord/Interrupt';
             }
-            else{
+            else {
                 url = url + '/DTaskRecord/Edit';
             }
 
