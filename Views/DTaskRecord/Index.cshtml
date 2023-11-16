@@ -20,7 +20,6 @@
         background-color: #ff9;
         color: red !important;
         font-weight: 600;
-        /*border-block-color: var(--imagecolor1)!important;*/
     }
 
     .dropdown-item:hover {
@@ -39,57 +38,56 @@
     }
 
     /* ////////////////////////////////////////////////////////////////////////// */
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 65px;
-        height: 25px;
-    }
+    /*  .switch {
+                        position: relative;
+                        display: inline-block;
+                        width: 65px;
+                        height: 25px;
+                    }
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+                        .switch input {
+                            opacity: 0;
+                            width: 0;
+                            height: 0;
+                        }
 
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 9px;
-        right: 2px;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
+                    .slider {
+                        position: absolute;
+                        cursor: pointer;
+                        top: 0;
+                        left: 9px;
+                        right: 2px;
+                        bottom: 0;
+                        background-color: #ccc;
+                        -webkit-transition: .4s;
+                        transition: .4s;
+                    }
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 1px;
-            /* right: -10px; */
-            bottom: -1px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-        }
+                        .slider:before {
+                            position: absolute;
+                            content: "";
+                            height: 26px;
+                            width: 26px;
+                            left: 1px;
+                            bottom: -1px;
+                            background-color: white;
+                            -webkit-transition: .4s;
+                            transition: .4s;
+                        }
 
-    input:checked + .slider {
-        background-color: var(--maincolor);
-    }
+                    input:checked + .slider {
+                        background-color: var(--maincolor);
+                    }
 
-    input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
-    }
+                    input:focus + .slider {
+                        box-shadow: 0 0 1px #2196F3;
+                    }
 
-    input:checked + .slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
-    }
+                    input:checked + .slider:before {
+                        -webkit-transform: translateX(26px);
+                        -ms-transform: translateX(26px);
+                        transform: translateX(26px);
+                    } */
 
     /* Rounded sliders */
     .slider.round {
@@ -116,8 +114,106 @@
         white-space: nowrap !important;
     }
 
-    input[type=time]::-webkit-datetime-edit-ampm-field {
-        display: none;
+    /* ////////////////////////////////////////////
+             */
+
+    .custom-control-input {
+        position: absolute;
+        left: 0;
+        z-index: -1;
+        width: 1rem;
+        height: 1.25rem;
+        opacity: 0;
+    }
+
+    .custom-switch {
+        padding-left: 2.25rem;
+    }
+
+    .custom-control {
+        position: relative;
+        z-index: 1;
+        display: block;
+        min-height: 1.5rem;
+        padding-left: 1.5rem;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .custom-switch .custom-control-label::before {
+        left: 0.75rem;
+        width: 1.75rem;
+        pointer-events: all;
+        border-radius: 0.7rem;
+        margin-top: 10px;
+        width: 44px;
+        height: 20px;
+    }
+
+    .custom-switch .custom-control-label::after {
+        top: calc(0.25rem + 2px);
+        left: calc(-2.25rem + 50px);
+        width: calc(1rem - 0px);
+        height: calc(1rem - 0px);
+        background-color: #b7b9cc !important;
+        margin-top: 10px;
+        border-radius: 0.5rem;
+        transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .custom-control-label::before, .custom-file-label, .custom-select {
+        transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .custom-control-label::before {
+        position: absolute;
+        top: 0.25rem;
+        left: -1.5rem;
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        pointer-events: none;
+        content: "";
+        background-color: #fff;
+        border: #b7b9cc solid 1px;
+    }
+
+    .custom-control-label::after {
+        position: absolute;
+        top: 0.25rem;
+        left: -1.5rem;
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        content: "";
+        background: 50% / 50% 50% no-repeat;
+    }
+
+    .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+        background-color: #fff;
+        transform: translateX(0.75rem);
+        left: 27px;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        border-color: #e74a3b !important;
+        background-color: #e74a3b !important;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        color: #fff;
+        border-color: #4e73df;
+        background-color: #4e73df;
+    }
+
+    .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+        background-color: #fff !important;
+        transform: translateX(0.75rem) !important;
+    }
+
+    .pt-1 {
+        padding-top: 12px !important;
+        margin-left: 40px;
     }
 
 </style>
@@ -151,11 +247,15 @@
                         <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" placeholder="ログインID or 作業者名" />
                     </div>
                     <div class="col-xl-6 mt-xl-4 mr-xl-5 text-left">
-                        <label class="switch">
-                            <input type="checkbox" asp-for="IsDelete" class="col-xl-12">
-                            <span class="slider round"></span>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="IsDelete" id="MinPackingCountAlert" class="custom-control-input">
+                            <label class="custom-control-label pt-1" for="MinPackingCountAlert">@Html.DisplayNameFor(model => model.IsDelete)</label>
+                        </div>
+                        @*  <label class="switch">
+                        <input type="checkbox" asp-for="IsDelete" class="col-xl-12">
+                        <span class="slider round"></span>
                         </label>
-                        <label class="mx-3" role="button" id="IsDeleteLabel">@Html.DisplayNameFor(m => m.IsDelete)</label>
+                        <label class="mx-3" role="button" id="IsDeleteLabel">@Html.DisplayNameFor(m => m.IsDelete)</label> *@
                     </div>
                 </div>
 
@@ -574,10 +674,3 @@
         });
     </script>
 }
-
-
-
-
-
-
-

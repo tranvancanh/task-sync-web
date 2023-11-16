@@ -15,10 +15,6 @@ namespace task_sync_web.Models
         [Display(Name = "作業項目コード")]
         public int TaskItemCode { get; set; }
 
-        [Display(Name = "作業項目分類")]
-        [DefaultValue("")]
-        public string TaskItemCategory { get; set; }
-
         [Display(Name = "作業大項目")]
         [DefaultValue("")]
         public string TaskPrimaryItem { get; set; }
@@ -30,6 +26,10 @@ namespace task_sync_web.Models
         [Display(Name = "作業小項目")]
         [DefaultValue("")]
         public string TaskTertiaryItem { get; set; }
+
+        [Display(Name = "作業項目分類")]
+        [DefaultValue("")]
+        public string TaskItemCategory { get; set; }
 
         [Display(Name = "備考")]
         [DefaultValue("")]
