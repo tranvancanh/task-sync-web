@@ -68,7 +68,7 @@ namespace task_sync_web.Controllers
                     return View();
                 }
 
-                var apkFileName = @"\tasksync_app.apk";
+                var apkFileName = @"\tozan.tasksync_app.apk";
 
                 // 画像のフォルダパス
                 var rootPath = Directory.GetCurrentDirectory();

@@ -45,8 +45,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\appfiles\1.02\" />
-  </ItemGroup>
-
 </Project>
