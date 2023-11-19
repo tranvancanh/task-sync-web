@@ -15,27 +15,33 @@
         background-color: var(--othercolor);
     }
 
+        .card-footer{
+        background-color: var(--fontcolor) !important;
+        color: #fff !important;
+        }
+
     .login-button {
-        font-weight: bold;
-        background-image: linear-gradient(to right, var(--sublightcolor) 0%, var(--mainlightcolor) 100%);
+        background-color: var(--maincolor)!important;
         border-radius: 100vh;
-        color: #fff;
+        color: #fff!important;
         border: 2px solid #fff;
         box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
     }
 
         .login-button:hover {
-            color: #fff;
-            background-image: linear-gradient(to left, var(--sublightcolor) 0%, var(--mainlightcolor) 100%);
+            color: var(--fontcolor) !important;
+            background-image: linear-gradient(to left top, #dc143c, #eb5536, #f58137, #fba944, #fecf5d, #f0de68, #e1ec7a, #d1f98f, #adf394, #88ec9d, #5de4a7, #14dbb3);
         }
 
 </style>
 
-<div class="m-5 d-flex align-items-center">
-    <div class="container col-md-3">
+<div class="my-5 d-flex align-items-center">
+    <div class="container col-sm-3">
         <div class="card">
             <div class="card-body py-5">
-                <h4 class="card-title text-center">スマホで作業記録</h4>
+                <div style="display:flex;justify-content: center;">
+                    <h2 id="login-title" class="fw-bold">スマホで作業記録</h2><i class="fas fa-wifi fa-fw fa-lg login-icon" style="color:var(--maincolor);transform: rotate(45deg);position:relative;left:-13px;top:-10px;"></i>
+                </div>
                 <div>
                     <form id="login-input-form" method="post">
 

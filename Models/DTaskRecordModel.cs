@@ -9,7 +9,7 @@ namespace task_sync_web.Models
         [JsonIgnore]
         public int TaskRecordId { get; set; }
 
-        [Display(Name = "ログイン日時")]
+        [Display(Name = "ログイン時刻")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm:ss}")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm:ss")]
         public DateTime LoginDateTime { get; set; } // DLoginTaskUserRecordを参照
@@ -26,7 +26,7 @@ namespace task_sync_web.Models
         public string TaskUserGroupName { get; set; } // MTaskUserを参照
 
         [Display(Name = "作業者ログインID")]
-        public string CreateTaskUserID { get; set; } 
+        public string TaskUserLoginID { get; set; } 
 
         [Display(Name = "作業者名")]
         public string TaskUserName { get; set; } // MTaskUserを参照
@@ -119,7 +119,7 @@ namespace task_sync_web.Models
         public DateTime CreateDateTime { get; set; }
 
         [JsonIgnore]
-        public string CreateAdministratorId { get; set; }
+        public string CreateAdministratorLoginId { get; set; }
 
         [JsonIgnore]
         public string CreateAdministratorName {  get; set; }
@@ -129,13 +129,13 @@ namespace task_sync_web.Models
         {
             get
             {
-                return $"{CreateAdministratorId} {CreateAdministratorName}";
+                return $"{CreateAdministratorLoginId} {CreateAdministratorName}";
             }
             set {; }
         }
 
         [JsonIgnore]
-        public int CreateTaskUserId { get; set; }
+        public string CreateTaskUserLoginId { get; set; }
 
         [JsonIgnore]
         public string CreateTaskUserName { get; set; }
@@ -145,7 +145,7 @@ namespace task_sync_web.Models
         {
             get
             {
-                return $"{CreateTaskUserId} {CreateTaskUserName}";
+                return $"{CreateTaskUserLoginId} {CreateTaskUserName}";
             }
             set {; }
         }
@@ -158,7 +158,7 @@ namespace task_sync_web.Models
         public DateTime UpdateDateTime { get; set; }
 
         [JsonIgnore]
-        public string UpdateAdministratorId { get; set; }
+        public string UpdateAdministratorLoginId { get; set; }
 
         [JsonIgnore]
         public string UpdateAdministratorName { get; set; }
@@ -168,13 +168,13 @@ namespace task_sync_web.Models
         {
             get
             {
-                return $"{UpdateAdministratorId} {UpdateAdministratorName}";
+                return $"{UpdateAdministratorLoginId} {UpdateAdministratorName}";
             }
             set {; }
         }
 
         [JsonIgnore]
-        public int UpdateTaskUserId { get; set; }
+        public string UpdateTaskUserLoginId { get; set; }
 
         [JsonIgnore]
         public string UpdateTaskUserName { get; set; }
@@ -184,7 +184,7 @@ namespace task_sync_web.Models
         {
             get
             {
-                return $"{UpdateTaskUserId} {UpdateTaskUserName}";
+                return $"{UpdateTaskUserLoginId} {UpdateTaskUserName}";
             }
             set {; }
         }

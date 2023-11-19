@@ -125,8 +125,4 @@
     <value>更新が完了しました。</value>
     <comment>UPDATE</comment>
   </data>
-  <data name="SW003" xml:space="preserve">
-    <value>データ取得が完了しました。</value>
-    <comment>SEARCH</comment>
-  </data>
 </root>

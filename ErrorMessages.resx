@@ -242,11 +242,11 @@
     <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1208" xml:space="preserve">
-    <value>修正リストは{0}重複できません。</value>
+    <value>{0}が重複しているため修正できません。</value>
     <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1209" xml:space="preserve">
-    <value>登録リストは{0}重複できません。</value>
+    <value>{0}が重複しているため登録できません。</value>
     <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
   <data name="EW1210" xml:space="preserve">
@@ -255,38 +255,46 @@
   </data>
   <data name="EW1303" xml:space="preserve">
     <value>{0}の形式が正しくありません。</value>
-    <comment>作業事績</comment>
+    <comment>作業実績</comment>
   </data>
   <data name="EW1300" xml:space="preserve">
     <value>作業日付(始)を日付形式に変更できません。</value>
-    <comment>作業事績</comment>
+    <comment>作業実績</comment>
   </data>
   <data name="EW1301" xml:space="preserve">
     <value>作業日付(終)を日付形式に変更できません。</value>
-    <comment>作業事績</comment>
+    <comment>作業実績</comment>
   </data>
   <data name="EW1302" xml:space="preserve">
     <value>{0}の形式が正しくありません。</value>
-    <comment>作業事績</comment>
+    <comment>作業実績</comment>
   </data>
   <data name="EW1307" xml:space="preserve">
     <value>中断時間が作業時間を超えています。</value>
-    <comment>作業事績</comment>
+    <comment>作業実績</comment>
   </data>
   <data name="EW1305" xml:space="preserve">
     <value>作業終了時刻は、作業開始時刻以上でなければいけません。</value>
-    <comment>作業事績</comment>
+    <comment>作業実績</comment>
   </data>
   <data name="EW1304" xml:space="preserve">
     <value>作業項目が存在しません。再選択してください。</value>
-    <comment>作業事績</comment>
+    <comment>作業実績</comment>
   </data>
   <data name="EW1306" xml:space="preserve">
     <value>中断時間は0以上で入力してください。</value>
-    <comment>作業事績</comment>
+    <comment>作業実績</comment>
   </data>
   <data name="EW9000" xml:space="preserve">
     <value>予期せぬエラーが発生しました。</value>
     <comment>その他</comment>
+  </data>
+  <data name="EW1211" xml:space="preserve">
+    <value>登録対象行の{0}は空白でなければいけません。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
+  </data>
+  <data name="EW1212" xml:space="preserve">
+    <value>列名が正しくありません。</value>
+    <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
 </root>

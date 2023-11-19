@@ -15,19 +15,19 @@ namespace task_sync_web.Models
         public int TaskTrackTotalTime { get; set; }
         public int TaskInterruptTrackTotalTime { get; set; } // 単位：分
 
-        [Display(Name = "作業開始時刻")]
+        [Display(Name = "作業開始時刻(実績)")]
         [DefaultValue("")]
         public string TaskStartDate { get; set; }
         [DefaultValue("")]
         public string TaskStartTime { get; set; }
 
-        [Display(Name = "作業終了時刻")]
+        [Display(Name = "作業終了時刻(実績)")]
         [DefaultValue("")]
         public string TaskEndDate { get; set; }
         [DefaultValue("")]
         public string TaskEndTime { get; set; }
 
-        [Display(Name = "中断時間(分)")]
+        [Display(Name = "中断時間(分)(実績)")]
         [DefaultValue(0)]
         public int TaskInterruptTotalTime { get; set; } // 単位：分
 

@@ -10,7 +10,7 @@ namespace task_sync_web.Commons
 {
     public class ExcelFile<T>
     {
-        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1, ExcelHeaderStyleModel excelHeaderStyleModel = null)
+        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1, ExcelHeaderStyleModel excelHeaderStyleModel = null, List<int> formatStrings = null)
         {
             if (startX < 1) { throw new System.Exception(); }
             if (startY < 1) { throw new System.Exception(); }
@@ -73,8 +73,15 @@ namespace task_sync_web.Commons
                         var values = dicts.Values.ToArray();
                         for(var i = 0; i < values.Length; i++)
                         {
+                            // 文字列指定列であるか判定
+                            bool notInt = true;
+                            if (formatStrings != null)
+                            {
+                                notInt = formatStrings.GroupBy(x => x = startX).Any(g => g.Count() > 1);
+                            }
+
                             var value = values[i];
-                            if(int.TryParse(value, out int val))
+                            if(int.TryParse(value, out int val) && notInt)
                                 sl.SetCellValue(startX, startY + i, val);
                             else
                                 sl.SetCellValue(startX, startY + i, value);
