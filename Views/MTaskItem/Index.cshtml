@@ -1,0 +1,391 @@
+﻿@using Newtonsoft.Json;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Web.Common;
+@using task_sync_web.Commons;
+
+@model MTaskItemViewModel
+@{
+    ViewData["Title"] = @Model.DisplayName;
+    var pagedList = Model.TaskItemModels;
+}
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+
+/*     .btn-selection {
+        background-color: #14DBB3;
+    }
+
+    label.btn-selection:hover {
+        background-color: #14dbbf;
+    }
+ */
+    .form-inline {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-flow: row wrap;
+        flex-flow: row wrap;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    @@media (min-width: 576px) {
+        .form-inline .form-group {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex: 0 0 auto;
+            flex: 0 0 auto;
+            -ms-flex-flow: row wrap;
+            flex-flow: row wrap;
+            -ms-flex-align: center;
+            align-items: center;
+            margin-bottom: 0;
+        }
+    }
+
+    th {
+        white-space: nowrap !important;
+    }
+</style>
+
+<div class="h4 mb-3">
+    @{
+        ViewData["Title"] = @Model.DisplayName;
+    }
+</div>
+<div class="card shadow m-4">
+    <div class="card-header">
+        <h3 class="pt-2">@Model.DisplayName</h3>
+    </div>
+    <div class="card-body">
+        <div class="p-2">
+
+            <form class="form-inline ms-1" id="m-import-form" asp-controller="MTaskItem" asp-action="Import" enctype="multipart/form-data" method="post">
+                <div class="container-fluid px-0">
+                    <div class="row">
+                        <div class="col-auto">
+                            <button class="btn btn-custom btn-lg" type="button" data-toggle="collapse" data-target="#collapseShow" aria-expanded="false" aria-controls="collapseShow"
+                                    onclick="ChangeIconUpDow(this)" id="btnCollapseShow">
+                                <i class="fas fa-chevron-down fa-fw" id="iconUpDow"></i>新規登録・修正
+                            </button>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(model => model.PageNumber)
+                    @Html.HiddenFor(model => model.SearchKeyWord)
+                    @Html.HiddenFor(model => model.IsState)
+                    <div class="row">
+                        <div class="collapse" id="collapseShow">
+                            <div class="bd-callout">
+                                <div class="col-10">
+                                    <p class="my-1">
+                                        出力したExcelファイルの値を変更してファイル保存し、Excel取込をしてデータの新規登録・修正を行います。
+                                    </p>
+                                    <ul>
+                                        <li>登録・・・新しい行を追加し、《登録修正フラグ》に半角数字の <b>1</b> を入力します。</li>
+                                        <li>修正・・・値を変更し、《登録修正フラグ》に半角数字の <b>2</b> を入力します。作業項目IDをキーにして、対象行の値が上書きされます。</li>
+                                    </ul>
+                                </div>
+                                <div class="form-group p-2">
+                                    <div class="form-inline p-2 rounded mr-3" >
+                                        <label id="file-label" class="btn btn-selection">
+                                            <input style="display:none;" type="file" name="File" id="inputFile"
+                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                                            取込ファイル選択
+                                        </label>
+                                        <label class="file-name-view mx-2"></label>
+
+                                    </div>
+                                    <div class="mx-3 my-1">
+                                        <button class="btn btn-custom btn-lg" name="Action" value="ImportOutput" type="submit">
+                                            <span>
+                                                <i class="fas fa-upload fa-fw"></i>Excel取込
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group text-left message-error-area">
+                                    @{
+                                        var dictListError = TempData["DictErrorMessage"] as Dictionary<string, string> ?? new Dictionary<string, string>();
+                                        if (dictListError != null && dictListError.Any())
+                                        {
+                                            var first = dictListError.First();
+                                            var errors = JsonConvert.DeserializeObject<List<string>>(first.Value);
+                                            <div class="container-fluid container-custom">
+                                                <div class="row">
+                                                    <div class="col-lg-1 px-1">
+                                                        <li class="text-danger-custom px-2">@first.Key</li>
+                                                    </div>
+                                                    <div class="col-lg-7 text-danger-custom px-0">@errors[0]</div>
+                                                </div>
+                                                @for (var index = 1; index < errors.Count; index++)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-lg-1 px-1"></div>
+                                                        <div class="col-lg-7 text-danger-custom px-0">@errors[index]</div>
+                                                    </div>
+                                                }
+                                                @for (int index = 1; index < dictListError.Count; index++)
+                                                {
+                                                    KeyValuePair<string, string> dict = dictListError.ElementAt(index);
+                                                    var value = errors = JsonConvert.DeserializeObject<List<string>>(dict.Value);
+                                                    <tr>
+                                                        <div class="row">
+                                                            <div class="col-lg-1 px-1">
+                                                                <li class="text-danger-custom px-2">@dict.Key</li>
+                                                            </div>
+                                                            <div class="col-lg-7 text-danger-custom px-0">@errors[0]</div>
+                                                        </div>
+                                                    </tr>
+                                                    @for (var i = 1; i < errors.Count; i++)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-lg-1 px-1"></div>
+                                                            <div class="col-lg-7 text-danger-custom px-0">@errors[i]</div>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        }
+                                        var errorList = ViewData["ErrorMessage"] as List<string>;
+                                        var errorMessagesTemp = TempData["ErrorMessage"] as IEnumerable<string>;
+                                        if (errorList != null && errorList.Any())
+                                        {
+                                            <ul class="mt-3">
+                                                @foreach (var mess in errorList)
+                                                {
+                                                    <li class="text-danger-custom error-text">@mess</li>
+                                                }
+                                            </ul>
+                                        }
+
+                                        if (errorMessagesTemp != null && errorMessagesTemp.Any())
+                                        {
+                                            <ul class="mt-3">
+                                                @foreach (var mess in errorMessagesTemp)
+                                                {
+                                                    <li class="text-danger-custom error-text">@mess</li>
+                                                }
+                                            </ul>
+                                        }
+                                    }
+                                </div>
+
+                                <div class="form-group text-left message-success-area">
+                                    @{
+                                        var successMessage = ViewData["SuccessMessage"] as string;
+                                        var successMessageTemp = TempData["SuccessMessage"] as string;
+                                        @if (!string.IsNullOrWhiteSpace(successMessage))
+                                        {
+                                            <ul class="mt-3">
+                                                <li class="text-success-custom msg-text">@successMessage</li>
+                                            </ul>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(successMessageTemp))
+                                        {
+                                            <ul class="mt-3">
+                                                <li class="text-success-custom msg-text">@successMessageTemp</li>
+                                            </ul>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <form class="form-inline ms-1" asp-controller="MTaskItem" enctype="multipart/form-data" method="get">
+                <div class="row">
+                    <div class="form-group col-auto p-2">
+                        <div class="input-group">
+                            <input class="form-control form-control-lg" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
+                            <button class="btn btn-search btn-lg" name="Command" value="@Enums.GetState.Search" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                            @* @Html.HiddenFor(model => model.IsState) *@
+                        </div>
+                    </div>
+                    <div class="form-group col-auto p-2">
+                        <!--ExcelTest-->
+                        <button class="btn btn-custom btn-lg" name="Command" value="@Enums.GetState.ExcelOutput" type="submit"><span><i class="fas fa-download fa-fw"></i>Excel出力</span></button>
+                    </div>
+                </div>
+            </form>
+            <div class="col-auto">
+                <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
+            </div>
+            <div>
+                <table class="table sticky_table table-hover-evant mt-3">
+                    <thead>
+                        <tr>
+                            <th style="">@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskItemId)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskItemCode)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskPrimaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskSecondaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskTertiaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskItemModels[0].TaskItemCategory)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.TaskItemModels[0].Remark)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.TaskItemModels[0].IsNotUse)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.TaskItemModels[0].CreateDateTime)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.TaskItemModels[0].CreateFor)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.TaskItemModels[0].UpdateDateTime)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.TaskItemModels[0].UpdateFor)</th>
+                        </tr>
+                    </thead>
+
+                    @if (Model != null && pagedList != null && pagedList.Count > 0)
+                    {
+                        <tbody>
+                            @foreach (var item in pagedList)
+                            {
+                                <tr>
+                                    <td class="text-center">@Html.DisplayFor(model => item.TaskItemId)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskItemCode)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskPrimaryItem)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskSecondaryItem)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskTertiaryItem)</td>
+                                    <td class="">@Html.DisplayFor(model => item.TaskItemCategory)</td>
+                                    <td class="">@Html.DisplayFor(model => item.Remark)</td>
+                                    <td class="text-center">@((item.IsNotUse == false) ? 0 : 1)</td>
+                                    <td class="">@Html.DisplayFor(model => item.CreateDateTime)</td>
+                                    <td class="">@Html.DisplayFor(model => item.CreateFor)</td>
+                                    <td class="">@Html.DisplayFor(model => item.UpdateDateTime)</td>
+                                    <td class="">@Html.DisplayFor(model => item.UpdateFor)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                </table>
+            </div>
+
+            @if (pagedList != null)
+            {
+                <div class="mt-3">
+                    <span class="page-no-label">
+                        @pagedList.FirstItemOnPage-@pagedList.LastItemOnPage 件 / @(pagedList.TotalItemCount)件中
+                    </span>
+                    @Html.PagedListPager((IPagedList)pagedList, pageNumber => Url.Action("Index", new { searchKeyWord = Model.SearchKeyWord, pageNumber = pageNumber }),
+                new PagedListRenderOptions
+                {
+                UlElementClasses = new string [] {"pagination flex-wrap"},
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" },
+                MaximumPageNumbersToDisplay = 10, //表示するページャーの数
+                DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded, //「次へ」の非表示設定
+                DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded, //「前へ」の非表示設定
+                DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded, //「最初へ」の非表示設定
+                DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded, //「最後へ」の表示設定
+                })
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+
+            // ページ開いたらファイル名セット
+            FileNameSet($('#file-label input'));
+
+            // ファイル選択input内容が変化したら、メッセージ削除＆ファイル名をセットする
+            $('#file-label input').on('change', function () {
+                FormDataCheck();
+                let self = $(this);
+                FileNameSet(self);
+            });
+        });
+
+        const element = document.getElementById('btnCollapseShow');
+        $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg mx-2 fa-rotate-180');
+
+        const fileNameDefault = "ここに選択したファイル名が表示されます";
+
+        function FileNameSet(self) {
+
+            let files = self.prop('files');
+
+            if (files.length > 0) {
+                let file = files[0];
+                let fileName = file.name;
+                $('.file-name-view').text(fileName);
+                $('.file-name-view').text(fileName);
+            }
+            else {
+                $('.file-name-view').text(fileNameDefault);
+            }
+        }
+
+        function FormClear(mess) {
+            $('.file-name-view').text(fileNameDefault);
+            const form = document.querySelector("#m-import-form");
+            form.reset();
+            $('.message-error-area').append(`<label class="text-danger-custom error-text2">${mess}</label>`);
+        }
+
+        function FormDataCheck() {
+
+            $('.error-text').text('');
+            $('.error-text2').text('');
+            $('.msg-text').text('');
+            $('.message-error-area').html('');
+            $('.message-success-area').html('');
+
+            let mess = '';
+            // FormData オブジェクトの利用
+            const formData = new FormData(document.querySelector("#m-import-form"));
+
+            const fileUpload = $("#inputFile").get(0);
+            const files = fileUpload.files;
+            if (files[0]["size"] <= 0) {
+                mess = '@ErrorMessages.EW1203';
+                FormClear(mess);
+                return false;
+            }
+            else if (files[0]["name"].indexOf('.xlsx') <= 0) {
+                mess = '@ErrorMessages.EW1202';
+                FormClear(mess);
+                return false;
+            }
+            return true;
+        }
+
+        function ChangeIconUpDow(element) {
+            // let className = element.className;
+            // let position = className.search("collapsed");
+            let ele = document.getElementById('iconUpDow');
+            let className = ele.className;
+            let position = className.search("fa-rotate-180");
+            $('#iconUpDow').toggleClass("fa-rotate-180");
+            // let val = '';
+            // if (position > 0) {
+            //     $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg mx-2');
+            //     val = 'Hide';
+            // }
+            // else {
+            //     $('#iconUpDow').attr('class', 'fas fa-chevron-down fa-lg mx-2 fa-rotate-180');
+            //     val = 'Show';
+            // }
+            // $("input[name='IsState']").each(function () {
+            //     let name = $(this).attr("name");
+            //     let id = $(this).attr("id");
+            //     $(this).val(val);
+            // })
+        }
+
+        $(function () {
+            if ('@((int)Model.IsState)' > 1) {
+                $('#collapseShow').attr('class', 'collapse');
+            }
+            else {
+                $('#collapseShow').attr('class', 'collapse show');
+            }
+        });
+
+    </script>
+}

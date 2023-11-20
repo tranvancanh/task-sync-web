@@ -89,6 +89,11 @@ namespace task_sync_web.Controllers
                                 UpdateDateTime = DateTime.Now,
                                 UpdateAdministratorId = LoginUser.AdministratorId,
                             });
+                        if (efftedRows > 0)
+                        {
+                            viewModel.ModalType = Enums.ModalType.None;
+                            ViewData["SuccessMessage"] = SuccessMessages.SW001;
+                        }
                     }
                     else if (modalType == Enums.ModalType.Edit)
                     {
@@ -104,15 +109,15 @@ namespace task_sync_web.Controllers
                                 UpdateDateTime = DateTime.Now,
                                 UpdateAdministratorId = LoginUser.AdministratorId
                             });
+                        if (efftedRows > 0)
+                        {
+                            viewModel.ModalType = Enums.ModalType.None;
+                            ViewData["SuccessMessage"] = SuccessMessages.SW002;
+                        }
                     }
                 }
 
-                if (efftedRows > 0)
-                {
-                    viewModel.ModalType = Enums.ModalType.None;
-                    ViewData["SuccessMessage"] = SuccessMessages.SW002;
-                }
-                else
+                if (efftedRows <= 0)
                 {
                     ViewData["ErrorMessageModal"] = ErrorMessages.EW0502;
                 }

@@ -4,9 +4,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TaskSync</title>
+    <title>@ViewData["Title"] - スマホで作業記録</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css?@DateTime.Now" />
+
+    <!-- アイコン設定 -->
+    <link rel="shortcut icon" type="image/png" href="~/image/appicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/image/appicon.png">
 
     <!--Bootstrap admin template-->
     <link rel="stylesheet" href="~/lib/startbootstrap-sb-admin-gh-pages/css/styles.css" />
@@ -18,10 +22,17 @@
     <link rel="stylesheet" href="~/css/micromodal.css" />
 
 </head>
-<body class="sb-nav-fixed">
+@{
+    var bodyClass = Context.Request.Cookies["Sidebar"];
+    if (string.IsNullOrWhiteSpace(bodyClass))
+    {
+        bodyClass = "sb-nav-fixed";
+    }
+}
+<body class="@bodyClass">
     <nav class="sb-topnav navbar navbar-expand navbar-dark">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" asp-controller="Home" asp-action="Index">TaskSync</a>
+        <a id="home-title" class="navbar-brand ps-3" asp-controller="Home" asp-action="Index">スマホで作業記録</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
         <!-- Navbar Search-->
@@ -50,7 +61,7 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">データ</div>
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" asp-area="" asp-controller="DTaskRecord" asp-action="Index">
                             <div class="sb-nav-link-icon"><i class="far fa-file-alt fa-fw"></i></div>
                             作業実績
                         </a>
@@ -68,7 +79,7 @@
                                 <a class="nav-link" asp-area="" asp-controller="MTaskUser" asp-action="Index">作業者マスター</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" asp-area="" asp-controller="" asp-action="Index">作業項目マスター</a>
+                                <a class="nav-link" asp-area="" asp-controller="MTaskItem" asp-action="Index">作業項目マスター</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" asp-area="" asp-controller="MInterruptReason" asp-action="Index">中断理由マスター</a>
@@ -140,10 +151,22 @@
 </body>
 </html>
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <script>
     MicroModal.init({
         disableFocus: true,
         awaitOpenAnimation: true,
         awaitCloseAnimation: true
     });
+
+    $(document).ready(function () {
+        $("#sidebarToggle").click(function () {
+            $.removeCookie("Sidebar", { path: '/' });
+            $("body").toggleClass("sb-sidenav-toggled");
+            let className = $("body").attr("class");
+            $.cookie("Sidebar", className, { path: '/' });
+            console.log({className});
+        });
+    })
+
 </script>

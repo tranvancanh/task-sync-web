@@ -1,0 +1,95 @@
+﻿@model DTaskInterruptRecordViewModel
+
+<div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1">
+        <div class="modal__container" id="modal-task-interrupt-record" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+            <header class="modal__header">
+                <h3 id="modal-1-title" class="fw-bold">中断記録</h3>
+                <button class="btn btn-custom btn-lg" aria-label="Close modal" onclick="closeModal()" data-micromodal-close><i class="fas fa-times"></i></button>
+            </header>
+@*             <div class="p-3 mx-2 bg-light text-dark my-3 interruptmodal">
+                <h3 id="modal1" class="">@Model.TaskUserLoginId &nbsp;&nbsp; @Model.TaskUserName</h3>
+                <div style="margin-left: 35px;">
+                    <ul>
+                        <li>作業記録 : @Model.TaskStartDateTrackTime ― @Model.TaskEndDateTrackTime (@{@Model.TaskTrackTotalTime}分)</li>
+                        <li>中断記録 : @Model.TaskInterruptTrackTotalTime</li>
+                    </ul>
+                </div>
+            </div>
+ *@
+            <div class="col">
+                <div class="bd-callout">
+                    <h4 class="pt-2"><i class="fas fa-stopwatch  fa-fw"></i> スマホアプリの作業記録</h4>
+                    <div class="px-2">
+                        <h5 class="pt-2 fw-bold">《 @Model.TaskUserLoginId &nbsp;&nbsp; @Model.TaskUserName 》</h5>
+                    </div>
+                    <div class="ps-3 pt-1">
+                        <ul>
+                            <li class="mt-2">
+                                <h5>
+                                    作業記録 : @Model.TaskStartDateTrackTime - @Model.TaskEndDateTrackTime (@{
+                                    @Model.TaskTrackTotalTime
+                                    }分)
+                                </h5>
+                            </li>
+                            <li class="mt-2">
+                                <h5>中断記録 : @{
+                                        @Model.TaskInterruptTrackTotalTime
+                                    }分
+                                </h5>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-1">
+                <table class="table sticky_table" style="height:300px;">
+                    <thead style="width: 100%">
+                        <tr>
+                            <th style="display:none;" data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.InterruptRecords[0].TaskInterruptRecordId)</th>
+                            <th style="display:none;" data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.InterruptRecords[0].TaskRecordId)</th>
+                            <th style="width:200px;" data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.InterruptRecords[0].TaskInterruptReasonCode)</th>
+                            <th style="display:none;" data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.InterruptRecords[0].TaskInterruptReasonName)</th>
+                            <th style="width:200px;" data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.InterruptRecords[0].TaskInterruptStartDateTrackTime)</th>
+                            <th style="width:200px;" data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.InterruptRecords[0].TaskInterruptEndDateTrackTime)</th>
+                            <th data-resizable-column-id="table-iscancel" class="table-iscancel">@Html.DisplayNameFor(model => model.InterruptRecords[0].TaskInterruptTime)</th>
+                        </tr>
+                    </thead>
+
+                    @if (Model != null && Model.InterruptRecords != null & Model.InterruptRecords.Count > 0)
+                    {
+                        <tbody>
+                            @foreach (var item in Model.InterruptRecords)
+                            {
+                                <tr>
+                                    <td style="display:none;" class="table-vhdate text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptRecordId)
+                                    </td>
+                                    <td style="display:none;" class="table-vhdate text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskRecordId)
+                                    </td>
+                                    <td class="table-vhdate text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptReasonCode) : @Html.DisplayFor(modelItem => item.TaskInterruptReasonName)
+                                    </td>
+                                    <td style="display:none;" class="table-bin  text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptReasonName)
+                                    </td>
+                                    <td class="table-deno1 text-center">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptStartDateTrackTime)
+                                    </td>
+                                    <td class="table-deno2 text-center">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptEndDateTrackTime)
+                                    </td>
+                                    <td class="table-deno3 text-center">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptTime)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

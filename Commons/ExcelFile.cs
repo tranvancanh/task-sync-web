@@ -10,7 +10,7 @@ namespace task_sync_web.Commons
 {
     public class ExcelFile<T>
     {
-        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1, ExcelHeaderStyleModel excelHeaderStyleModel = null)
+        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1, ExcelHeaderStyleModel excelHeaderStyleModel = null, List<int> formatStrings = null)
         {
             if (startX < 1) { throw new System.Exception(); }
             if (startY < 1) { throw new System.Exception(); }
@@ -73,7 +73,18 @@ namespace task_sync_web.Commons
                         var values = dicts.Values.ToArray();
                         for(var i = 0; i < values.Length; i++)
                         {
-                            sl.SetCellValue(startX, startY + i, values[i]);
+                            // 文字列指定列であるか判定
+                            bool notInt = true;
+                            if (formatStrings != null)
+                            {
+                                notInt = formatStrings.GroupBy(x => x = startX).Any(g => g.Count() > 1);
+                            }
+
+                            var value = values[i];
+                            if(int.TryParse(value, out int val) && notInt)
+                                sl.SetCellValue(startX, startY + i, val);
+                            else
+                                sl.SetCellValue(startX, startY + i, value);
                         }
                     }
 
@@ -151,7 +162,7 @@ namespace task_sync_web.Commons
 
         }
 
-        public static async Task<DataTable> ReadExcelToDataTable(IFormFile formFile, bool reChange = false)
+        public static async Task<DataTable> ReadExcelToDataTable(IFormFile formFile)
         {
             if (formFile == null || formFile.Length == 0)
             {
@@ -175,6 +186,8 @@ namespace task_sync_web.Commons
                     {
                         ExcelWorksheet workSheet = package.Workbook.Worksheets.FirstOrDefault();
                         ArgumentNullException.ThrowIfNull(workSheet);
+                        if (workSheet.Dimension == null)
+                            throw new CustomExtention(ErrorMessages.EW1207);
                         // get number of rows and columns in the sheet
                         int totalRows = workSheet.Dimension.Rows;
                         int totalColumns = workSheet.Dimension.Columns;
@@ -186,13 +199,15 @@ namespace task_sync_web.Commons
             else
                 throw new ArgumentException(ErrorMessages.EW1202);
 
-            if(!reChange)
-                return dataTable;
+            return dataTable;
+        }
 
+        public static DataTable ToWithFormat(DataTable dataTable)
+        {
             var firstRow = dataTable.Rows[0].ItemArray.ToList();
             var properties = Utils.GetModelProperties<T>();
             var newDt = new DataTable();
-            foreach(var propertie in properties)
+            foreach (var propertie in properties)
             {
                 newDt.Columns.Add(propertie.PropertyName, typeof(string));
             }
@@ -201,10 +216,10 @@ namespace task_sync_web.Commons
                                  .Select(x => x.ColumnName)
                                  .ToList();
 
-            for(var i = 1; i < dataTable.Rows.Count; i++)
+            for (var i = 1; i < dataTable.Rows.Count; i++)
             {
                 var dtRow = newDt.NewRow();
-                for(var j = 0; j < columnNames.Count; j++)
+                for (var j = 0; j < columnNames.Count; j++)
                 {
                     var colName = columnNames[j];
                     dtRow[colName] = dataTable.Rows[i][j];
@@ -213,7 +228,6 @@ namespace task_sync_web.Commons
             }
 
             return newDt;
-
         }
 
         private static async Task<DataTable> ConvertToDataTable(ExcelWorksheet oSheet)
@@ -249,6 +263,51 @@ namespace task_sync_web.Commons
             return dataTable;
         }
 
+        public static async Task SaveFileImportAndDelete(IFormFile file, string webRootPath, string displayName = null)
+        {
+            if (file == null || file.Length <= 0) return;
+            string uploads = Path.Combine(webRootPath, "uploads", displayName);
+            // If directory does not exist, create it
+            if (!Directory.Exists(uploads))
+                Directory.CreateDirectory(uploads);
+            string filePath = Path.Combine(uploads, file.FileName);
+            var newFilePath = CreateFileName(filePath);
+            using (Stream fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            DeleteFileName(uploads);
+        }
+
+        private static string CreateFileName(string pathFullFile)
+        {
+            string extension = Path.GetExtension(pathFullFile);
+            string pathName = Path.GetDirectoryName(pathFullFile);
+            string fileNameOnly = Path.Combine(pathName, Path.GetFileNameWithoutExtension(pathFullFile));
+            int i = 0;
+            // If the file exists, keep trying until it doesn't
+            while (File.Exists(pathFullFile))
+            {
+                i += 1;
+                pathFullFile = string.Format("{0}({1}){2}", fileNameOnly, i, extension);
+            }
+            return pathFullFile;
+        }
+
+        private static void DeleteFileName(string uploads)
+        {
+            string[] filePaths = Directory.GetFiles(uploads, "*.xlsx");
+            Dictionary<string, DateTime> allFiles = new Dictionary<string, DateTime>();
+            foreach (string file in filePaths)
+            {
+                allFiles.Add(file, File.GetCreationTime(file));
+            }
+            var deleteFiles = allFiles.OrderByDescending(key => key.Value).Skip(20);
+            foreach(var file in deleteFiles)
+            {
+                File.Delete(file.Key);
+            }
+        }
     }
 
 

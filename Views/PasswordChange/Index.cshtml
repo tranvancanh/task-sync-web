@@ -31,8 +31,8 @@
         </div>
 
         <div class="col-auto ps-3">
-            <span class="text-danger-custom">@ViewData["ErrorMessage"] </span>
-            <span class="text-success-custom">@ViewData["SuccessMessage"] </span>
+            <span class="text-danger-custom">@TempData["ErrorMessage"] </span>
+            <span class="text-success-custom">@TempData["SuccessMessage"] </span>
         </div>
 
         <form id="changePasswordForm" method="post" class="p-3" asp-controller="PasswordChange" enctype="multipart/form-data" onsubmit="return true;">
@@ -89,7 +89,7 @@
             </div>
 
             <div class="text-right col-xl-7 mt-5">
-                <button name="submitButton" class="btn btn-custom btn-lg" type="submit" asp-action="Index">
+                <button name="submitButton" class="btn btn-custom btn-lg" type="submit" asp-action="Change">
                     <span class="p-2">
                         <i class="fas fa-check fa-fw"></i> 更新
                     </span>

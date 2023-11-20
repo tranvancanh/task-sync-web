@@ -42,7 +42,7 @@ namespace task_sync_web.Controllers
                 ViewData["ErrorMessage"] = ex.Message;
                 return View(viewModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ViewData["ErrorMessage"] = ErrorMessages.EW0500;
                 return View(viewModel);
@@ -63,7 +63,7 @@ namespace task_sync_web.Controllers
                 var memoryStream = this.ExcelCreate(administratorModels);
 
                 // ファイル名
-                var fileName = viewModel.DisplayName + DateTime.Now.ToString("yyyyMMddHHmmss");
+                var fileName = viewModel.DisplayName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                 return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
             }
             catch (CustomExtention ex)
@@ -71,7 +71,7 @@ namespace task_sync_web.Controllers
                 ViewData["ErrorMessage"] = ex.Message;
                 return View("Index", viewModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ViewData["ErrorMessage"] = ErrorMessages.EW0500;
                 return View("Index", viewModel);
@@ -92,11 +92,16 @@ namespace task_sync_web.Controllers
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
                     // DBからデータ一覧を取得
-                    var administratorList = db.Query("MAdministrator").Get<MAdministratorModel>().ToList();
+                    var administratorList = db.Query("MAdministrator")
+                        .OrderBy("AdministratorLoginId")
+                        .Get<MAdministratorModel>().ToList();
                     if (administratorList.Count == 0)
                     {
                         throw new CustomExtention(ErrorMessages.EW0101);
                     }
+
+                    // 管理者ID順に並び替え
+                    administratorList = administratorList.OrderBy(x => x.AdministratorId).ToList();
 
                     searchKey = (searchKey ?? "").Trim();
                     if (administratorList.Count > 0 && searchKey.Length > 0)
@@ -154,7 +159,7 @@ namespace task_sync_web.Controllers
                             sl.SetCellValue(col, ++row, data[_col].AdministratorLoginId);
                             sl.SetCellValue(col, ++row, data[_col].AdministratorName);
                             sl.SetCellValue(col, ++row, data[_col].AdministratorNameKana);
-                            sl.SetCellValue(col, ++row, data[_col].IsNotUse);
+                            sl.SetCellValue(col, ++row, data[_col].IsNotUse == false ? 0 : 1);
                         }
                     }
 

@@ -1,0 +1,518 @@
+﻿@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
+@using X.PagedList; @*import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@using X.PagedList.Mvc.Core.Fluent;
+@using X.PagedList.Web.Common;
+@using task_sync_web.Commons;
+
+@model DTaskRecordViewModel;
+@{
+    var pagedList = Model.TaskRecordModels;
+}
+
+<style>
+
+    #modal-task-record-edit {
+        max-width: 800px !important; /* モーダルの幅を設定  */
+        width: 800px !important; /* モーダルの幅を設定  */
+    }
+
+    #modal-task-interrupt-record {
+        max-width: 800px !important; /* モーダルの幅を設定  */
+        width: 800px !important; /* モーダルの幅を設定  */
+        max-height: 700px !important; /* モーダルの幅を設定  */
+    }
+
+    .dropdown-item:hover {
+        font-weight: bold;
+    }
+
+    .dropleft .dropdown-toggle::before {
+        display: none;
+    }
+
+    .detail-input-mark::after {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        content: ' *\f303';
+        color: red;
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .interruptmodal {
+        margin-left: 11px !important;
+        margin-right: 12px !important;
+        margin-top: 30px !important;
+    }
+
+    .ui-autocomplete {
+        max-height: 200px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .custom-control-label {
+        padding-top: 12px !important;
+        margin-left: 40px;
+    }
+
+</style>
+
+<div class="h4 mb-3">
+    @{
+        ViewData["Title"] = @Model.DisplayName;
+    }
+</div>
+
+<div class="card shadow m-4">
+    <div class="card-header">
+        <h3 class="pt-2">@Model.DisplayName</h3>
+    </div>
+    <div class="card-body">
+        <div class="p-2">
+            <div class="form-group text-left message-error-area">
+            </div>
+            <form class="c-dialog-area" method="get" asp-controller="DTaskRecord" asp-action="Index" id=searchform enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6 col-xl-2 py-1">
+                        <label class="fw-bold">@Html.DisplayNameFor(m => m.TaskStartDateTime)</label>
+                        <input type="text" asp-for="TaskStartDateTime" class="form-control col-xl-10 datepicker" />
+                    </div>
+                    <div class="col-md-6 col-xl-2 py-1">
+                        <label class="fw-bold">@Html.DisplayNameFor(m => m.TaskEndDateTime)</label>
+                        <input type="text" asp-for="TaskEndDateTime" class="form-control col-xl-10 datepicker" />
+                    </div>
+                    <div class="col-md-6 col-xl-2 py-1">
+                        <label class="fw-bold">@Html.DisplayNameFor(m => m.TaskUserLoginIdName)</label>
+                        <input type="text" asp-for="TaskUserLoginIdName" class="form-control col-xl-10" placeholder="ログインID or 作業者名" onfocus="this.select();" />
+                    </div>
+                    <div class="col-auto mt-xl-4 mr-xl-5 text-left py-1">
+                        <label class="ECM_CheckboxInput">
+                            <input class="ECM_CheckboxInput-Input" type="checkbox" asp-for="IsDelete" id="MinPackingCountAlert">
+                            <span class="ECM_CheckboxInput-DummyInput"></span>
+                            <span class="ECM_CheckboxInput-LabelText" role="button" for="MinPackingCountAlert">@Html.DisplayNameFor(model => model.IsDelete)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row text-right">
+                    <div class="col">
+                        <button class="btn btn-custom btn-lg" name="Command" value="@Enums.GetState.Search" id="btnSearch" type="submit"><span><i class="fas fa-search fa-fw"></i>検索</span></button>
+                        <button class="btn btn-custom btn-lg" name="Command" value="@Enums.GetState.ExcelOutput" type="submit"><span><i class="fas fa-download fa-fw"></i>Excel出力</span></button>
+                    </div>
+                </div>
+
+                <div class="form-group text-left message-error-area mx-3 col-xl-6">
+                    @{
+                        var errorList = ViewData["ErrorMessage"] as List<string>;
+                        if (errorList != null && errorList.Any())
+                        {
+                            <ul class="mt-3">
+                                @foreach (var mess in errorList)
+                                {
+                                    <li class="text-danger-custom error-text">@mess</li>
+                                }
+                            </ul>
+                        }
+                    }
+                </div>
+                <div class="form-group text-left message-success-area mx-3 col-xl-6">
+                    @{
+                        var successMessage = ViewData["SuccessMessage"] as string;
+                        @if (!string.IsNullOrWhiteSpace(successMessage))
+                        {
+                            <ul class="mt-3">
+                                <li class="text-success-custom msg-text">@successMessage</li>
+                            </ul>
+                        }
+                    }
+                </div>
+            </form>
+            @Html.HiddenFor(model => model.PageNumber)
+            <div>
+                <table class="table sticky_table table-hover-evant mt-3">
+                    <thead>
+                        <tr>
+                            <th style="display: none">@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskRecordId)</th>
+                            <th >@Html.DisplayNameFor(model => model.TaskRecordModels[0].LoginDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskDate)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserDepartmentName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserGroupName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserLoginID)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskUserName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].DeviceName)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemId)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCode)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskPrimaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskSecondaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTertiaryItem)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskItemCategory)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTrackTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTrackTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTrackTotalTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskStartDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskEndDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskInterruptTotalTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskTimeMinute)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].PureTaskTimeMinute)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].TaskMemo)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].Remark)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsComplete)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].IsDelete)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateAdministratorFor)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].CreateTaskUserFor)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateDateTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateAdministratorFor)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaskRecordModels[0].UpdateTaskUserFor)</th>
+                        </tr>
+                    </thead>
+
+                    @if (Model != null && Model.TaskRecordModels != null & Model.TaskRecordModels.Count > 0)
+                    {
+                        <tbody>
+                            @foreach (var item in Model.TaskRecordModels)
+                            {
+                                <tr role="button" class="rowclick" taskrecordid="@item.TaskRecordId">
+                                    <td class="text-center" style="display: none">
+                                        @Html.DisplayFor(modelItem => item.TaskRecordId)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.LoginDateTime )
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskDate)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskUserDepartmentName)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskUserGroupName)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskUserLoginID)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskUserName)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.DeviceName)
+                                    </td>
+                                    <td class="text-right">
+                                        @Html.DisplayFor(modelItem => item.TaskItemId)
+                                    </td>
+                                    <td class="text-right">
+                                        @Html.DisplayFor(modelItem => item.TaskItemCode)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskPrimaryItem)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskSecondaryItem)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskTertiaryItem)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskItemCategory)
+                                    </td>
+
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskStartDateTrackTime)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskEndDateTrackTime)
+                                    </td>
+                                    <td class="text-right">
+                                        @{
+                                            @if (item.IsDisplayTaskInterruptTrack)
+                                            {
+                                                <a class="btn btn-light btn-sm isdisplaytaskinterrupttrack">
+                                                    <i class="fas fa-list-ul isdisplaytaskinterrupttrack"></i>
+                                                </a>
+                                            }
+                                            @Html.DisplayFor(modelItem => item.TaskInterruptTrackTotalTime)
+                                        }
+                                    </td>
+
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskStartDateTime)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskEndDateTime)
+                                    </td>
+                                    <td class="text-right">
+                                        @Html.DisplayFor(modelItem => item.TaskInterruptTotalTime)
+                                    </td>
+
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskTime)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.PureTaskTime)
+                                    </td>
+
+                                    <td class="text-right">
+                                        @Html.DisplayFor(modelItem => item.TaskTimeMinute)
+                                    </td>
+                                    <td class="text-right">
+                                        @Html.DisplayFor(modelItem => item.PureTaskTimeMinute)
+                                    </td>
+
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.TaskMemo)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.Remark)
+                                    </td>
+                                    <td class="text-center">
+                                        @((item.IsComplete == false) ? 0 : 1)
+                                    </td>
+                                    <td class="text-center">
+                                        @((item.IsDelete == false) ? 0 : 1)
+                                    </td>
+
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.CreateDateTime)
+                                    </td>
+                                    <td class="text-left ">
+                                        @Html.DisplayFor(modelItem => item.CreateAdministratorFor)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.CreateTaskUserFor)
+                                    </td>
+
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.UpdateDateTime)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.DisplayFor(modelItem => item.UpdateAdministratorFor)
+                                    </td>
+                                    <td class="text-right">
+                                        @Html.DisplayFor(modelItem => item.UpdateTaskUserFor)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                </table>
+            </div>
+
+            @if (pagedList != null)
+            {
+                <div class="mt-3">
+                    <span class="page-no-label">
+                        @pagedList.FirstItemOnPage-@pagedList.LastItemOnPage 件 / @(pagedList.TotalItemCount)件中
+                    </span>
+                    @Html.PagedListPager((IPagedList)Model.TaskRecordModels, page => Url.Action("Index",
+                new
+                {
+                TaskStartDateTime = Model.TaskStartDateTime,
+                TaskEndDateTime = Model.TaskEndDateTime,
+                TaskUserLoginIdName = Model.TaskUserLoginIdName,
+                IsDelete = Model.IsDelete,
+                pageNumber = page
+                }),
+                new PagedListRenderOptions
+                {
+                UlElementClasses = new string [] {"pagination flex-wrap"},
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" },
+                MaximumPageNumbersToDisplay = 10, //表示するページャーの数
+                DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded, //「次へ」の非表示設定
+                DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded, //「前へ」の非表示設定
+                DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded, //「最初へ」の非表示設定
+                DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded, //「最後へ」の表示設定
+                })
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+<div id="modalarea"></div>
+
+@section scripts{
+
+    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css" rel="Stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script> 
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+
+    <script type="text/javascript">
+        const ROOT = '@Url.Content("~")';
+        $(document).ready(function () {
+            // console.log('作業実績 開始');
+        });
+
+        function SubmitForm() {
+            $('.message-error-area').html('');
+            $('.message-success-area').html('');
+            //Serialize the form datas.
+            const valdata = $("#editform").serialize();
+            const taskStartDateTime = $("#TaskStartDateTime").val();
+            const taskEndDateTime = $("#TaskEndDateTime").val();
+            const taskUserLoginIdName = $("#TaskUserLoginIdName").val();
+            const isDelete = $("#IsDelete").prop("checked");
+            const pageNumber = $("#PageNumber").val();
+            //to get alert popup
+            $.ajax({
+                url: ROOT + "/DTaskRecord/Edit",
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: valdata,
+                success: function (data) {
+                    console.log({ data });
+                    if (data.result == "OK") {
+                        //モーダルを閉じる
+                        closeModal();
+                        let date = new Date();
+                        date.setTime(date.getTime() + (10 * 1000));
+                        $.removeCookie("taskrecordeditsuccess", { path: '/' });
+                        $.cookie("taskrecordeditsuccess", data.mess, { path: '/', expires: date });
+                        window.location.href = ROOT + `/DTaskRecord/Index?TaskStartDateTime=${taskStartDateTime}&TaskEndDateTime=${taskEndDateTime}&TaskUserLoginIdName=${taskUserLoginIdName}&IsDelete=${isDelete}&PageNumber=${pageNumber}`;
+                    }
+                    else {
+                        console.log('false');
+                        let html = '<ul class="mt-3">';
+                        data.mess.forEach((element) => {
+                            html += '<li class="text-danger-custom error-text">' + element + '</li>';
+                        });
+                        html += '</ul>';
+                        $('.modale-rror').html(html);
+                    }
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+        }
+
+        $("#IsDeleteLabel").click(function () {
+            let val = $("#IsDelete").prop("checked")
+            $("#IsDelete").prop('checked', !val);
+        });
+
+        $('.rowclick').bind('click', function (event) {
+            const hasClass = event.target.classList.contains('isdisplaytaskinterrupttrack');
+            const taskRecordId = $(this).attr('TaskRecordId');
+            let url = ROOT;
+            if (hasClass) {
+                url = url + '/DTaskRecord/Interrupt';
+            }
+            else {
+                url = url + '/DTaskRecord/Edit';
+            }
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { taskRecordId },
+                success: function (result) {
+                    $('#modalarea').html(result);
+                    modalShow();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                processData: true
+            });
+
+        });
+
+        $(document).on('focus', '#TaskUserLoginIdName', function () {
+            $(function () {
+                $('#TaskUserLoginIdName').autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: ROOT + '/DTaskRecord/GetUserAutoComplete',
+                            type: "GET",
+                            data: { userInfor: $("#TaskUserLoginIdName").val() },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                response($.map(data, function (item) {
+                                    return {
+                                        label: item.TaskUserLoginId + " : " + item.TaskUserName,
+                                        value: item.TaskUserLoginId,
+                                        displayname: item.TaskUserLoginId
+                                    };
+
+                                }))
+                            },
+                            error: function (result) {
+                                alert("No Match" + response.status + '  ' + response.statusText);
+                            }
+                        });
+                    },
+                    focus: function (event, ui) {
+                        let a = ui.item.label;
+                        // $("#TaskUserLoginIdName").val(a);
+                        return false;
+                    },
+                    select: function (event, ui) {
+                        let b = ui.item.label;
+                        $("#TaskUserLoginIdName").val(b);
+                        return false;
+                    },
+                });
+            });
+        });
+
+        $(document).on('focus', '#TaskItem', function () {
+            $(function () {
+                $('#TaskItem').autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: ROOT + '/DTaskRecord/TaskItemAutoComplete',
+                            type: "GET",
+                            data: { taskItemCode: $("#TaskItem").val() },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                response($.map(data, function (item) {
+                                    return {
+                                        label: item.TaskItemCode + "-" + item.TaskPrimaryItem + "-" + item.TaskSecondaryItem + "-" + item.TaskTertiaryItem,
+                                        value: item.TaskItemCode,
+                                        displayname: item.TaskItemCode
+                                    };
+                                }))
+                            },
+                            error: function (result) {
+                                alert("No Match" + response.status + '  ' + response.statusText);
+                            }
+                        });
+                    },
+                    focus: function (event, ui) {
+                        let a = ui.item.label;
+                        // $("#TaskItem").val(a);
+                        return false;
+                    },
+                    select: function (event, ui) {
+                        let b = ui.item.label;
+                        $("#TaskItem").val(b);
+                        $("#TaskItemHinden").val(b);
+                        return false;
+                    },
+                });
+            });
+        });
+    </script>
+}

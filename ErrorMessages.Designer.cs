@@ -331,6 +331,132 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   登録・修正の対象のデータが存在しません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1207 {
+            get {
+                return ResourceManager.GetString("EW1207", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0}が重複しているため修正できません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1208 {
+            get {
+                return ResourceManager.GetString("EW1208", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0}が重複しているため登録できません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1209 {
+            get {
+                return ResourceManager.GetString("EW1209", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   修正リストと登録リストは{0}重複できません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1210 {
+            get {
+                return ResourceManager.GetString("EW1210", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   登録対象行の{0}は空白でなければいけません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1211 {
+            get {
+                return ResourceManager.GetString("EW1211", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   列名が正しくありません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1212 {
+            get {
+                return ResourceManager.GetString("EW1212", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   作業日付(始)を日付形式に変更できません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1300 {
+            get {
+                return ResourceManager.GetString("EW1300", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   作業日付(終)を日付形式に変更できません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1301 {
+            get {
+                return ResourceManager.GetString("EW1301", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0}の形式が正しくありません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1302 {
+            get {
+                return ResourceManager.GetString("EW1302", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0}の形式が正しくありません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1303 {
+            get {
+                return ResourceManager.GetString("EW1303", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   作業項目が存在しません。再選択してください。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1304 {
+            get {
+                return ResourceManager.GetString("EW1304", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   作業終了時刻は、作業開始時刻以上でなければいけません。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1305 {
+            get {
+                return ResourceManager.GetString("EW1305", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   中断時間は0以上で入力してください。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1306 {
+            get {
+                return ResourceManager.GetString("EW1306", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   中断時間が作業時間を超えています。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1307 {
+            get {
+                return ResourceManager.GetString("EW1307", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   予期せぬエラーが発生しました。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW9000 {

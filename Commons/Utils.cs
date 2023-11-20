@@ -23,6 +23,21 @@ namespace task_sync_web.Commons
             return properties.ToList();
         }
 
+        public static void WhitespaceNotTake(DataTable dataTable)
+        {
+            for (var row = 0; row < dataTable.Rows.Count; row++)
+            {
+                for (var col = 0; col < dataTable.Columns.Count; col++)
+                {
+                    var val = Convert.ToString(dataTable.Rows[row][col]);
+                    if (string.IsNullOrWhiteSpace(val))
+                        dataTable.Rows[row][col] = string.Empty;
+                    else
+                        dataTable.Rows[row][col] = val.Trim();
+                }
+            }
+        }
+
     }
 
 }

@@ -20,7 +20,7 @@
         public BaseViewModel()
         {
             PageNumber = 1;
-            PageRowCount = 50;
+            PageRowCount = 100;
         }
     }
 }

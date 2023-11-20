@@ -8,14 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Razor ファイルのコンパイル有効化
 // https://learn.microsoft.com/ja-jp/aspnet/core/mvc/views/view-compilation?view=aspnetcore-6.0&tabs=visual-studio
-var mvcBuilder = builder.Services.AddRazorPages();
+var mvcBuilder = builder.Services.AddRazorPages()
+     .AddSessionStateTempDataProvider();
 if (builder.Environment.IsDevelopment())
 {
     mvcBuilder.AddRazorRuntimeCompilation();
 }
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddSessionStateTempDataProvider();
 
 // Program.csにフォールバック認可ポリシーを追記する(すべてのコントローラーが[Authorize]になる)
 // https://qiita.com/mkuwan/items/bd5ff882108998d76dca

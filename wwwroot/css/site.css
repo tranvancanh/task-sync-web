@@ -5,7 +5,8 @@
     --sublightcolor: #CDFAF1;
     --fontcolor: #252F3B;
     --othercolor: whitesmoke;
-    --font-family-sans-serif: Arial, "BIZ UDPGothic", Meiryo UI, sans-serif;
+    --font-family-sans-serif: "Noto Sans JP", Meiryo UI, sans-serif;
+    --font-title: "Kiwi Maru";
 }
 
 html .modal{
@@ -16,6 +17,10 @@ body {
     color: var(--fontcolor);
     background-color: whitesmoke !important;
     font-family: var(--font-family-sans-serif) !important;
+}
+
+#login-title, #home-title {
+    font-family: var(--font-title) !important;
 }
 
 /*画面が小さい時は、文字の大きさを小さくする*/
@@ -48,11 +53,10 @@ body {
 }
 
 .btn-custom {
-    font-weight: 800 !important;
+    /*font-weight: 800 !important;*/
     background-color: var(--othercolor) !important;
     color: var(--fontcolor) !important;
     border: 0px solid var(--fontcolor) !important;
-    border-radius: 100vh !important;
 }
     .btn-custom:hover, .btn-search:hover {
         background-color: var(--sublightcolor) !important;
@@ -75,8 +79,8 @@ body {
     border-radius: 0px !important;
 }
 
-    .form-control:focus, .btn:focus, a.page-link:focus {
-        box-shadow: 0 0 0 3px var(--mainlightcolor) !important;
+    .form-control:focus, .btn:focus, a.page-link:focus, select:focus {
+        box-shadow: 0 0 0 3px var(--othercolor) !important;
     }
 
     .form-control:disabled, .form-control[readonly] {
@@ -106,9 +110,9 @@ body {
 }
 
 .bd-callout {
-    padding: 1.25rem;
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
     border: 1px solid #eee;
     border-left-width: .25rem;
     border-radius: .25rem;
@@ -131,7 +135,7 @@ body {
 }
 
     .dropdown-menu a.dropdown-item:focus {
-        background-color: var(--mainlightcolor) !important;
+        background-color: var(--subcolor) !important;
     }
 /*↑dropdown-menu custom*/
 
@@ -160,7 +164,7 @@ body {
 table .sticky_table {
     display: block !important;
     overflow: scroll !important;
-    height: 550px;
+    height: 700px!important;
     border-collapse: separate; /*スクロールするとボーダーが消える対応*/
     border-spacing: 0; /*スクロールするとボーダーが消える対応*/
     padding-left: 0; /*スクロールすると、padding分はみ出るため0にしとく*/
@@ -170,11 +174,12 @@ table .sticky_table {
 .sticky_table th,
 .sticky_table td {
     min-width: 120px;
-    max-width: 200px;
+    /*max-width: 200px;*/
     padding: 5px;
     background: #ffffff;
     /*border: solid 1px var(--othercolor);*/
     color: #000000 !important;
+    white-space: nowrap !important;
 }
 
 .sticky_table .edit-icon-btn {
@@ -308,7 +313,7 @@ body {
 }
 
 .ECM_CheckboxInput:hover {
-    background: var(--sublightcolor) !important;
+    background: var(--mainlightcolor) !important;
 }
 
     .ECM_CheckboxInput:hover > .ECM_CheckboxInput-DummyInput {
@@ -320,7 +325,7 @@ body {
 }
 
 .ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput {
-    background: var(--subcolor);
+    background: var(--maincolor);
 }
 
     .ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput::before {
@@ -371,3 +376,36 @@ body {
 }
 
 /*↑checkbutton design css*/
+
+table.sticky_table {
+    display: block;
+    overflow: scroll;
+    width: 100%;
+    height: 550px;
+    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    padding-left: 0;
+    padding-top: 0;
+}
+
+.container-custom {
+    color: #842029;
+    width: 70%;
+    margin-left: 0px;
+}
+
+/*.message-error-area {
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+.message-success-area {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}*/
+
+.no-scroll {
+    overflow: hidden;
+}

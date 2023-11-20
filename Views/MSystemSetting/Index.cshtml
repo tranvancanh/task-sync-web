@@ -9,9 +9,13 @@
 }
 
 <style>
-    .modal__container {
+    #modal-system-setting-edit .modal__container {
         max-width: 800px !important; /* モーダルの幅を設定  */
         width: 800px !important; /* モーダルの幅を設定  */
+    }
+
+    th {
+        white-space: nowrap !important;
     }
 </style>
 
@@ -25,13 +29,15 @@
         <h3 class="pt-2">@Model.DisplayName</h3>
     </div>
     <div class="card-body">
+        <div class="bd-callout col-auto">
+            行をクリックすると修正フォームが表示されます。
+        </div>
         <div class="p-2">
             <form id="system-setting-form" class="form-inline" asp-controller="MSystemSetting" enctype="multipart/form-data" method="get">
                 <div class="row">
                     <div class="form-group col-auto">
                         <div class="input-group">
                             <input class="form-control form-control-lg" asp-for="SearchKeyWord" name="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                            <input type="hidden" asp-for="PageNumber" name="PageNumber" />
                             <button class="btn btn-search btn-lg" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
@@ -41,18 +47,18 @@
                 <span class="text-success-custom">@ViewData["SuccessMessage"]</span>
                 <span class="text-danger-custom">@ViewData["ErrorMessage"]</span>
             </div>
-
-            <div style="overflow-x: scroll;">
+            @Html.HiddenFor(model => model.PageNumber)
+            <div>
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingDetail)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingValue)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateLoginInfor)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingId)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingOutline)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingDetail)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingValue)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.SystemSettingModels[0].SystemSettingStringValue)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateDateTime)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.SystemSettingModels[0].UpdateLoginInfor)</th>
                         </tr>
                     </thead>
 
@@ -99,6 +105,7 @@
                     @Html.PagedListPager((IPagedList)pagedList, pageNumber => Url.Action("Index", new {searchKeyWord = Model.SearchKeyWord, pageNumber = pageNumber }),
                 new PagedListRenderOptions
                 {
+                UlElementClasses = new string [] {"pagination flex-wrap"},
                 LiElementClasses = new string[] { "page-item" },
                 PageClasses = new string[] { "page-link" },
                 MaximumPageNumbersToDisplay = 10, //表示するページャーの数
@@ -122,9 +129,12 @@
     <script>
 
         function SystemSettingEditView(systemSettingId) {
-            var form = $(document).find('#system-setting-form');
-            var input1 = $("<input>").attr("type", "hidden").attr("name", "editSystemSettingId").val(systemSettingId);
+            let form = $(document).find('#system-setting-form');
+            let pageNumber = $('#PageNumber').val();
+            let input1 = $("<input>").attr("type", "hidden").attr("name", "editSystemSettingId").val(systemSettingId);
+            let input2 = $("<input>").attr("type", "hidden").attr("name", "pageNumber").val(pageNumber);
             $(form).append($(input1));
+            $(form).append($(input2));
             form.submit();
         }
 

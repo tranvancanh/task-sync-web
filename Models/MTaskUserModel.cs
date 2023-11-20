@@ -40,12 +40,16 @@ namespace task_sync_web.Models
         [JsonConverter(typeof(BoolFormatConverter))]
         public bool IsNotUse { get; set; }
 
+        [Display(Name = "作業者ID(自動連番)")]
+        public int? TaskUserId { get; set; }
+
         [Display(Name = "登録日時")]
         [JsonConverter(typeof(DateFormatConverter), "yyyy/MM/dd HH:mm")]
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd HH:mm}")]
         public DateTime CreateDateTime { get; set; }
 
         [JsonIgnore]
+        [DefaultValue("")]
         public string CreateAdministratorLoginId { get; set; }
 
         [JsonIgnore]
@@ -67,6 +71,7 @@ namespace task_sync_web.Models
         public DateTime UpdateDateTime { get; set; }
 
         [JsonIgnore]
+        [DefaultValue("")]
         public string UpdateAdministratorLoginId { get; set; }
 
         [JsonIgnore]

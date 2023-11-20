@@ -10,9 +10,13 @@
 }
 
 <style>
-    .modal__container {
+    #modal-interrupt-reason .modal__container {
         max-width: 800px !important; /* モーダルの幅を設定  */
         width: 800px !important; /* モーダルの幅を設定  */
+    }
+
+    th {
+        white-space: nowrap !important;
     }
 </style>
 
@@ -29,18 +33,20 @@
         <h3 class="pt-2">@Model.DisplayName</h3>
     </div>
     <div class="card-body">
+        <div class="bd-callout col-auto">
+            行をクリックすると修正フォームが表示されます。
+        </div>
         <div class="p-2">
             <form id="interrupt-reason-form" class="form-inline" asp-controller="MInterruptReason" enctype="multipart/form-data" method="get">
                 <div class="row">
                     <div class="form-group col-auto p-2">
                         <button class="btn btn-custom btn-lg" id="btnNavbarSearch" type="button" role="button" onclick="SubmitForm('-99', '@Enums.ModalType.Create')">
-                            <span class="p-2"><i class="fas fa-plus fa-fw"></i> 登録</span>
+                            <i class="fas fa-plus fa-fw"></i> 登録
                         </button>
                     </div>
                     <div class="form-group col-auto p-2">
                         <div class="input-group">
                             <input class="form-control form-control-lg" asp-for="SearchKeyWord" type="text" placeholder="キーワードを入力" aria-describedby="btnNavbarSearch" />
-                            <input type="hidden" asp-for="PageNumber" name="PageNumber" />
                             <button class="btn btn-search btn-lg" asp-action="Index" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
@@ -50,19 +56,19 @@
                 <span class="text-success-custom" id="MessageSuccess">@ViewData["SuccessMessage"]</span>
                 <span class="text-danger-custom" id="MessageError">@ViewData["ErrorMessage"]</span>
             </div>
-
-            <div style="overflow-x: scroll;">
+            @Html.HiddenFor(model => model.PageNumber)
+            <div>
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonCode)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonName)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].Remark)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].IsNotUse)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateFor)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateDateTime)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateFor)</th>
-                            <th>@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateDateTime)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonCode)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].InterruptReasonName)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].Remark)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].IsNotUse)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateFor)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].CreateDateTime)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateFor)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.InterruptReasonModels[0].UpdateDateTime)</th>
                         </tr>
                     </thead>
 
@@ -75,7 +81,7 @@
                                     <td class="text-right">@Html.DisplayFor(model => item.InterruptReasonCode)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.InterruptReasonName)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.Remark)</td>
-                                    <td class="text-center">@((item.IsNotUse) ? 0 : 1)</td>
+                                    <td class="text-center">@((item.IsNotUse == false) ? 0 : 1)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.CreateFor)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.CreateDateTime)</td>
                                     <td class="text-left">@Html.DisplayFor(model => item.UpdateFor)</td>
@@ -98,6 +104,7 @@
                     @Html.PagedListPager((IPagedList)pagedList, pageNumber => Url.Action("Index", new {searchKeyWord = Model.SearchKeyWord, pageNumber = pageNumber }),
                 new PagedListRenderOptions
                 {
+                UlElementClasses = new string [] {"pagination flex-wrap"},
                 LiElementClasses = new string[] { "page-item" },
                 PageClasses = new string[] { "page-link" },
                 MaximumPageNumbersToDisplay = 10, //表示するページャーの数
@@ -122,10 +129,13 @@
 
         function SubmitForm(interruptReasonId, modalState) {
             let form = $(document).find('#interrupt-reason-form');
+            let pageNumber = $('#PageNumber').val();
             let inputInterruptReasonId = $("<input>").attr("type", "hidden").attr("name", "ModalModel.InterruptReasonId").val(interruptReasonId);
             let inputModalStatus = $("<input>").attr("type", "hidden").attr("name", "ModalType").val(modalState);
+            let input2 = $("<input>").attr("type", "hidden").attr("name", "pageNumber").val(pageNumber);
             $(form).append($(inputInterruptReasonId));
             $(form).append($(inputModalStatus));
+            $(form).append($(input2));
             form.submit();
         }
 

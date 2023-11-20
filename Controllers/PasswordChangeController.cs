@@ -15,7 +15,7 @@ namespace task_sync_web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(PasswordChangeViewModel viewModel)
+        public IActionResult Change(PasswordChangeViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -23,8 +23,8 @@ namespace task_sync_web.Controllers
                          .SelectMany(v => v.Errors)
                          .Select(e => e.ErrorMessage)
                          .Distinct().FirstOrDefault();
-                ViewData["ErrorMessage"] = errorMessage;
-                return View(viewModel);
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("Index");
             }
 
             try
@@ -32,15 +32,15 @@ namespace task_sync_web.Controllers
                 // 現在のパスワードと新しいパスワードが同じ場合はエラー
                 if (viewModel.CurrentPassword == viewModel.NewPassword)
                 {
-                    ViewData["ErrorMessage"] = ErrorMessages.EW1103;
-                    return View(viewModel);
+                    TempData["ErrorMessage"] = ErrorMessages.EW1103;
+                    return RedirectToAction("Index");
                 }
 
                 // 新しいパスワードと新しいパスワード(確認用)が同じでない場合はエラー
                 if (viewModel.NewPassword != viewModel.ConfirmNewPassword)
                 {
-                    ViewData["ErrorMessage"] = ErrorMessages.EW1102;
-                    return View(viewModel);
+                    TempData["ErrorMessage"] = ErrorMessages.EW1102;
+                    return RedirectToAction("Index");
                 }
 
                 // ログイン中の管理者情報を取得
@@ -59,8 +59,8 @@ namespace task_sync_web.Controllers
                     }
                     else
                     {
-                        ViewData["ErrorMessage"] = ErrorMessages.EW1104;
-                        return View(viewModel);
+                        TempData["ErrorMessage"] = ErrorMessages.EW1104;
+                        return RedirectToAction("Index");
                     }
                 }
 
@@ -72,8 +72,8 @@ namespace task_sync_web.Controllers
                     // 現在のパスワードと、入力した現在のパスワードが異なっている場合はエラー
                     if (currentPassword != viewModel.CurrentPassword)
                     {
-                        ViewData["ErrorMessage"] = ErrorMessages.EW1101;
-                        return View(viewModel);
+                        TempData["ErrorMessage"] = ErrorMessages.EW1101;
+                        return RedirectToAction("Index");
                     }
                 }
                 else
@@ -82,8 +82,8 @@ namespace task_sync_web.Controllers
                     var inputCurrentPasswordHash = Hashing.ConvertPlaintextPasswordToHashedPassword(viewModel.CurrentPassword, currentByteSalt);
                     if (currentPassword != inputCurrentPasswordHash)
                     {
-                        ViewData["ErrorMessage"] = ErrorMessages.EW1101;
-                        return View(viewModel);
+                        TempData["ErrorMessage"] = ErrorMessages.EW1101;
+                        return RedirectToAction("Index");
                     }
                 }
 
@@ -101,20 +101,20 @@ namespace task_sync_web.Controllers
 
                     if (efftedRows > 0)
                     {
-                        ViewData["SuccessMessage"] = SuccessMessages.SW002;
+                        TempData["SuccessMessage"] = SuccessMessages.SW002;
                     }
                     else
                     {
-                        ViewData["ErrorMessage"] = ErrorMessages.EW0502;
+                        TempData["ErrorMessage"] = ErrorMessages.EW0502;
                     }
                 }
 
-                return View(viewModel);
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ViewData["ErrorMessage"] = ErrorMessages.EW9000;
-                return View(viewModel);
+                TempData["ErrorMessage"] = ErrorMessages.EW9000;
+                return RedirectToAction("Index");
             }
         }
 
