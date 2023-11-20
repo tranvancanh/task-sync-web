@@ -10,7 +10,7 @@ namespace task_sync_web.Commons
 {
     public class ExcelFile<T>
     {
-        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1, ExcelHeaderStyleModel excelHeaderStyleModel = null)
+        public static MemoryStream ExcelCreate(List<T> listData, bool autoFitCol = false, int startX = 1, int startY = 1, ExcelHeaderStyleModel excelHeaderStyleModel = null, int[] indicationStringCol = null)
         {
             if (startX < 1) { throw new System.Exception(); }
             if (startY < 1) { throw new System.Exception(); }
@@ -74,6 +74,15 @@ namespace task_sync_web.Commons
                         for(var i = 0; i < values.Length; i++)
                         {
                             var value = values[i];
+                            if(indicationStringCol != null)
+                            {
+                                if (indicationStringCol.Contains(i))
+                                {
+                                    var valString = Convert.ToString(value);
+                                    sl.SetCellValue(startX, startY + i, valString);
+                                    continue;
+                                }
+                            }
                             if(int.TryParse(value, out int val))
                                 sl.SetCellValue(startX, startY + i, val);
                             else

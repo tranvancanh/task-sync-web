@@ -70,7 +70,7 @@ namespace task_sync_web.Controllers
                                 item.PureTaskTimeMinute = (int)item.PureTaskTime.TotalMinutes; //純作業時間(分)
                             }
 
-                            var memoryStream = ExcelFile<DTaskRecordModel>.ExcelCreate(taskUserViewModel, true);
+                            var memoryStream = ExcelFile<DTaskRecordModel>.ExcelCreate(taskUserViewModel, true, indicationStringCol: new int[] { 4 });
                             // ファイル名
                             var fileName = viewModel.DisplayName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
