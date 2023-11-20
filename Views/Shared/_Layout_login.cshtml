@@ -4,9 +4,13 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TaskSync</title>
+    <title>@ViewData["Title"] - スマホで作業記録</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css?@DateTime.Now" />
+
+    <!-- アイコン設定 -->
+    <link rel="shortcut icon" type="image/png" href="~/image/appicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/image/appicon.png">
 
     <!--Bootstrap admin template-->
     <link rel="stylesheet" href="~/lib/startbootstrap-sb-admin-gh-pages/css/styles.css" />
@@ -17,13 +21,12 @@
     <!--Micromodal.js-->
     <link rel="stylesheet" href="~/css/micromodal.css" />
 
-
 </head>
 <body>
 
     <div class="">
         <main>
-                @RenderBody()
+            @RenderBody()
         </main>
     </div>
 

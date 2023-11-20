@@ -93,7 +93,7 @@ namespace task_sync_web.Controllers
                 var isFormat = FileFormatCheck(dataTable);
                 if (!isFormat)
                 {
-                    totalErrorList.Add(ErrorMessages.EW1202);
+                    totalErrorList.Add(ErrorMessages.EW1212);
                     if (totalErrorList.Any())
                     {
                         TempData["ErrorMessage"] = totalErrorList;
@@ -303,15 +303,17 @@ namespace task_sync_web.Controllers
             // 新規登録チェック
             if (flag.Equals("1"))
             {
-                // 自動連番なので、チェックなし
+                // 登録対象行の作業項目IDが空白であるか
+                if (!string.IsNullOrWhiteSpace(taskItemId))
+                    return string.Format(ErrorMessages.EW1211, "作業項目ID");
             }
             // 更新チェック
             else if (flag.Equals("2"))
             {
                 if(string.IsNullOrWhiteSpace(taskItemId))
                     return string.Format(ErrorMessages.EW0001, "作業項目ID");
-                else if (!int.TryParse(taskItemId, out int val))
-                    return string.Format(ErrorMessages.EW0009, "作業項目ID");
+                //else if (!int.TryParse(taskItemId, out int val))
+                //    return string.Format(ErrorMessages.EW0009, "作業項目ID");
 
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {

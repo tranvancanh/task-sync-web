@@ -37,9 +37,9 @@ namespace task_sync_web.Controllers
                             {
                                 var startTime = Convert.ToDateTime(item.TaskStartDateTime.ToString("yyyy/MM/dd HH:mm:ss"));
                                 var stopTime = Convert.ToDateTime(item.TaskEndDateTime.ToString("yyyy/MM/dd HH:mm:ss"));
-                                item.TaskTime = TimeSpan.FromMinutes(CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime)); //作業時間
+                                item.TaskTime = TimeSpan.FromMinutes(CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime)); // 作業時間
                                 var totalTime = TimeSpan.FromMinutes(item.TaskInterruptTotalTime);
-                                item.PureTaskTime = TimeSpan.FromMinutes(CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime)) - totalTime; //純作業時間
+                                item.PureTaskTime = TimeSpan.FromMinutes(CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime)) - totalTime; // 純作業時間
                                 item.TaskTimeMinute = (int)item.TaskTime.TotalMinutes; //作業時間(分)
                                 item.PureTaskTimeMinute = (int)item.PureTaskTime.TotalMinutes; //純作業時間(分)
                                 // 中断時間(記録)のボタン表示、非表示
@@ -63,14 +63,15 @@ namespace task_sync_web.Controllers
                             {
                                 var startTime = Convert.ToDateTime(item.TaskStartDateTime.ToString("yyyy/MM/dd HH:mm:ss"));
                                 var stopTime = Convert.ToDateTime(item.TaskEndDateTime.ToString("yyyy/MM/dd HH:mm:ss"));
-                                item.TaskTime = TimeSpan.FromMinutes(CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime)); //作業時間
+                                item.TaskTime = TimeSpan.FromMinutes(CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime)); // 作業時間
                                 var totalTime = TimeSpan.FromMinutes(item.TaskInterruptTotalTime);
-                                item.PureTaskTime = TimeSpan.FromMinutes(CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime)) - totalTime; //純作業時間
-                                item.TaskTimeMinute = (int)item.TaskTime.TotalMinutes; //作業時間(分)
-                                item.PureTaskTimeMinute = (int)item.PureTaskTime.TotalMinutes; //純作業時間(分)
+                                item.PureTaskTime = TimeSpan.FromMinutes(CalculationTimeMinutesTimeByRoundupSeconds(startTime, stopTime)) - totalTime; // 純作業時間
+                                item.TaskTimeMinute = (int)item.TaskTime.TotalMinutes; // 作業時間(分)
+                                item.PureTaskTimeMinute = (int)item.PureTaskTime.TotalMinutes; // 純作業時間(分)
                             }
 
-                            var memoryStream = ExcelFile<DTaskRecordModel>.ExcelCreate(taskUserViewModel, true, indicationStringCol: new int[] { 4 });
+                            List<int> stringColumnList = new List<int> { 4 };
+                            var memoryStream = ExcelFile<DTaskRecordModel>.ExcelCreate(taskUserViewModel, true, 1,1,null, stringColumnList);
                             // ファイル名
                             var fileName = viewModel.DisplayName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
@@ -466,7 +467,8 @@ namespace task_sync_web.Controllers
                             Remark = remark,
                             IsDelete = isDelete,
                             UpdateDateTime = DateTime.Now,
-                            UpdateAdministratorId = LoginUser.AdministratorId
+                            UpdateAdministratorId = LoginUser.AdministratorId,
+                            UpdateTaskUserId = 0 // 更新作業者を空白にして上書き
                         }, tran);
                     if (result > 0)
                         efftedRows = efftedRows + result;
@@ -541,6 +543,15 @@ namespace task_sync_web.Controllers
                 // 作業時間の差を計算
                 TimeSpan timeSpan = endDateTime - startDateTime;
 
+                // 日数の部分のみ取得
+                var days = timeSpan.Days;
+                // 日数が0以上なら、24と60を掛けて分に変換し加算
+                if (days > 0)
+                {
+                    var dayHours = days * 24;
+                    totalMinutes += (dayHours * 60);
+                }
+
                 // 時間の部分のみ取得
                 var hours = timeSpan.Hours;
                 // 時間が0以上なら、60を掛けて分に変換する
@@ -581,9 +592,9 @@ namespace task_sync_web.Controllers
                         "taskrecord.TaskDate",                // 作業日付
                         "taskUser.TaskUserDepartmentName",    // 所属名
                         "taskUser.TaskUserGroupName",         // グループ名
-                        "taskUser.TaskUserLoginId as CreateTaskUserID",   // 作業ログインID
+                        "taskUser.TaskUserLoginId",   // 作業ログインID
                         "taskUser.TaskUserName",              // 作業者名
-                        "deviceStatus.DeviceName",            // デバイス名
+                        "loginTaskUserRecord.DeviceName",            // デバイス名
 
                         "taskrecord.TaskItemId",              //作業項目ID
                         "taskrecord.TaskItemCode",            // 作業項目コード
@@ -602,18 +613,19 @@ namespace task_sync_web.Controllers
 
                         "taskrecord.TaskMemo",                // 作業メモ
                         "taskrecord.Remark",                  // 備考
+                        "taskrecord.IsComplete",                // 送信完了フラグ
                         "taskrecord.IsDelete",                // 削除フラグ
 
                         "taskrecord.CreateDateTime",
-                        "b.AdministratorLoginId as CreateAdministratorId", // 作成管理者ログインID
+                        "b.AdministratorLoginId as CreateAdministratorLoginId", // 作成管理者ログインID
                         "b.AdministratorName as CreateAdministratorName",  // 作成管理者名
-                        "c.AdministratorLoginId as UpdateAdministratorId", // 更新管理者ログインID
+                        "c.AdministratorLoginId as UpdateAdministratorLoginId", // 更新管理者ログインID
                         "c.AdministratorName as UpdateAdministratorName",  // 更新管理者名
 
                         "taskrecord.UpdateDateTime",
-                        "e.TaskUserLoginId as CreateTaskUserId", // 作成作業者ログインID
+                        "e.TaskUserLoginId as CreateTaskUserLoginId", // 作成作業者ログインID
                         "e.TaskUserName as CreateTaskUserName",  // 作成作業者名
-                        "f.TaskUserLoginId as UpdateTaskUserId", // 更新作業者ログインID
+                        "f.TaskUserLoginId as UpdateTaskUserLoginId", // 更新作業者ログインID
                         "f.TaskUserName as UpdateTaskUserName"   // 更新作業者名
 
                     )
@@ -624,8 +636,8 @@ namespace task_sync_web.Controllers
                 .LeftJoin("MAdministrator as c", "taskrecord.UpdateAdministratorId", "c.AdministratorId")
                 .LeftJoin("MTaskUser as e", "taskrecord.CreateTaskUserId", "e.TaskUserId")
                 .LeftJoin("MTaskUser as f", "taskrecord.UpdateTaskUserId", "f.TaskUserId")
-                .LeftJoin("DLoginTaskUserRecord as loginTaskUserRecordf", "taskrecord.LoginTaskUserRecordId", "loginTaskUserRecordf.LoginTaskUserRecordId")   // 1
-                .LeftJoin("DUseDeviceStatus as deviceStatus", "loginTaskUserRecordf.UseDeviceStatusId", "deviceStatus.UseDeviceStatusId")   // 2
+                .LeftJoin("DLoginTaskUserRecord as loginTaskUserRecord", "taskrecord.LoginTaskUserRecordId", "loginTaskUserRecord.LoginTaskUserRecordId")
+                //.LeftJoin("DUseDeviceStatus as deviceStatus", "loginTaskUserRecordf.UseDeviceStatusId", "deviceStatus.UseDeviceStatusId")   // 2
                 .Where("TaskStartDateTime", ">=", taskStartDateTime)
                 .Where("TaskEndDateTime", "<", taskEndDateTime);
                 if (!string.IsNullOrWhiteSpace(taskUserLogin))

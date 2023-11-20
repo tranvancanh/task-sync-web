@@ -1,6 +1,6 @@
 ﻿@model AppDownloadViewModel
 @{
-    ViewData["Title"] = "TascSync スマホアプリ ダウンロード";
+    ViewData["Title"] = "スマホで作業記録 スマホアプリ ダウンロード";
     Layout = "_Layout_login";
 }
 
@@ -13,10 +13,10 @@
 
 <div class="mt-2 p-3" style="max-width:500px;">
 
-    <div class="text-center">
-        <h1 class="display-6">TaskSync</h1>
-        <h3 class="">スマホアプリ ダウンロード</h3>
+    <div class="p-1" style="display:flex;justify-content: center;">
+        <h2 id="login-title" class="fw-bold">スマホで作業記録</h2><i class="fas fa-wifi fa-fw fa-lg login-icon" style="color:var(--maincolor);transform: rotate(45deg);position:relative;left:-13px;top:-10px;"></i>
     </div>
+    <h5 class="p-2 text-center">スマホアプリ ダウンロード</h5>
 
     <form method="post" asp-action="Index" enctype="multipart/form-data">
         <div class="text-center p-3">
@@ -39,7 +39,7 @@
                 <ol>
                     <li>「設定」のアプリをタップします。</li>
                     <li>「アプリと通知」をタップします。</li>
-                    <li>「詳細設定」をタップします。<br />※存在しない場合は4へ進みます。</li>
+                    <li>「詳細設定」をタップします。<br />※「詳細設定」が存在しない場合は4へ進みます。</li>
                     <li>「特別なアプリアクセス」をタップします。</li>
                     <li>「不明なアプリのインストール」をタップします。</li>
                     <li>インストールを許可するアプリを選択します。<br />※今開いているブラウザが「Chrome」の場合は、「Chrome」での許可設定を行います。</li>

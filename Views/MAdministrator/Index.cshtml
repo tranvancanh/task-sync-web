@@ -24,6 +24,19 @@
         <h3 class="pt-2">@Model.DisplayName</h3>
     </div>
     <div class="card-body">
+        <div class="bd-callout col-auto">
+            <ul>
+                <li>
+                    管理者パスワードの変更は、画面右上のユーザーマークから行うことができます。
+                </li>
+                <li>
+                    管理者パスワードをお忘れの際は、東山システム部までご連絡ください。
+                </li>
+                <li>
+                    管理者の新規登録時や管理者パスワード忘れ時の"仮パスワード"の場合、お早めにパスワード変更を行ってください。
+                </li>
+            </ul>
+        </div>
         <div class="p-2">
             <form class="form-inline ms-1" asp-controller="MAdministrator" enctype="multipart/form-data" method="get">
                 <div class="row">
@@ -35,7 +48,7 @@
                     </div>
                     <div class="form-group col-auto p-2">
                         <!--ExcelTest-->
-                        <button class="btn btn-custom btn-lg" asp-action="ExcelOutput" ype="submit"><span class="p-2"><i class="fas fa-download fa-fw"></i> Excel出力</span></button>
+                        <button class="btn btn-custom btn-lg" asp-action="ExcelOutput" ype="submit"><span><i class="fas fa-download fa-fw"></i> Excel出力</span></button>
                     </div>
                 </div>
             </form>
@@ -47,10 +60,10 @@
                 <table class="table sticky_table table-hover-evant mt-3">
                     <thead>
                         <tr>
-                            <th style="width: 30%">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
-                            <th style="width: 30%">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
-                            <th style="width: 30%">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
-                            <th style="width: 300px">@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
                         </tr>
                     </thead>
 

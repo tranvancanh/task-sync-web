@@ -1,31 +1,142 @@
-﻿@{
-    ViewData["Title"] = "ホーム";
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = @Model.DisplayName;
 }
 
-@* <div class="text-center p-4">
-    <h1 class="display-4">Welcome</h1>
-</div> *@
+<style>
+/*     .sticky_table {
+        max-width: 1200px !important;
+        width: 1200px !important;
+        height: auto !important;
+    } */
+    #usedivice-calcel-btn:hover{
+        background-color:var(--maincolor)!important;
+        color:#ffffff!important;
+    }
+</style>
 
-@*modal sample*@
-@*<button data-micromodal-trigger="modal-1" role="button">モーダルを開く</button>
-<div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+<div class="card shadow m-4">
+    <div class="card-header">
+        <h3 class="pt-2">ホーム</h3>
+    </div>
+    <div class="card-body">
+
+        <h4 class="pt-2">利用デバイスIDのご利用状況</h4>
+        <div class="bd-callout">
+            <div class="">
+                <h5>
+                    <span class="pe-2">
+                        @Html.DisplayNameFor(model => model.UseDeviceEnableCount)：<b>@Model.UseDeviceEnableCount</b> 件
+                    </span>
+                    <span class="pe-2">
+                        @Html.DisplayNameFor(model => model.UseDeviceCount)：<b>@Model.UseDeviceCount</b> 件
+                    </span>
+                    <span class="">
+                        @Html.DisplayNameFor(model => model.NotUseDeviceCount)：<b>@Model.NotUseDeviceCount</b> 件
+                    </span>
+                </h5>
+                <ul class="pt-2">
+                    <li>
+                        登録日時は、スマホアプリで会社ログインを行った日時です。
+                    </li>
+                    <li>
+                        解除を行うと、スマホアプリで作業者ログインができなくなります。
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-auto">
+            <span class="text-success-custom">@ViewData["SuccessMessage"]</span>
+            <span class="text-danger-custom">@ViewData["ErrorMessage"]</span>
+        </div>
+
+        <!--デバイス解除送信用フォーム-->
+        <div class="ps-2">
+            <form id="usedevice-cancel-form" asp-action="Index" method="post"></form>
+            <table class="sticky_table table-hover-evant mt-3">
+                <thead>
+                    <tr>
+                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].UseDeviceId)</th>
+                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].DeviceName)</th>
+                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].Model)</th>
+                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].Manufacturer)</th>
+                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].UseDeviceEnableDateString)</th>
+                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].RegistDateTimeString)</th>
+                        <th style="min-width:50px;"></th>
+                    </tr>
+                </thead>
+
+                @if (Model != null)
+                {
+                    <tbody>
+                        @foreach (var item in @Model.UseDeviceStatusModels)
+                        {
+                            <tr>
+                                <td class="">@Html.DisplayFor(model => item.UseDeviceId)</td>
+                                <td class="">@Html.DisplayFor(model => item.DeviceName)</td>
+                                <td class="">@Html.DisplayFor(model => item.Model)</td>
+                                <td class="">@Html.DisplayFor(model => item.Manufacturer)</td>
+                                <td class="">@Html.DisplayFor(model => item.UseDeviceEnableDateString)</td>
+                                <td class="">@Html.DisplayFor(model => item.RegistDateTimeString)</td>
+                                <td style="min-width:50px;">
+                                    @if (@item.UseDeviceStatusId > 0)
+                                    {
+                                        <button type="submit" id="usedivice-calcel-btn" class="btn btn-custom" onclick="UseDeviceCancelConfirm(@item.UseDeviceStatusId)">解除</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                }
+            </table>
+
+
+        </div>
+
+    </div>
+</div>
+
+<!--デバイス解除確認モーダル-->
+<div class="modal micromodal-slide" id="modal-usedivice-calcel" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-logout-title">
             <header class="modal__header">
-                <h2 class="modal__title" id="modal-1-title">
-                    Micromodal
-                </h2>
-                <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+                <h3>確認</h3>
+                <button class="btn btn-custom  btn-lg" aria-label="Close modal" data-micromodal-close><i class="fas fa-times"></i></button>
             </header>
-            <main class="modal__content" id="modal-1-content">
+            <main class="modal__content">
                 <p>
-                    Try hitting the <code>tab</code> key and notice how the focus stays within the modal itself. Also, <code>esc</code> to close modal.
+                    ご利用中のデバイスを解除します。よろしいですか？
+                    <input type="hidden" id="usedevice-cancel-done-input"/>
                 </p>
             </main>
-            <footer class="modal__footer">
-                <button class="modal__btn modal__btn-primary">Continue</button>
-                <button class="modal__btn" data-micromodal-close aria-label="Close this dialog window">Close</button>
+            <footer class="modal__footer d-grid gap-2">
+                <a id="usedevice-cancel-done-btn" class="btn btn-custom btn-lg" onclick="UseDeviceCancelDone();">解除</a>
             </footer>
         </div>
     </div>
-</div>*@
+</div>
+
+
+@section Scripts {
+    <script>
+        const usedeviceCancelForm = '#usedevice-cancel-form';
+        const usedeviceCancelIdInput = '#usedevice-cancel-done-input';
+
+        function UseDeviceCancelDone() {
+            var form = $(document).find(usedeviceCancelForm);
+            var useDeviceStatusId = $(usedeviceCancelIdInput).val();
+            var input = $("<input>").attr("type", "hidden").attr("name", "cancelUseDeviceStatusId").val(useDeviceStatusId);
+            $(form).append($(input));
+            form.submit();
+        }
+
+        function UseDeviceCancelConfirm(usedeviceStatusId) {
+            $(usedeviceCancelIdInput).val(usedeviceStatusId);
+            MicroModal.show('modal-usedivice-calcel');
+        }
+
+    </script>
+}
+

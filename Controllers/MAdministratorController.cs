@@ -100,6 +100,9 @@ namespace task_sync_web.Controllers
                         throw new CustomExtention(ErrorMessages.EW0101);
                     }
 
+                    // 管理者ID順に並び替え
+                    administratorList = administratorList.OrderBy(x => x.AdministratorId).ToList();
+
                     searchKey = (searchKey ?? "").Trim();
                     if (administratorList.Count > 0 && searchKey.Length > 0)
                     {

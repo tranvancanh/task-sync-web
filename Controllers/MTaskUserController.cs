@@ -26,7 +26,7 @@ namespace task_sync_web.Controllers
                 var taskUserViewModel = await GetListMTaskUserModel(viewModel.SearchKeyWord);
                 switch (command)
                 {
-                    //検索処理
+                    // 検索処理
                     case Enums.GetState.Default:
                     case Enums.GetState.Search:
                         {
@@ -40,7 +40,8 @@ namespace task_sync_web.Controllers
                             var excelHeaderStyle = new ExcelHeaderStyleModel();
                             excelHeaderStyle.FirstColorBackgroundColorColumnNumber = new int[1] { 1 };
                             excelHeaderStyle.SecondColorBackgroundColorColumnNumber = new int[7] { 2, 3, 4, 5, 6, 7, 8 };
-                            var memoryStream = ExcelFile<MTaskUserModel>.ExcelCreate(taskUserViewModel, true, 1, 1, excelHeaderStyle);
+                            List<int> stringColumnList = new List<int> { 1 };
+                            var memoryStream = ExcelFile<MTaskUserModel>.ExcelCreate(taskUserViewModel, true, 1, 1, excelHeaderStyle, stringColumnList);
                             // ファイル名
                             var fileName = viewModel.DisplayName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
@@ -93,7 +94,7 @@ namespace task_sync_web.Controllers
                 var isFormat = FileFormatCheck(dataTable);
                 if (!isFormat)
                 {
-                    totalErrorList.Add(ErrorMessages.EW1202);
+                    totalErrorList.Add(ErrorMessages.EW1212);
                     if (totalErrorList.Any())
                     {
                         TempData["ErrorMessage"] = totalErrorList;
@@ -246,11 +247,11 @@ namespace task_sync_web.Controllers
         {
             var localErr = new List<string>();
             var anyDuplicateInsert = insertData.GroupBy(x => x.TaskUserLoginId).Any(g => g.Count() > 1);
+            if (anyDuplicateInsert)
+                localErr.Add(string.Format(ErrorMessages.EW1209, "作業者ログインID"));
             var anyDuplicateModify = modifyData.GroupBy(x => x.TaskUserLoginId).Any(g => g.Count() > 1);
             if (anyDuplicateModify)
                 localErr.Add(string.Format(ErrorMessages.EW1208, "作業者ログインID"));
-            if (anyDuplicateInsert)
-                localErr.Add(string.Format(ErrorMessages.EW1209, "作業者ログインID"));
 
             var results = from p in insertData
                           join c in modifyData
@@ -329,16 +330,11 @@ namespace task_sync_web.Controllers
                     return errorList;
                 }
 
-                if (taskUserId.Length > 8)
-                    errorList.Add(string.Format(ErrorMessages.EW0002, "作業者ID", "8"));
-                else
-                {
-                    if (!int.TryParse(taskUserId, out int val))
-                        errorList.Add(string.Format(ErrorMessages.EW0009, "作業者ID"));
-                }
-
                 if (taskUserLoginId.Length > 8)
                     errorList.Add(string.Format(ErrorMessages.EW0002, "作業者ログインID", "8"));
+
+                if (!int.TryParse(taskUserId, out int val))
+                    errorList.Add(string.Format(ErrorMessages.EW0009, "作業者ログインID"));
 
                 if (errorList.Any())
                     return errorList;
@@ -349,12 +345,12 @@ namespace task_sync_web.Controllers
                     .Where(new
                     {
                         TaskUserId = taskUserId,
-                        TaskUserLoginId = taskUserLoginId
+                        //TaskUserLoginId = taskUserLoginId
                     })
                     .GetAsync<MTaskUserModel>())
                     .FirstOrDefault();
                     if (result == null)
-                        errorList.Add(string.Format(ErrorMessages.EW1205, "作業者及び作業者ログインID"));
+                        errorList.Add(string.Format(ErrorMessages.EW1205, "作業者ID"));
                 }
             }
 
@@ -400,7 +396,7 @@ namespace task_sync_web.Controllers
                             .Where(new
                             {
                                 TaskUserId = data.TaskUserId,
-                                TaskUserLoginId = data.TaskUserLoginId
+                                //TaskUserLoginId = data.TaskUserLoginId
                             })
                             .UpdateAsync(new
                             {
