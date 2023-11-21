@@ -4,14 +4,46 @@
 }
 
 <style>
-/*     .sticky_table {
-        max-width: 1200px !important;
-        width: 1200px !important;
-        height: auto !important;
-    } */
     #usedivice-calcel-btn:hover{
         background-color:var(--maincolor)!important;
         color:#ffffff!important;
+    }
+
+    a.manual-link {
+        text-decoration: none;
+        color:var(--fontcolor);
+    }
+
+    a.manual-link:hover {
+        color: var(--maincolor);
+    }
+
+    .manual-icon{
+        padding-right:2px;
+        color: var(--maincolor);
+    }
+
+    .hashtag-icon {
+        padding-right: 1px;
+        color: var(--fontcolor);
+        font-size: 20px;
+    }
+
+    #use-device-downloadcode-area, #use-device-view-area {
+        font-weight: 500;
+    }
+    .use-device-downloadcode, .use-device-text {
+        font-size: 20px;
+        padding: 0.2rem;
+        margin-bottom: 0.2rem;
+        background: linear-gradient(transparent 70%, var(--sublightcolor) 80%);
+        font-weight: 700;
+    }
+
+    .company-message{
+        font-size: 20px;
+        color: var(--maincolor);
+        font-weight: 700;
     }
 </style>
 
@@ -21,78 +53,118 @@
     </div>
     <div class="card-body">
 
-        <h4 class="pt-2">利用デバイスIDのご利用状況</h4>
-        <div class="bd-callout">
-            <div class="">
-                <h5>
-                    <span class="pe-2">
-                        @Html.DisplayNameFor(model => model.UseDeviceEnableCount)：<b>@Model.UseDeviceEnableCount</b> 件
-                    </span>
-                    <span class="pe-2">
-                        @Html.DisplayNameFor(model => model.UseDeviceCount)：<b>@Model.UseDeviceCount</b> 件
-                    </span>
-                    <span class="">
-                        @Html.DisplayNameFor(model => model.NotUseDeviceCount)：<b>@Model.NotUseDeviceCount</b> 件
-                    </span>
-                </h5>
-                <ul class="pt-2">
-                    <li>
-                        登録日時は、スマホアプリで会社ログインを行った日時です。
-                    </li>
-                    <li>
-                        解除を行うと、スマホアプリで作業者ログインができなくなります。
-                    </li>
-                </ul>
+        @if (!String.IsNullOrEmpty(Model.CompanyMessageBySystem))
+        {
+            <h4 class="p-2"><i class="fas fa-hashtag fa-fw hashtag-icon"></i>@Html.DisplayNameFor(model => model.CompanyMessageBySystem)</h4>
+            <div class="ps-5 pb-1">
+                <span class="pe-2">
+                    <span class="company-message">@Model.CompanyMessageBySystem</span>
+                </span>
             </div>
+
+            <hr size="2">
+        }
+
+        <h4 class="p-2"><i class="fas fa-hashtag fa-fw hashtag-icon"></i>システムマニュアル</h4>
+        <div class="ps-5 pb-1">
+            <ul>
+                <li>
+                    <a class="manual-link" target="_blank" href="~/manual/【スマホで作業記録】スマホアプリ マニュアル.pdf">
+                        <i class="fas fa-file fa-fw manual-icon"></i>スマホアプリ マニュアル.pdf
+                    </a>
+                </li>
+                <li>
+                    <a class="manual-link" target="_blank" href="~/manual/【スマホで作業記録】Web管理画面 マニュアル.pdf">
+                        <i class="fas fa-file fa-fw manual-icon"></i>Web管理画面 マニュアル.pdf
+                    </a>
+                </li>
+            </ul>
         </div>
 
-        <div class="col-auto">
-            <span class="text-success-custom">@ViewData["SuccessMessage"]</span>
-            <span class="text-danger-custom">@ViewData["ErrorMessage"]</span>
+        <hr size="2">
+
+        <h4 class="p-2"><i class="fas fa-hashtag fa-fw hashtag-icon"></i>利用デバイスIDのご利用状況</h4>
+        <div class="ps-5 pb-2">
+
+            <div class="pb-2">
+                <div id="use-device-downloadcode-area">
+                    <span class="pe-2">
+                        @Html.DisplayNameFor(model => model.SmartphoneAppDownloadCode)：<span class="use-device-downloadcode">@Model.SmartphoneAppDownloadCode</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="pb-2">
+                <div id="use-device-view-area">
+                    <span class="pe-2" style="display:inline-block;">
+                        @Html.DisplayNameFor(model => model.UseDeviceEnableCount)：<span class="use-device-text">@Model.UseDeviceEnableCount</span> 件
+                    </span>
+                    <span class="pe-2" style="display:inline-block;">
+                        @Html.DisplayNameFor(model => model.UseDeviceCount)：<span class="use-device-text">@Model.UseDeviceCount </span> 件
+                    </span>
+                    <span class="" style="display:inline-block;">
+                        @Html.DisplayNameFor(model => model.NotUseDeviceCount)：<span class="use-device-text">@Model.NotUseDeviceCount </span> 件
+                    </span>
+                </div>
+            </div>
+
+            <ul class="pt-2">
+                <li>
+                    登録日時は、スマホアプリで会社ログインを行った日時です。
+                </li>
+                <li>
+                    解除を行うと、スマホアプリで作業者ログインができなくなります。
+                </li>
+            </ul>
+
+            <div class="col-auto">
+                <span class="text-success-custom">@ViewData["SuccessMessage"]</span>
+                <span class="text-danger-custom">@ViewData["ErrorMessage"]</span>
+            </div>
+
+            <!--デバイス解除送信用フォーム-->
+            <div class="">
+                <form id="usedevice-cancel-form" asp-action="Index" method="post"></form>
+                <table class="sticky_table table-hover-evant mt-3">
+                    <thead>
+                        <tr>
+                            <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].UseDeviceId)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].DeviceName)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].Model)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].Manufacturer)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].UseDeviceEnableDateString)</th>
+                            <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].RegistDateTimeString)</th>
+                            <th style="min-width:50px;"></th>
+                        </tr>
+                    </thead>
+
+                    @if (Model != null)
+                    {
+                        <tbody>
+                            @foreach (var item in @Model.UseDeviceStatusModels)
+                            {
+                                <tr>
+                                    <td class="">@Html.DisplayFor(model => item.UseDeviceId)</td>
+                                    <td class="">@Html.DisplayFor(model => item.DeviceName)</td>
+                                    <td class="">@Html.DisplayFor(model => item.Model)</td>
+                                    <td class="">@Html.DisplayFor(model => item.Manufacturer)</td>
+                                    <td class="">@Html.DisplayFor(model => item.UseDeviceEnableDateString)</td>
+                                    <td class="">@Html.DisplayFor(model => item.RegistDateTimeString)</td>
+                                    <td style="min-width:50px;">
+                                        @if (@item.UseDeviceStatusId > 0)
+                                        {
+                                            <button type="submit" id="usedivice-calcel-btn" class="btn btn-custom" onclick="UseDeviceCancelConfirm(@item.UseDeviceStatusId)">解除</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                </table>
+            </div>
+
         </div>
 
-        <!--デバイス解除送信用フォーム-->
-        <div class="ps-2">
-            <form id="usedevice-cancel-form" asp-action="Index" method="post"></form>
-            <table class="sticky_table table-hover-evant mt-3">
-                <thead>
-                    <tr>
-                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].UseDeviceId)</th>
-                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].DeviceName)</th>
-                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].Model)</th>
-                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].Manufacturer)</th>
-                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].UseDeviceEnableDateString)</th>
-                        <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].RegistDateTimeString)</th>
-                        <th style="min-width:50px;"></th>
-                    </tr>
-                </thead>
-
-                @if (Model != null)
-                {
-                    <tbody>
-                        @foreach (var item in @Model.UseDeviceStatusModels)
-                        {
-                            <tr>
-                                <td class="">@Html.DisplayFor(model => item.UseDeviceId)</td>
-                                <td class="">@Html.DisplayFor(model => item.DeviceName)</td>
-                                <td class="">@Html.DisplayFor(model => item.Model)</td>
-                                <td class="">@Html.DisplayFor(model => item.Manufacturer)</td>
-                                <td class="">@Html.DisplayFor(model => item.UseDeviceEnableDateString)</td>
-                                <td class="">@Html.DisplayFor(model => item.RegistDateTimeString)</td>
-                                <td style="min-width:50px;">
-                                    @if (@item.UseDeviceStatusId > 0)
-                                    {
-                                        <button type="submit" id="usedivice-calcel-btn" class="btn btn-custom" onclick="UseDeviceCancelConfirm(@item.UseDeviceStatusId)">解除</button>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                }
-            </table>
-
-
-        </div>
 
     </div>
 </div>

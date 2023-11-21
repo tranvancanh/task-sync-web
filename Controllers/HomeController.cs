@@ -20,6 +20,15 @@ namespace task_sync_web.Controllers
             var viewModel = new HomeViewModel();
             try
             {
+                // 会社情報を取得
+                var company = GetCompany();
+
+                // システム管理者からのメッセージを取得
+                viewModel.CompanyMessageBySystem = company == null ? "" : company.CompanyMessageBySystem;
+
+                // スマホアプリのダウンロードコードを取得
+                viewModel.SmartphoneAppDownloadCode = company == null ? "" : company.SmartphoneAppDownloadCode;
+
                 // 利用デバイス状況の利用中データを取得
                 viewModel.UseDeviceStatusModels = GetListUseDeviceStatus();
 
@@ -170,6 +179,28 @@ namespace task_sync_web.Controllers
                 TempData["ErrorMessage"] = ErrorMessages.EW0502;
             }
             return RedirectToAction("Index");
+        }
+
+        public MCompanyModel GetCompany()
+        {
+            var companyModel = new MCompanyModel();
+            try
+            {
+
+                using (var db = new DbSqlKata())
+                {
+                    // DBからデータ一覧を取得
+                    companyModel = db.Query("MCompany")
+                        .Where("CompanyWebPath", LoginUser.CompanyWebPath)
+                        .Get<MCompanyModel>().FirstOrDefault();
+                }
+            }
+            catch (Exception)
+            {
+                // 何もしない
+            }
+
+            return companyModel;
         }
 
         public IActionResult Privacy()

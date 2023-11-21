@@ -41,7 +41,7 @@ namespace task_sync_web.Controllers
                 // ログインに必要なプリンシパルを作る
                 var claims = new[] {
                     new Claim(CustomClaimTypes.ClaimType_CampanyName, company.CompanyName.ToString()),
-                    new Claim(CustomClaimTypes.ClaimType_CompanyDatabaseName, company.CompanyDatabaseName.ToString()),
+                    new Claim(CustomClaimTypes.ClaimType_CompanyWebPath, company.CompanyWebPath.ToString()),
                     new Claim(CustomClaimTypes.ClaimType_AdministratorId, administrator.AdministratorId.ToString()),
                     new Claim(CustomClaimTypes.ClaimType_AdministratorLoginId, administrator.AdministratorLoginId.ToString()),
                     new Claim(CustomClaimTypes.ClaimType_AdministratorName, administrator.AdministratorName.ToString()),
@@ -249,8 +249,11 @@ namespace task_sync_web.Controllers
         {
             try
             {
-                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
-                using (var db = new DbSqlKata(dbName))
+                // データベース名を取得
+                var companyWebPath = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyWebPath).First().Value.ToString();
+                var databeseName = new ConvertDatabaseName(companyWebPath).ComapnyDatabeseName;
+
+                using (var db = new DbSqlKata(databeseName))
                 {
                     // DB更新
                     var updateResult = db.Query("MAdministrator")
