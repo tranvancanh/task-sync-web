@@ -26,6 +26,9 @@ namespace task_sync_web.Controllers
                 // システム管理者からのメッセージを取得
                 viewModel.CompanyMessageBySystem = company == null ? "" : company.CompanyMessageBySystem;
 
+                // スマホアプリの最新Ver.取得
+                viewModel.SmartphoneAppMinVersion = company == null ? "" : company.SmartphoneAppMinVersion.ToString();
+
                 // スマホアプリのダウンロードコードを取得
                 viewModel.SmartphoneAppDownloadCode = company == null ? "" : company.SmartphoneAppDownloadCode;
 
