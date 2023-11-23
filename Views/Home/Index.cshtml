@@ -144,7 +144,7 @@
                             <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].Manufacturer)</th>
                             <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].UseDeviceEnableDateString)</th>
                             <th style="">@Html.DisplayNameFor(model => model.UseDeviceStatusModels[0].RegistDateTimeString)</th>
-                            <th style="min-width:50px;"></th>
+                            <th class="text-center"></th>
                         </tr>
                     </thead>
 
@@ -160,10 +160,14 @@
                                     <td class="">@Html.DisplayFor(model => item.Manufacturer)</td>
                                     <td class="">@Html.DisplayFor(model => item.UseDeviceEnableDateString)</td>
                                     <td class="">@Html.DisplayFor(model => item.RegistDateTimeString)</td>
-                                    <td style="min-width:50px;">
-                                        @if (@item.UseDeviceStatusId > 0)
+                                    <td class="text-center">
+                                        @if (@item.UseDeviceStatus == task_sync_web.Commons.Enums.UseDeviceStatus.利用中)
                                         {
                                             <button type="submit" id="usedivice-calcel-btn" class="btn btn-custom" onclick="UseDeviceCancelConfirm(@item.UseDeviceStatusId)">解除</button>
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => item.UseDeviceStatus)
                                         }
                                     </td>
                                 </tr>

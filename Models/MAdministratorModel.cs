@@ -14,8 +14,8 @@ namespace task_sync_web.Models
         [Display(Name = "管理者名かな")]
         public string AdministratorNameKana { get; set; }
 
-        [Display(Name = "利用停止フラグ")]
-        public bool IsNotUse { get; set; }
+        //[Display(Name = "利用停止フラグ")]
+        //public bool IsNotUse { get; set; }
 
         [Key]
         public int AdministratorId { get; set; }

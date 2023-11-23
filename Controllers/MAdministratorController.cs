@@ -93,15 +93,14 @@ namespace task_sync_web.Controllers
                 {
                     // DBからデータ一覧を取得
                     var administratorList = db.Query("MAdministrator")
-                        .OrderBy("AdministratorLoginId")
+                        .WhereFalse("IsNotUse")
+                        .WhereNot("AdministratorId", 1) // system管理者は表示しない
+                        .OrderBy("AdministratorId")
                         .Get<MAdministratorModel>().ToList();
                     if (administratorList.Count == 0)
                     {
                         throw new CustomExtention(ErrorMessages.EW0101);
                     }
-
-                    // 管理者ID順に並び替え
-                    administratorList = administratorList.OrderBy(x => x.AdministratorId).ToList();
 
                     searchKey = (searchKey ?? "").Trim();
                     if (administratorList.Count > 0 && searchKey.Length > 0)
@@ -159,7 +158,7 @@ namespace task_sync_web.Controllers
                             sl.SetCellValue(col, ++row, data[_col].AdministratorLoginId);
                             sl.SetCellValue(col, ++row, data[_col].AdministratorName);
                             sl.SetCellValue(col, ++row, data[_col].AdministratorNameKana);
-                            sl.SetCellValue(col, ++row, data[_col].IsNotUse == false ? 0 : 1);
+                            //sl.SetCellValue(col, ++row, data[_col].IsNotUse == false ? 0 : 1);
                         }
                     }
 

@@ -43,6 +43,7 @@ namespace task_sync_web.Controllers
                 foreach (var useDeviceModel in useDeviceModels)
                 {
                     var useDeviceStatusModel = viewModel.UseDeviceStatusModels.Where(x => x.UseDeviceId == useDeviceModel.UseDeviceId).FirstOrDefault();
+                    var today = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd 00:00:00"));
 
                     if (useDeviceStatusModel == null) // 利用中ではない場合
                     {
@@ -53,7 +54,8 @@ namespace task_sync_web.Controllers
                         addUseDeviceStatusModel.Model = "";
                         addUseDeviceStatusModel.Manufacturer = "";
                         addUseDeviceStatusModel.RegistDateTimeString = "";
-                        addUseDeviceStatusModel.UseDeviceEnableDateString = useDeviceModel.UseDeviceEnableDate.ToString("yyyy/MM/dd");
+                        addUseDeviceStatusModel.UseDeviceEnableDateString = useDeviceModel.UseDeviceEnableStartDate.ToString("yyyy/MM/dd");
+                        addUseDeviceStatusModel.UseDeviceStatus = useDeviceModel.UseDeviceEnableStartDate > today ? Enums.UseDeviceStatus.利用開始前 : Enums.UseDeviceStatus.待機中;
 
                         viewModel.NotUseDeviceCount += 1;
                         viewModel.UseDeviceStatusModels.Add(addUseDeviceStatusModel);
@@ -62,7 +64,8 @@ namespace task_sync_web.Controllers
                     {
                         viewModel.UseDeviceCount += 1;
                         useDeviceStatusModel.RegistDateTimeString = useDeviceStatusModel.RegistDateTime.ToString("yyyy/MM/dd HH:mm");
-                        useDeviceStatusModel.UseDeviceEnableDateString = useDeviceModel.UseDeviceEnableDate.ToString("yyyy/MM/dd");
+                        useDeviceStatusModel.UseDeviceEnableDateString = useDeviceModel.UseDeviceEnableStartDate.ToString("yyyy/MM/dd");
+                        useDeviceStatusModel.UseDeviceStatus = Enums.UseDeviceStatus.利用中;
                     }
                 }
 
@@ -136,7 +139,7 @@ namespace task_sync_web.Controllers
                 {
                     // DBからデータ一覧を取得
                     var useDeviceList = db.Query("MUseDevice")
-                        .Where("UseDeviceDisableDate", ">=", DateTime.Now.Date) // 利用無効日付以内のデータ
+                        .Where("UseDeviceEnableEndDate", ">=", DateTime.Now.Date) // 利用デバイス有効日付以内のデータ
                         .Get<MUseDeviceModel>()
                         .ToList();
 

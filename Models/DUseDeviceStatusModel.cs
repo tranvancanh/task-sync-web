@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static task_sync_web.Commons.Enums;
 
 namespace task_sync_web.Models
 {
@@ -26,6 +27,9 @@ namespace task_sync_web.Models
         public DateTime UseDeviceEnableDate { get; set; }
         [Display(Name = "利用開始日")]
         public string UseDeviceEnableDateString { get; set; }
+
+        [Display(Name = "利用状況")]
+        public UseDeviceStatus UseDeviceStatus { get; set; }
 
         //[Display(Name = "解除日時")]
         //public DateTime CancelDateTime { get; set; }
