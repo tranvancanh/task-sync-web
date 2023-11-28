@@ -297,4 +297,12 @@
     <value>列名が正しくありません。</value>
     <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
+  <data name="EW1005" xml:space="preserve">
+    <value>この管理者ログインIDは利用開始日前です。</value>
+    <comment>ログイン画面</comment>
+  </data>
+  <data name="EW1006" xml:space="preserve">
+    <value>この管理者ログインIDは利用終了日を過ぎています。</value>
+    <comment>ログイン画面</comment>
+  </data>
 </root>

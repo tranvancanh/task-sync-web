@@ -145,7 +145,7 @@ namespace task_sync_web.Controllers
         /// 管理者IDとパスワードからログイン情報を取得
         /// </summary>
         /// <param name="dbName"></param>
-        /// <param name="administratorId"></param>
+        /// <param name="administratorLoginId"></param>
         /// <param name="password"></param>
         /// <returns></returns>
         /// <exception cref="CustomExtention"></exception>
@@ -163,6 +163,19 @@ namespace task_sync_web.Controllers
                     {
                         // 有効な管理者ログインIDが存在しない場合はエラー
                         throw new CustomExtention(ErrorMessages.EW1001);
+                    }
+
+                    // 利用開始日～利用終了日の範囲内であるか
+                    var today = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd 00:00:00"));
+                    if (!(administrator.LoginAdministratorEnableStartDate <= today))
+                    {
+                        // 利用開始日前である場合はエラー
+                        throw new CustomExtention(ErrorMessages.EW1005);
+                    }
+                    else if (!(administrator.LoginAdministratorEnableEndDate >= today))
+                    {
+                        // 利用終了日を過ぎている場合はエラー
+                        throw new CustomExtention(ErrorMessages.EW1006);
                     }
 
                     // DBから取得したソルトをbyte配列に変換し、入力したパスワードをハッシュ化
