@@ -277,7 +277,7 @@ namespace task_sync_web.Controllers
 
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
-                // 作業大項目を取得
+                // 作業項目を取得
                 recordList = (await db.Query("MTaskItem")
                     .Select(
                             "TaskItemCode",      // 作業項目コード
@@ -285,14 +285,16 @@ namespace task_sync_web.Controllers
                             "TaskSecondaryItem", // 作業中項目 
                             "TaskTertiaryItem"   // 作業小項目
                         )
-                    .WhereLike("TaskItemCode", $"%{taskItemCode}%")
+                    .Where("IsNotUse", $"0") // 利用停止でない
+                    .Where(q =>
+                    q.WhereLike("TaskItemCode", $"%{taskItemCode}%")
                     .OrWhereLike("TaskPrimaryItem", $"%{taskItemCode}%")
                     .OrWhereLike("TaskSecondaryItem", $"%{taskItemCode}%")
-                    .OrWhereLike("TaskTertiaryItem", $"%{taskItemCode}%")
-                    .GroupBy("TaskItemCode",
-                            "TaskPrimaryItem",
-                            "TaskSecondaryItem",
-                            "TaskTertiaryItem")
+                    .OrWhereLike("TaskTertiaryItem", $"%{taskItemCode}%"))
+                    //.GroupBy("TaskItemCode",
+                    //        "TaskPrimaryItem",
+                    //        "TaskSecondaryItem",
+                    //        "TaskTertiaryItem")
                     .OrderBy("TaskItemCode",
                             "TaskPrimaryItem",
                             "TaskSecondaryItem",
