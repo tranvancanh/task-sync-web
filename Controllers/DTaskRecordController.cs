@@ -285,7 +285,9 @@ namespace task_sync_web.Controllers
                             "TaskSecondaryItem", // 作業中項目 
                             "TaskTertiaryItem"   // 作業小項目
                         )
-                    .Where("IsNotUse", $"0") // 利用停止でない
+                    // 利用停止でない
+                    .WhereFalse("IsNotUse")
+                    // 入力キーワードの部分一致検索
                     .Where(q =>
                     q.WhereLike("TaskItemCode", $"%{taskItemCode}%")
                     .OrWhereLike("TaskPrimaryItem", $"%{taskItemCode}%")
