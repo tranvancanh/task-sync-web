@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using task_sync_web.Models;
 using task_sync_web.Commons;
 using SqlKata.Execution;
+using System.Data.SqlClient;
+using Dapper;
+using Humanizer;
 
 namespace task_sync_web.Controllers
 {
@@ -156,8 +159,31 @@ namespace task_sync_web.Controllers
                 using (var db = new DbSqlKata(dbName))
                 {
                     // 管理者ログインIDから管理者情報を取得
-                    var administrator = db.Query("MAdministrator")
-                        .Where("AdministratorLoginId", administratorLoginId).Where("IsNotUse", false).Get<MAdministratorModel>().ToList().FirstOrDefault();
+                    //var administrator = db.Query("MAdministrator")
+                    //    .Where("AdministratorLoginId", administratorLoginId).Where("IsNotUse", false).Get<MAdministratorModel>().ToList().FirstOrDefault();
+
+                    // 2024/03/27 #207 パスワード設定条件の修正
+                    // 管理者ログインIDを大文字に変更する依頼に伴い、
+                    // ログインチェック時に大文字・小文字の区別がされるようSQL修正
+                    MAdministratorModel administrator = new();
+                    var sql = $@"
+                        SELECT
+                            *
+                        FROM 
+                            MAdministrator
+                        WHERE
+                            AdministratorLoginId = '{administratorLoginId}' COLLATE Japanese_CS_AS_KS_WS
+                            AND IsNotUse = 0
+                    ";
+
+                    var connectionString = new GetConnectString(dbName).ConnectionString;
+                    using (var connection = new SqlConnection())
+                    {
+                        connection.ConnectionString = connectionString;
+                        connection.Open();
+
+                        administrator = connection.Query<MAdministratorModel>(sql).ToList().FirstOrDefault();
+                    }
 
                     if (administrator == null || administrator.AdministratorId == 0)
                     {
