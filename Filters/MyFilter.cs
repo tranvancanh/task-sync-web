@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using SqlKata.Execution;
 using task_sync_web.Commons;
+using task_sync_web.Controllers;
 using task_sync_web.Models;
 
 namespace task_sync_web.Filters
@@ -28,10 +29,12 @@ namespace task_sync_web.Filters
 
                     if (DateTime.TryParse(loginTimeStamp, out DateTime loginTime))
                     {
-                        var db = controller.User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
+                        // データベース名を取得
+                        var companyWebPath = context.HttpContext.User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyWebPath).First().Value.ToString();
+                        var databeseName = new ConvertDatabaseName(companyWebPath).ComapnyDatabeseName;
 
                         // ログイン時に記憶したタイムスタンプが書き換わっていないか確認
-                        var isLoginTimeValid = IsLoginDateTimeValid(db, administratorId, loginTimeStamp);
+                        var isLoginTimeValid = IsLoginDateTimeValid(databeseName, administratorId, loginTimeStamp);
 
                         // 書き換わっていたらログインページに戻す
                         if (!isLoginTimeValid)
@@ -63,9 +66,12 @@ namespace task_sync_web.Filters
 
                 if (requestCon != "login")
                 {
+                    // データベース名を取得
+                    var companyWebPath = c.User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyWebPath).First().Value.ToString();
+                    var databeseName = new ConvertDatabaseName(companyWebPath).ComapnyDatabeseName;
+
                     // テスト環境か判断
-                    var db = c.User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
-                    var connectionString = new GetConnectString(db).ConnectionString;
+                    var connectionString = new GetConnectString(databeseName).ConnectionString;
                     if (connectionString.Contains("0_test"))
                     {
                         c.ViewData["test"] = "test";

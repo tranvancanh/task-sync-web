@@ -7,7 +7,7 @@ namespace task_sync_web.Commons
 {
     public class CustomClaimTypes
     {
-        public const string ClaimType_CompanyDatabaseName = "CompanyDatabaseName";
+        public const string ClaimType_CompanyWebPath = "CompanyWebPath";
         public const string ClaimType_CampanyName = "CompanyName";
         public const string ClaimType_AdministratorId = "AdministratorId";
         public const string ClaimType_AdministratorLoginId = "AdministratorLoginId";

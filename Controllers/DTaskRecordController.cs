@@ -277,7 +277,7 @@ namespace task_sync_web.Controllers
 
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
-                // 作業大項目を取得
+                // 作業項目を取得
                 recordList = (await db.Query("MTaskItem")
                     .Select(
                             "TaskItemCode",      // 作業項目コード
@@ -285,14 +285,18 @@ namespace task_sync_web.Controllers
                             "TaskSecondaryItem", // 作業中項目 
                             "TaskTertiaryItem"   // 作業小項目
                         )
-                    .WhereLike("TaskItemCode", $"%{taskItemCode}%")
+                    // 利用停止でない
+                    .WhereFalse("IsNotUse")
+                    // 入力キーワードの部分一致検索
+                    .Where(q =>
+                    q.WhereLike("TaskItemCode", $"%{taskItemCode}%")
                     .OrWhereLike("TaskPrimaryItem", $"%{taskItemCode}%")
                     .OrWhereLike("TaskSecondaryItem", $"%{taskItemCode}%")
-                    .OrWhereLike("TaskTertiaryItem", $"%{taskItemCode}%")
-                    .GroupBy("TaskItemCode",
-                            "TaskPrimaryItem",
-                            "TaskSecondaryItem",
-                            "TaskTertiaryItem")
+                    .OrWhereLike("TaskTertiaryItem", $"%{taskItemCode}%"))
+                    //.GroupBy("TaskItemCode",
+                    //        "TaskPrimaryItem",
+                    //        "TaskSecondaryItem",
+                    //        "TaskTertiaryItem")
                     .OrderBy("TaskItemCode",
                             "TaskPrimaryItem",
                             "TaskSecondaryItem",
@@ -313,10 +317,32 @@ namespace task_sync_web.Controllers
             try
             {
                 errorList = ValidateForm(editViewModel);
+
+                // 作業項目チェックとマスター取得
+                MTaskItemModel taskItemModel = new MTaskItemModel();
+                var taskItem = editViewModel.TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem;
+                if (string.IsNullOrWhiteSpace(taskItem))
+                    errorList.Add(string.Format(ErrorMessages.EW0001, "作業項目"));
+                else
+                {
+                    // 作業項目をハイフンで区切って4分割できなかった場合はエラー
+                    var taskItems = taskItem.Split('-');
+                    if (taskItems.Length != 4)
+                        errorList.Add(string.Format(ErrorMessages.EW1304));
+                    else
+                    {
+                        taskItemModel = GetTaskItem(taskItems);
+                        if (taskItemModel == null)
+                            errorList.Add(string.Format(ErrorMessages.EW1304));
+                    }
+                }
+
+                // エラーリストが空でなければエラーを返す
                 if (errorList.Any())
                     return Json(new { Result = "NG", Mess = errorList });
 
-                var efftedRows = await SaveChangeData(editViewModel);
+                // 更新
+                var efftedRows = await SaveChangeData(editViewModel, taskItemModel);
                 if(efftedRows > 0)
                     return Json(new { Result = "OK", Mess = SuccessMessages.SW002 });
                 else
@@ -394,28 +420,15 @@ namespace task_sync_web.Controllers
                     errorList.Add(ErrorMessages.EW1307);
             }
 
-            if (string.IsNullOrWhiteSpace(taskItem))
-                errorList.Add(string.Format(ErrorMessages.EW0001, "作業項目"));
-            else
-            {
-                var taskItems = taskItem.Split('-');
-                if (taskItems.Length != 4)
-                    errorList.Add(string.Format(ErrorMessages.EW1304));
-                else
-                {
-                    if(!IsCheckTaskItem(taskItems))
-                        errorList.Add(string.Format(ErrorMessages.EW1304));
-                }
-            }
             if (remark.Length > 200)
                 errorList.Add(string.Format(ErrorMessages.EW0002, "備考", "200"));
 
             return errorList;
         }
 
-        private bool IsCheckTaskItem(string[] taskItems)
+        private MTaskItemModel GetTaskItem(string[] taskItems)
         {
-            MTaskItemModel mTaskItem;
+            MTaskItemModel mTaskItem = null;
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
             {
                 mTaskItem = db.Query("MTaskItem")
@@ -426,10 +439,10 @@ namespace task_sync_web.Controllers
                      .Get<MTaskItemModel>()
                      .FirstOrDefault();
             }
-            return mTaskItem != null;
+            return mTaskItem;
         }
 
-        private async Task<int> SaveChangeData(DTaskInterruptModalEditViewModel editViewModel)
+        private async Task<int> SaveChangeData(DTaskInterruptModalEditViewModel editViewModel, MTaskItemModel taskItemModel)
         {
             var efftedRows = -1;
             using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
@@ -443,11 +456,6 @@ namespace task_sync_web.Controllers
                     var taskEndDate = Convert.ToDateTime(editViewModel.TaskEndDate).Date;
                     var taskEndTime = TimeSpan.ParseExact(editViewModel.TaskEndTime, TimeSpanFormatSupport, System.Globalization.CultureInfo.InvariantCulture);
                     var taskInterruptTotalTime = editViewModel.TaskInterruptTotalTime;
-                    var taskItem = editViewModel.TaskItemCode_PrimaryItem_SecondaryItem_TertiaryItem.Split('-');
-                    var taskItemCode = taskItem[0];
-                    var taskPrimaryItem = taskItem[1];
-                    var taskSecondaryItem = taskItem[2];
-                    var taskTertiaryItem = taskItem[3];
                     var remark = (editViewModel.Remark ?? string.Empty).Trim();
                     var isDelete = editViewModel.IsDelete;
 
@@ -457,10 +465,12 @@ namespace task_sync_web.Controllers
                         .Where("TaskRecordId", taskRecordId)
                         .UpdateAsync(new
                         {
-                            TaskItemCode = taskItemCode,
-                            TaskPrimaryItem = taskPrimaryItem,
-                            TaskSecondaryItem = taskSecondaryItem,
-                            TaskTertiaryItem = taskTertiaryItem,
+                            TaskDate = taskStartDate.Add(taskStartTime).ToString("yyyy/MM/dd"),
+                            TaskItemId = taskItemModel.TaskItemId,
+                            TaskItemCode = taskItemModel.TaskItemCode,
+                            TaskPrimaryItem = taskItemModel.TaskPrimaryItem,
+                            TaskSecondaryItem = taskItemModel.TaskSecondaryItem,
+                            TaskTertiaryItem = taskItemModel.TaskTertiaryItem,
                             TaskStartDateTime = taskStartDate.Add(taskStartTime),
                             TaskEndDateTime = taskEndDate.Add(taskEndTime),
                             TaskInterruptTotalTime = taskInterruptTotalTime,
@@ -469,7 +479,7 @@ namespace task_sync_web.Controllers
                             UpdateDateTime = DateTime.Now,
                             UpdateAdministratorId = LoginUser.AdministratorId,
                             UpdateTaskUserId = 0 // 更新作業者を空白にして上書き
-                        }, tran);
+                        }, tran) ;
                     if (result > 0)
                         efftedRows = efftedRows + result;
 

@@ -20,6 +20,18 @@ namespace task_sync_web.Controllers
             var viewModel = new HomeViewModel();
             try
             {
+                // 会社情報を取得
+                var company = GetCompany();
+
+                // システム管理者からのメッセージを取得
+                viewModel.CompanyMessageBySystem = company == null ? "" : company.CompanyMessageBySystem;
+
+                // スマホアプリの最新Ver.取得
+                viewModel.SmartphoneAppMinVersion = company == null ? "" : company.SmartphoneAppMinVersion.ToString();
+
+                // スマホアプリのダウンロードコードを取得
+                viewModel.SmartphoneAppDownloadCode = company == null ? "" : company.SmartphoneAppDownloadCode;
+
                 // 利用デバイス状況の利用中データを取得
                 viewModel.UseDeviceStatusModels = GetListUseDeviceStatus();
 
@@ -31,6 +43,7 @@ namespace task_sync_web.Controllers
                 foreach (var useDeviceModel in useDeviceModels)
                 {
                     var useDeviceStatusModel = viewModel.UseDeviceStatusModels.Where(x => x.UseDeviceId == useDeviceModel.UseDeviceId).FirstOrDefault();
+                    var today = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd 00:00:00"));
 
                     if (useDeviceStatusModel == null) // 利用中ではない場合
                     {
@@ -41,7 +54,8 @@ namespace task_sync_web.Controllers
                         addUseDeviceStatusModel.Model = "";
                         addUseDeviceStatusModel.Manufacturer = "";
                         addUseDeviceStatusModel.RegistDateTimeString = "";
-                        addUseDeviceStatusModel.UseDeviceEnableDateString = useDeviceModel.UseDeviceEnableDate.ToString("yyyy/MM/dd");
+                        addUseDeviceStatusModel.UseDeviceEnableDateString = useDeviceModel.UseDeviceEnableStartDate.ToString("yyyy/MM/dd");
+                        addUseDeviceStatusModel.UseDeviceStatus = useDeviceModel.UseDeviceEnableStartDate > today ? Enums.UseDeviceStatus.利用開始前 : Enums.UseDeviceStatus.待機中;
 
                         viewModel.NotUseDeviceCount += 1;
                         viewModel.UseDeviceStatusModels.Add(addUseDeviceStatusModel);
@@ -50,7 +64,8 @@ namespace task_sync_web.Controllers
                     {
                         viewModel.UseDeviceCount += 1;
                         useDeviceStatusModel.RegistDateTimeString = useDeviceStatusModel.RegistDateTime.ToString("yyyy/MM/dd HH:mm");
-                        useDeviceStatusModel.UseDeviceEnableDateString = useDeviceModel.UseDeviceEnableDate.ToString("yyyy/MM/dd");
+                        useDeviceStatusModel.UseDeviceEnableDateString = useDeviceModel.UseDeviceEnableStartDate.ToString("yyyy/MM/dd");
+                        useDeviceStatusModel.UseDeviceStatus = Enums.UseDeviceStatus.利用中;
                     }
                 }
 
@@ -124,7 +139,7 @@ namespace task_sync_web.Controllers
                 {
                     // DBからデータ一覧を取得
                     var useDeviceList = db.Query("MUseDevice")
-                        .Where("UseDeviceDisableDate", ">=", DateTime.Now.Date) // 利用無効日付以内のデータ
+                        .Where("UseDeviceEnableEndDate", ">=", DateTime.Now.Date) // 利用デバイス有効日付以内のデータ
                         .Get<MUseDeviceModel>()
                         .ToList();
 
@@ -170,6 +185,28 @@ namespace task_sync_web.Controllers
                 TempData["ErrorMessage"] = ErrorMessages.EW0502;
             }
             return RedirectToAction("Index");
+        }
+
+        public MCompanyModel GetCompany()
+        {
+            var companyModel = new MCompanyModel();
+            try
+            {
+
+                using (var db = new DbSqlKata())
+                {
+                    // DBからデータ一覧を取得
+                    companyModel = db.Query("MCompany")
+                        .Where("CompanyWebPath", LoginUser.CompanyWebPath)
+                        .Get<MCompanyModel>().FirstOrDefault();
+                }
+            }
+            catch (Exception)
+            {
+                // 何もしない
+            }
+
+            return companyModel;
         }
 
         public IActionResult Privacy()

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using task_sync_web.Models;
 using task_sync_web.Commons;
 using SqlKata.Execution;
+using System.Data.SqlClient;
+using Dapper;
+using Humanizer;
 
 namespace task_sync_web.Controllers
 {
@@ -41,7 +44,7 @@ namespace task_sync_web.Controllers
                 // ログインに必要なプリンシパルを作る
                 var claims = new[] {
                     new Claim(CustomClaimTypes.ClaimType_CampanyName, company.CompanyName.ToString()),
-                    new Claim(CustomClaimTypes.ClaimType_CompanyDatabaseName, company.CompanyDatabaseName.ToString()),
+                    new Claim(CustomClaimTypes.ClaimType_CompanyWebPath, company.CompanyWebPath.ToString()),
                     new Claim(CustomClaimTypes.ClaimType_AdministratorId, administrator.AdministratorId.ToString()),
                     new Claim(CustomClaimTypes.ClaimType_AdministratorLoginId, administrator.AdministratorLoginId.ToString()),
                     new Claim(CustomClaimTypes.ClaimType_AdministratorName, administrator.AdministratorName.ToString()),
@@ -145,7 +148,7 @@ namespace task_sync_web.Controllers
         /// 管理者IDとパスワードからログイン情報を取得
         /// </summary>
         /// <param name="dbName"></param>
-        /// <param name="administratorId"></param>
+        /// <param name="administratorLoginId"></param>
         /// <param name="password"></param>
         /// <returns></returns>
         /// <exception cref="CustomExtention"></exception>
@@ -156,13 +159,49 @@ namespace task_sync_web.Controllers
                 using (var db = new DbSqlKata(dbName))
                 {
                     // 管理者ログインIDから管理者情報を取得
-                    var administrator = db.Query("MAdministrator")
-                        .Where("AdministratorLoginId", administratorLoginId).Where("IsNotUse", false).Get<MAdministratorModel>().ToList().FirstOrDefault();
+                    //var administrator = db.Query("MAdministrator")
+                    //    .Where("AdministratorLoginId", administratorLoginId).Where("IsNotUse", false).Get<MAdministratorModel>().ToList().FirstOrDefault();
+
+                    // 2024/03/27 #207 パスワード設定条件の修正
+                    // 管理者ログインIDを大文字に変更する依頼に伴い、
+                    // ログインチェック時に大文字・小文字の区別がされるようSQL修正
+                    MAdministratorModel administrator = new();
+                    var sql = $@"
+                        SELECT
+                            *
+                        FROM 
+                            MAdministrator
+                        WHERE
+                            AdministratorLoginId = '{administratorLoginId}' COLLATE Japanese_CS_AS_KS_WS
+                            AND IsNotUse = 0
+                    ";
+
+                    var connectionString = new GetConnectString(dbName).ConnectionString;
+                    using (var connection = new SqlConnection())
+                    {
+                        connection.ConnectionString = connectionString;
+                        connection.Open();
+
+                        administrator = connection.Query<MAdministratorModel>(sql).ToList().FirstOrDefault();
+                    }
 
                     if (administrator == null || administrator.AdministratorId == 0)
                     {
                         // 有効な管理者ログインIDが存在しない場合はエラー
                         throw new CustomExtention(ErrorMessages.EW1001);
+                    }
+
+                    // 利用開始日～利用終了日の範囲内であるか
+                    var today = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd 00:00:00"));
+                    if (!(administrator.LoginAdministratorEnableStartDate <= today))
+                    {
+                        // 利用開始日前である場合はエラー
+                        throw new CustomExtention(ErrorMessages.EW1005);
+                    }
+                    else if (!(administrator.LoginAdministratorEnableEndDate >= today))
+                    {
+                        // 利用終了日を過ぎている場合はエラー
+                        throw new CustomExtention(ErrorMessages.EW1006);
                     }
 
                     // DBから取得したソルトをbyte配列に変換し、入力したパスワードをハッシュ化
@@ -249,8 +288,11 @@ namespace task_sync_web.Controllers
         {
             try
             {
-                var dbName = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value;
-                using (var db = new DbSqlKata(dbName))
+                // データベース名を取得
+                var companyWebPath = User.Claims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyWebPath).First().Value.ToString();
+                var databeseName = new ConvertDatabaseName(companyWebPath).ComapnyDatabeseName;
+
+                using (var db = new DbSqlKata(databeseName))
                 {
                     // DB更新
                     var updateResult = db.Query("MAdministrator")

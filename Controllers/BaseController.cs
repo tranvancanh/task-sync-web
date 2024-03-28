@@ -19,12 +19,15 @@ namespace task_sync_web.Controllers
                 var userModel = new LoginUserModel()
                 {
                     CompanyName = userClaims.Where(x => x.Type == CustomClaimTypes.ClaimType_CampanyName).First().Value,
-                    CompanyDatabaseName = userClaims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyDatabaseName).First().Value,
+                    CompanyWebPath = userClaims.Where(x => x.Type == CustomClaimTypes.ClaimType_CompanyWebPath).First().Value,
                     AdministratorId = Convert.ToInt32(userClaims.Where(x => x.Type == CustomClaimTypes.ClaimType_AdministratorId).First().Value),
                     AdministratorLoginId = userClaims.Where(x => x.Type == CustomClaimTypes.ClaimType_AdministratorLoginId).First().Value,
                     AdministratorName = userClaims.Where(x => x.Type == CustomClaimTypes.ClaimType_AdministratorName).First().Value,
                     LoginDateTime = Convert.ToDateTime(userClaims.Where(x => x.Type == CustomClaimTypes.ClaimType_TimeStamp).First().Value)
                 };
+
+                // 会社ごとのWebPathからデータベース名を取得
+                userModel.CompanyDatabaseName = new ConvertDatabaseName(userModel.CompanyWebPath).ComapnyDatabeseName;
 
                 LoginUser = userModel;
                 isValid = true;

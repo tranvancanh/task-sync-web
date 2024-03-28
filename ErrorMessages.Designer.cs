@@ -241,6 +241,24 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   この管理者ログインIDは利用開始日前です。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1005 {
+            get {
+                return ResourceManager.GetString("EW1005", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   この管理者ログインIDは利用終了日を過ぎています。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1006 {
+            get {
+                return ResourceManager.GetString("EW1006", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   異なるログインがあったため自動ログアウトされました。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW1010 {

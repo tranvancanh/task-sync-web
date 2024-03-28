@@ -6,7 +6,7 @@
     --fontcolor: #252F3B;
     --othercolor: whitesmoke;
     --font-family-sans-serif: "Noto Sans JP", Meiryo UI, sans-serif;
-    --font-title: "Kiwi Maru";
+    --font-title: "Kiwi Maru","Noto Sans JP", Meiryo UI, sans-serif;
 }
 
 html .modal{

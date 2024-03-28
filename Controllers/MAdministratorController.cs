@@ -79,7 +79,7 @@ namespace task_sync_web.Controllers
         }
 
         /// <summary>
-        /// データリストを取得
+        /// 管理者マスターを取得
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>
@@ -88,20 +88,22 @@ namespace task_sync_web.Controllers
             try
             {
                 var administratorModels = new List<MAdministratorModel>();
+                var today = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd 00:00:00"));
 
                 using (var db = new DbSqlKata(LoginUser.CompanyDatabaseName))
                 {
                     // DBからデータ一覧を取得
                     var administratorList = db.Query("MAdministrator")
-                        .OrderBy("AdministratorLoginId")
+                        .WhereFalse("IsNotUse") // 利用停止フラグがFalse
+                        .WhereNot("AdministratorId", 1) // 東山システムは表示しない
+                        .Where("LoginAdministratorEnableStartDate", "<=", today) // 利用開始日を過ぎている
+                        .Where("LoginAdministratorEnableEndDate", ">=", today) // 利用終了日を過ぎていない
+                        .OrderBy("AdministratorId")
                         .Get<MAdministratorModel>().ToList();
                     if (administratorList.Count == 0)
                     {
                         throw new CustomExtention(ErrorMessages.EW0101);
                     }
-
-                    // 管理者ID順に並び替え
-                    administratorList = administratorList.OrderBy(x => x.AdministratorId).ToList();
 
                     searchKey = (searchKey ?? "").Trim();
                     if (administratorList.Count > 0 && searchKey.Length > 0)
@@ -159,7 +161,7 @@ namespace task_sync_web.Controllers
                             sl.SetCellValue(col, ++row, data[_col].AdministratorLoginId);
                             sl.SetCellValue(col, ++row, data[_col].AdministratorName);
                             sl.SetCellValue(col, ++row, data[_col].AdministratorNameKana);
-                            sl.SetCellValue(col, ++row, data[_col].IsNotUse == false ? 0 : 1);
+                            //sl.SetCellValue(col, ++row, data[_col].IsNotUse == false ? 0 : 1);
                         }
                     }
 

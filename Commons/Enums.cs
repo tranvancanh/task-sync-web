@@ -26,5 +26,13 @@
         {
             Index = 1, InterruptModal = 2
         }
+
+        public enum UseDeviceStatus
+        {
+            待機中 = 0,
+            利用中 = 1,
+            利用開始前 = 2,
+
+        }
     }
 }

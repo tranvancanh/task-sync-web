@@ -63,7 +63,7 @@
                             <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorLoginId)</th>
                             <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorName)</th>
                             <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].AdministratorNameKana)</th>
-                            <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th>
+                            @* <th style="">@Html.DisplayNameFor(model => model.AdministratorModels[0].IsNotUse)</th> *@
                         </tr>
                     </thead>
 
@@ -76,7 +76,7 @@
                                     <td class="">@Html.DisplayFor(model => item.AdministratorLoginId)</td>
                                     <td class="">@Html.DisplayFor(model => item.AdministratorName)</td>
                                     <td class="">@Html.DisplayFor(model => item.AdministratorNameKana)</td>
-                                    <td class="text-center">@((item.IsNotUse == false) ? 0 : 1)</td>
+                                    @* <td class="text-center">@((item.IsNotUse == false) ? 0 : 1)</td> *@
                                 </tr>
 
                             }

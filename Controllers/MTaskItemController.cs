@@ -303,9 +303,9 @@ namespace task_sync_web.Controllers
             // 新規登録チェック
             if (flag.Equals("1"))
             {
-                // 登録対象行の作業項目IDが空白であるか
-                if (!string.IsNullOrWhiteSpace(taskItemId))
-                    return string.Format(ErrorMessages.EW1211, "作業項目ID");
+                //// 登録対象行の作業項目IDが空白であるか
+                //if (!string.IsNullOrWhiteSpace(taskItemId))
+                //    return string.Format(ErrorMessages.EW1211, "作業項目ID");
             }
             // 更新チェック
             else if (flag.Equals("2"))

@@ -304,5 +304,13 @@
   <data name="EW1105" xml:space="preserve">
     <value>新しいパスワードは半角数字、半角英小文字、半角英大文字、半角記号のうち2種以上の組合せである必要があります。</value>
     <comment>パスワード変更画面</comment>
+ </data>
+  <data name="EW1005" xml:space="preserve">
+    <value>この管理者ログインIDは利用開始日前です。</value>
+    <comment>ログイン画面</comment>
+  </data>
+  <data name="EW1006" xml:space="preserve">
+    <value>この管理者ログインIDは利用終了日を過ぎています。</value>
+    <comment>ログイン画面</comment>
   </data>
 </root>
