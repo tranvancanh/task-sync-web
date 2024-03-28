@@ -12,14 +12,14 @@ namespace task_sync_web.Models
 
         [Display(Name = "新しいパスワード")]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
-        [RegularExpression("^[!-~]+$", ErrorMessageResourceName = "EW0010", ErrorMessageResourceType = typeof(ErrorMessages))]
+        [RegularExpression("^[!-~]+$", ErrorMessageResourceName = "EW0011", ErrorMessageResourceType = typeof(ErrorMessages))]
         [StringLength(12, MinimumLength = 8, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
         [CustomValidation(typeof(PasswordChangeViewModel), nameof(ValidatePasswordComplexity))]
         public string NewPassword { get; set; }
 
         [Display(Name = "新しいパスワード(確認用)")]
         [Required(ErrorMessageResourceName = "EW0001", ErrorMessageResourceType = typeof(ErrorMessages))]
-        [RegularExpression("^[!-~]+$", ErrorMessageResourceName = "EW0010", ErrorMessageResourceType = typeof(ErrorMessages))]
+        [RegularExpression("^[!-~]+$", ErrorMessageResourceName = "EW0011", ErrorMessageResourceType = typeof(ErrorMessages))]
         [StringLength(12, MinimumLength = 8, ErrorMessageResourceName = "EW0003", ErrorMessageResourceType = typeof(ErrorMessages))]
         [CustomValidation(typeof(PasswordChangeViewModel), nameof(ValidatePasswordComplexity))]
         public string ConfirmNewPassword { get; set; }
@@ -44,7 +44,8 @@ namespace task_sync_web.Models
             if (typeCount >= 2)
                 return ValidationResult.Success;
             else
-                return new ValidationResult("パスワードは数字、大文字・小文字の英字、記号のうち2種以上の組合せである必要があります。");
+                // "パスワードは数字、大文字・小文字の英字、記号のうち2種以上の組合せである必要があります。"
+                return new ValidationResult(ErrorMessages.EW1105);
         }
 
         public PasswordChangeViewModel()
