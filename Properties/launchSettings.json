@@ -21,7 +21,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:62189/tasksync_tmp",
+      "applicationUrl": "http://localhost:62189/tasksync_test",
       "sslPort": 44314
     }
   }

@@ -151,6 +151,15 @@ namespace task_sync_web {
         }
         
         /// <summary>
+        ///   {0}は半角英数字記号のみ使用できます。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW0011 {
+            get {
+                return ResourceManager.GetString("EW0011", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   対象データが存在しません。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string EW0101 {
@@ -291,6 +300,15 @@ namespace task_sync_web {
         public static string EW1104 {
             get {
                 return ResourceManager.GetString("EW1104", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   新しいパスワードは半角数字、半角英小文字、半角英大文字、半角記号のうち2種以上の組合せである必要があります。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EW1105 {
+            get {
+                return ResourceManager.GetString("EW1105", resourceCulture);
             }
         }
         
