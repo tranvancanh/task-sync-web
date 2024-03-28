@@ -33,12 +33,14 @@ namespace task_sync_web.Models
         {
             if (string.IsNullOrEmpty(password)) return ValidationResult.Success;
 
+            //半角数字、半角英大文字、半角英小文字、半角記号のうち2種以上の組み合わせであるか調べる
             bool hasUpperCase = password.Any(char.IsUpper);
             bool hasLowerCase = password.Any(char.IsLower);
             bool hasDigits = password.Any(char.IsDigit);
             bool hasSymbols = password.Any(ch => !char.IsLetterOrDigit(ch));
             int typeCount = new[] { hasUpperCase, hasLowerCase, hasDigits, hasSymbols }.Count(t => t);
 
+            // 2種以上ならOK
             if (typeCount >= 2)
                 return ValidationResult.Success;
             else
