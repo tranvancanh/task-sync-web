@@ -297,4 +297,12 @@
     <value>列名が正しくありません。</value>
     <comment>作業者マスター画面,作業項目マスター画面</comment>
   </data>
+  <data name="EW0011" xml:space="preserve">
+    <value>{0}は半角英数字記号のみ使用できます。</value>
+    <comment>パスワード変更画面</comment>
+  </data>
+  <data name="EW1105" xml:space="preserve">
+    <value>新しいパスワードは半角数字、半角英小文字、半角英大文字、半角記号のうち2種以上の組合せである必要があります。</value>
+    <comment>パスワード変更画面</comment>
+  </data>
 </root>
